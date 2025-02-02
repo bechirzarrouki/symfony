@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-header">
+    <div class="avatar"></div>
+    <div class="profile-info">
+        <h1>Edward Evans</h1>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>3.8K</h3>
+                <p>Followers</p>
+            </div>
+            <div class="stat-card">
+                <h3>1.3K</h3>
+                <p>Following</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<section class="hero-section">
+    <h1>Connect Creators & Innovators</h1>
+    <div class="client-grid">
+        <div class="client-card">Google</div>
+        <div class="client-card">Amazon</div>
+        <div class="client-card">Logitech</div>
+    </div>
+</section>
+
+<section class="post-creator">
+    <h2>Share Your Vision</h2>
+    <textarea class="post-input" placeholder="What revolutionary idea are you working on?"></textarea>
+    <button class="purple-btn">Publish Post</button>
+</section>
+{% endblock %}

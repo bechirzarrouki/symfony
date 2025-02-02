@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/search.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="search-container">
+    <div class="search-bar">
+        <input type="text" placeholder="Search posts, investors, startups...">
+        <button class="purple-btn">Search</button>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Posts</button>
+        <button class="filter-btn">People</button>
+        <button class="filter-btn">Companies</button>
+    </div>
+
+    <div class="results">
+        <div class="result-card">
+            <h3>AI Art Project</h3>
+            <p class="meta">48 views • 12 collaborators</p>
+            <div class="tags">
+                <span class="tag">Art</span>
+                <span class="tag">Tech</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
