@@ -4,21 +4,66 @@
 
 {% block stylesheets %}
     {{ parent() }}
-     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/navbar.js') }}"></script>
 {% endblock %}
 
 {% block body %}
-<section class="connect-container">
-   <header class="connect-header">
-    <div class="logo">innovmatch</div>
-<button class="custom-button primary">Sign in</button>
+ <div class="navbar-container">
+    <nav class="navbar">
+      <div class="navbar-content">
+        <a href="#" class="logo">
+          
+          <span class="logo-text">InnovMatch</span>
+        </a>
 
-</header>
-<main class="main-content">
-            <h2 class="institution">HONORIS UNITED UNIVERSITIES</h2>
-            <p class="welcome-text">Welcome to</p>
-            <h1 class="main-title">innovmatch</h1>
-            <button class="cta-button" onclick="handleGetStarted()">GET STARTED</button>
-        </main>
-
+        <div class="nav-search">
+          <input type="text" placeholder="Rechercher..." class="search-input" />
+        </div>
+         
+        <div class="nav-right">
+        <div class="profile-circle">
+         <i class="icon fas fa-bell" style="color: black;"></i>
+         </div>
+         <div class="profile-circle">
+         <i class="icon fas fa-comment" style="color: black;"></i>
+        </div>
+        </div>
+        <div class="profile-circle">
+            <img src="https://via.placeholder.com/40" alt="Profil" class="profile-image" />
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="sidebar">
+    <ul class="sidebar-menu">
+        <li><a href="#"><i class="fas fa-home"></i> Accueil</a></li>
+        <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+        <li><a href="#"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
+        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+    </ul>
+</div>
+  <div class="investment-box">
+    <div class="investment-header">
+        <img src="{{ asset('images/profile-placeholder.png') }}" alt="Profil" class="profile-image" />
+        <input type="text" class="investment-amount" placeholder="Montant de l'investissement">
+        <select class="investment-type">
+            <option value="" disabled selected>Type d'investissement</option>
+            <option value="immobilier">Immobilier</option>
+            <option value="bourse">Bourse</option>
+            <option value="crypto">Crypto-monnaie</option>
+            <option value="startup">Startup</option>
+        </select>
+    </div>
+    <div class="investment-actions">
+        <button class="add-btn"><i class="fas fa-plus"></i></button>
+        <button class="publish-btn">Publier</button>
+    </div>
+  </div>
 {% endblock %}
