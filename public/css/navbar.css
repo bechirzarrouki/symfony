@@ -1,0 +1,99 @@
+.navbar-container {
+    margin-bottom: 7rem;
+  }
+  
+  .navbar {
+    background-color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 20;
+  }
+  
+  .navbar-content {
+    max-width: 1280px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto;
+    padding: 1rem;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  
+  .logo-icon {
+    background-color: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Pacifico', cursive;
+    color: #7c3aed;
+    margin-left: -5.75rem;
+  }
+  
+  .nav-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .search-input {
+    width: 50%;
+    padding: 1rem;
+    border: 1px solid #C7D0FA;
+    border-radius: 2rem;
+    outline: none;
+    background-color: #C7D0FA;
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  /* Optional: If you want to ensure spacing between items */
+  .nav-right > * {
+    margin-right: 1.5rem;
+  }
+  
+  .icon-circle,
+  .profile-circle {
+    background-color: #C7D0FA;
+    border-radius: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem;
+  }
+  
+  /* Single definition for .icon */
+  .icon {
+    font-size: 1.5rem;
+    color: #7c3aed;
+  }
+  
+  /* Adjust spacing on the profile icon if needed */
+  .profile-circle {
+    margin-left: 1rem;
+  }
+  
+  .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  

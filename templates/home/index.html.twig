@@ -13,42 +13,9 @@
   <script src="{{ asset('js/navbar.js') }}"></script>
 {% endblock %}
 
-{% block body %}
- <div class="navbar-container">
-    <nav class="navbar">
-      <div class="navbar-content">
-        <a href="#" class="logo">
-          
-          <span class="logo-text">InnovMatch</span>
-        </a>
-
-        <div class="nav-search">
-          <input type="text" placeholder="Rechercher..." class="search-input" />
-        </div>
-         
-        <div class="nav-right">
-        <div class="profile-circle">
-         <i class="icon fas fa-bell" style="color: black;"></i>
-         </div>
-         <div class="profile-circle">
-         <i class="icon fas fa-comment" style="color: black;"></i>
-        </div>
-        </div>
-        <div class="profile-circle">
-            <img src="https://via.placeholder.com/40" alt="Profil" class="profile-image" />
-        </div>
-      </div>
-    </nav>
-  </div>
-  <div class="sidebar">
-    <ul class="sidebar-menu">
-        <li><a href="#"><i class="fas fa-home"></i> Accueil</a></li>
-        <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
-        <li><a href="#"><i class="fas fa-envelope"></i> Messages</a></li>
-        <li><a href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
-        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
-    </ul>
-</div>
+{% block body %}  
+  {% include 'components/navbar.html.twig' %}
+  {% include 'components/sidebar.html.twig' %}
   <div class="investment-box">
     <div class="investment-header">
         <img src="{{ asset('images/profile-placeholder.png') }}" alt="Profil" class="profile-image" />

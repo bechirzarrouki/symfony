@@ -1,69 +1,148 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home - Purple Social{% endblock %}
+{% block title %}Home - InoovMatch{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Popup styles for comment options */
+        .comment-options-popup {
+            display: none; /* hidden by default */
+            position: absolute;
+            top: 20px; /* adjust as needed */
+            right: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 100;
+        }
+        .comment-options-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .comment-options-popup li {
+            margin: 5px 0;
+        }
+        .comment-options-popup li a {
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InoovMatch Sidebar</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>InoovMatch</h2>
+<div class="app-container">
+    {% include 'components/navbar.html.twig' %}
+    {% include 'components/sidebar.html.twig' %}
+    <main class="main-content">
+
+        <!-- Create Post Box -->
+        <div class="create-post">
+            <h2>Create Your Post</h2>
+            <div class="post-input-wrapper">
+                <input type="text" placeholder="What's on your mind?">
+                <button class="btn-create">Create</button>
+            </div>
+            <div class="post-actions">
+                <button class="action-btn">
+                    <i class="fas fa-camera"></i> Photo
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-smile"></i> Emoji
+                </button>
+            </div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="#"><i class="fas fa-pen"></i>Post</a></li>
-            <li><a href="#"><i class="fas fa-search"></i>Search</a></li>
-            <li><a href="#"><i class="fas fa-comment-dots"></i>Chat</a></li>
-            <li><a href="#"><i class="fas fa-user"></i>Profil</a></li>
-            <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
-            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Log Out</a></li>
-        </ul>
-    </div>
 
-    <div class="main-content">
-        <header class="main-header">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher...">
+        <!-- Posts Feed -->
+        <div class="posts-feed">
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="{{ asset('images/avatar.jpg') }}" alt="Avatar" class="post-avatar">
+                        <div class="post-user-info">
+                            <h4>bechir</h4>
+                            <p>public</p>
+                        </div>
+                    </div>
+                    <button class="btn-follow">Follow</button>
+                </div>
+                <div class="post-content">
+                    <p class="post-text">this is a test post</p>
+                    <img src="{{ asset('images/post-image.jpg') }}" alt="Post image" class="post-image">
+
+                    <div class="post-stats">
+                        <span>15 likes</span>
+                    </div>
+                    
+                    <!-- Display Comment -->
+                    <div class="post-comments">
+                        <div class="comment" style="position: relative;">
+                            <div class="comment-info">
+                                <strong>John Doe</strong>
+                                <span class="comment-text">This is a sample comment.</span>
+                            </div>
+                            <div class="comment-options" style="position: absolute; top: 0; right: 0;">
+                                <a href="#" class="comment-options-link">...</a>
+                                <!-- Popup with Update and Delete options -->
+                                <div class="comment-options-popup">
+                                    <ul>
+                                        <li><a href="#" class="update-comment">Update</a></li>
+                                        <li><a href="#" class="delete-comment">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-box">
+                        <input type="text" placeholder="Post a comment..." class="comment-input">
+                        <button class="btn-post">Post</button>
+                    </div>
+                </div>
             </div>
-            <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </div>
-                <div class="profile">
-                    <img id="profile-pic" src="profil.jpg" alt="Photo de profil">
-                </div>
-            </div>
-        </header>
+        </div>
+    </main>
+</div>
+{% endblock %}
 
-        <section class="page-content">
-
-            <div class="post-box">
-                <h2>Create Your Post</h2>
-                <div class="input-container">
-                    <input type="text" placeholder="What's on your mind?">
-                    <button>Create</button>
-                </div>
-                <div class="action-buttons">
-                    <button>📷 Photo</button>
-                    <button>😊 Emoji</button>
-                </div>
-            </div>
-
-           
-           
-        </section>
-    </div>
-</body>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Wait until the DOM content is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to each comment options link (ellipsis)
+            document.querySelectorAll('.comment-options-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Get the popup related to this comment
+                    const popup = this.parentElement.querySelector('.comment-options-popup');
+                    
+                    // Hide any other open popups
+                    document.querySelectorAll('.comment-options-popup').forEach(otherPopup => {
+                        if (otherPopup !== popup) {
+                            otherPopup.style.display = 'none';
+                        }
+                    });
+                    
+                    // Toggle the display of this popup
+                    popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+                });
+            });
+            
+            // Hide the popup when clicking outside of it
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.comment-options-popup').forEach(popup => {
+                    if (!popup.contains(e.target) && !e.target.classList.contains('comment-options-link')) {
+                        popup.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
