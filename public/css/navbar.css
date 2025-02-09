@@ -3,12 +3,13 @@
   }
   
   .navbar {
-    background-color: white;
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 20;
+    height: 14%;
+    border-radius: 1%;
   }
   
   .navbar-content {
@@ -27,7 +28,7 @@
   }
   
   .logo-icon {
-    background-color: #7c3aed;
+    background-color: #FFFFFF;
     color: white;
     border-radius: 50%;
     width: 2.5rem;
@@ -39,7 +40,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     font-family: 'Pacifico', cursive;
-    color: #7c3aed;
+    color: #FFFFFF;
     margin-left: -5.75rem;
   }
   
@@ -52,10 +53,10 @@
   .search-input {
     width: 50%;
     padding: 1rem;
-    border: 1px solid #C7D0FA;
+    border: 1px solid #3399CC;
     border-radius: 2rem;
     outline: none;
-    background-color: #C7D0FA;
+    background-color: #FFFFFF;
   }
   
   .nav-right {
@@ -71,12 +72,13 @@
   
   .icon-circle,
   .profile-circle {
-    background-color: #C7D0FA;
+    background-color: #FFFFFF;
     border-radius: 15%;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0.75rem;
+    border: 1px solid #3399CC;
   }
   
   /* Single definition for .icon */
@@ -95,5 +97,6 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    border: 1px solid #3399CC;
   }
   

@@ -1,7 +1,7 @@
 .sidebar {
-    width: 250px;
+    width: 200px;
     height: 100vh;
-    background-color: #C7D0FA;
+    background-color: #F3F4F6;
     position: fixed;
     left: 0;
     top: 0;
@@ -10,6 +10,7 @@
     flex-direction: column;
     border-bottom: 1px solid #000000;
     border-radius: 15%;
+    
   }
   
   .sidebar-menu {
@@ -20,14 +21,16 @@
   
   .sidebar-menu li {
     padding: 15px 20px;
+    
   }
   
   .sidebar-menu li a {
-    color: #564BAF;
+    color: #3D3D3D;
     text-decoration: none;
     display: flex;
     align-items: center;
     font-size: 18px;
+    margin-top: 15%;
   }
   
   .sidebar-menu li a i {
