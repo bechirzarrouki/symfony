@@ -1,7 +1,7 @@
 .sidebar {
     width: 200px;
     height: 100vh;
-    background-color: #F3F4F6;
+    background-color: #53348D;
     position: fixed;
     left: 0;
     top: 0;
@@ -9,8 +9,7 @@
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid #000000;
-    border-radius: 15%;
-    
+    border-top-right-radius: 10px;
   }
   
   .sidebar-menu {
@@ -24,8 +23,7 @@
     
   }
   
-  .sidebar-menu li a {
-    color: #3D3D3D;
+  .sidebar-menu li a {  
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -38,6 +36,12 @@
   }
   
   .sidebar-menu li:hover {
-    background-color: #5a1db5;
+    background-color: white;
     transition: 0.3s;
+  }
+  .white-text {
+    color: white;
+  }
+  .sidebar-menu li:hover .white-text {
+  color: #53348D;
   }
