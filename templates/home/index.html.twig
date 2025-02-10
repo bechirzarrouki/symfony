@@ -23,7 +23,6 @@
         <h2>Create Your Investment</h2>
         <div class="post-input-wrapper">
             <input type="text" placeholder="Qu'avez-vous en tête ?">
-            <!-- Liste déroulante pour le type d'investissement -->
             <select class="investment-type">
                 <option value="">Choisir un type</option>
                 <option value="real-estate">Immobilier</option>
@@ -33,14 +32,31 @@
             </select>
         </div>
         <div class="post-actions">
-            <button class="action-btn add-btn">
-                <i class="fas fa-plus"></i> <!-- Icône plus -->
+            <button class="action-btn add-btn" onclick="window.location.href='{{ path('app_retour') }}'">
+                <i class="fas fa-plus"></i>
             </button>
             <button class="publish-btn">
-                <i class="fas fa-paper-plane"></i> Publier <!-- Publier à droite -->
+                <i class="fas fa-paper-plane"></i> Publier
             </button>
         </div>
     </div>
+
+    <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+    <div class="investment-box">
+        <div class="profile-section">
+            <img src="https://via.placeholder.com/50" alt="Profile" class="profile-img">
+            <div class="profile-info">
+                <h4>Jean Dupont</h4>
+                <p>XYZ Corporation</p>
+            </div>
+            <div class="date-time">10/02/2025 - 14:30</div>
+        </div>
+        <div class="investment-content">
+            📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
+        </div>
+    </div>
 </div>
+
+   
 
 {% endblock %}

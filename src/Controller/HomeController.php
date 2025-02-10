@@ -36,4 +36,11 @@ final class HomeController extends AbstractController
             'controller_name' => 'MenuController',
         ]);
     }
+    #[Route('/retour', name: 'app_retour')]
+public function retour(): Response
+{
+    return $this->render('retour/index.html.twig', [
+        'controller_name' => 'MenuController',
+    ]);
+}
 }
