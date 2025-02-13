@@ -1,0 +1,347 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/investisement.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Styles pour la popup */
+        .modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fond assombri */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #53348D;
+            border: 5%;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #53348D;
+        }
+
+     /* Style général des champs d'entrée */
+.input-style {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  background-color: #f9f9f9;
+}
+
+/* Effet au focus */
+.input-style:focus {
+  border-color: #53348D;
+  box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
+  background-color: #fff;
+}
+
+/* Style de la modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenu de la modal */
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Bouton de fermeture */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: 0.3s;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+/* Bouton d'envoi */
+.submit-btn {
+  background-color: #53348D;
+  color: white;
+  font-size: 16px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 69%;
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #432A70;
+}
+
+
+.input-style:focus {
+  border-color: #53348D;
+  box-shadow: #53348D;
+}
+.investment-details {
+    display: none; /* Caché par défaut */
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 5px;
+    font-size: 14px;
+    border-left: 4px solid #53348D;
+}
+        /* Ajout du style pour la popup */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #53348D;
+            border: 5%;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #53348D;
+        }
+
+        .input-style {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+            background-color: #f9f9f9;
+        }
+
+        .input-style:focus {
+            border-color: #53348D;
+            box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
+            background-color: #fff;
+        }
+
+        .type-option {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #53348D;
+            transition: background 0.3s, color 0.3s;
+            font-weight: bold;
+        }
+
+        .type-option.selected {
+            background: #007bff;
+            color: #fff;
+        }
+
+        /* Champs et boutons du modal */
+        #selected-types {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #f1f1f1;
+            margin-bottom: 10px;
+        }
+        .modal {
+    display: none ;
+}
+.investment-details {
+    display: none; /* Caché au départ */
+}
+
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/investisement.js') }}"></script>
+{% endblock %}
+
+{% block body %}  
+    {% include 'components/navbar.html.twig' %}
+    {% include 'components/sidebar.html.twig' %}
+
+    <div class="post-container">
+        <div class="create-post">
+            <h2>Create Your Investment</h2>
+            <div class="post-input-wrapper">
+                <input type="text" class="form-control" placeholder="Qu'avez-vous en tête ?">
+                <button class="investment-type" onclick="openModal('typeModal')">Choisir un type</button>
+              <div class="post-input-wrapper p-3">
+             </div>
+
+        <!-- Modal de sélection des types -->
+      <div id="typeModal" class="modal">
+       <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
+        <h2>Sélectionner des types</h2>
+        <div id="type-list">
+            <span class="type-option" data-value="Immobilier">Immobilier</span>
+            <span class="type-option" data-value="Actions">Actions</span>
+            <span class="type-option" data-value="Obligations">Obligations</span>
+            <span class="type-option" data-value="Cryptomonnaies">Cryptomonnaies</span>
+         </div>
+          <button type="button" class="submit-btn" onclick="closeModal('typeModal')">Valider</button>
+     </div>
+    </div>
+            </div>
+            <div class="post-actions">
+               <button class="action-btn add-btn" onclick="openModal('retourModal')">
+    <i class="fas fa-plus"></i> Ajouter un retour
+         </button>
+                <button class="publish-btn">
+                    <i class="fas fa-paper-plane"></i> Publier
+                </button>
+            </div>
+        </div>
+        <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+    <div class="investment-box" onclick="toggleInvestmentDetails(this)">
+        <div class="profile-section">
+            <img src="https://via.placeholder.com/50" alt="Profile" class="profile-img">
+            <div class="profile-info">
+                <h4>Jean Dupont</h4>
+                <p>XYZ Corporation</p>
+            </div>
+            <div class="date-time">10/02/2025 - 14:30</div>
+        </div>
+        <div class="investment-content">
+            📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
+        </div>
+    
+    
+
+    <!-- Modal personnalisé (Popup) -->
+    <div id="retourModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
+        <h2>Ajouter un Retour</h2>
+        <form method="post" onsubmit="return validateForm()">
+            <input id="description" placeholder="Description" class="input-style" type="text" required>
+            <input id="typeRetour" placeholder="Type de Retour" class="input-style" type="text" required>
+            <input id="tauxRendement" placeholder="Taux de Rendement" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
+            <input id="date_deadline" placeholder="Date Limite" class="input-style" type="date" required>
+            <input id="status" placeholder="Status" class="input-style" type="text" required>
+            <button type="submit" class="submit-btn">Envoyer</button>
+        </form>
+    </div>
+</div>
+</div>
+      <div class="investment-details">
+        <h3>Détails de l'Investissement</h3>
+        <p><strong>Projet:</strong> Énergie solaire pour entreprises locales</p>
+        <p><strong>Retour sur investissement:</strong> Rapide</p>
+        <p><strong>Date:</strong> 10/02/2025</p>
+        <p><strong>Investisseur:</strong> Jean Dupont</p>
+    </div>
+    </div>
+    </div>
+   
+{% endblock %}

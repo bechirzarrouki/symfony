@@ -8,11 +8,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-    public function home(): Response
+    #[Route('/', name: 'app_investisement')]
+    public function investisement(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+        return $this->render('investisement/index.html.twig', [
+            'controller_name' => 'investisementssController',
+        ]);
+    }
+    #[Route('/investisementA', name: 'app_investisementA')]
+    public function investisementA(): Response
+    {
+        return $this->render('investisement/investisement.html.twig', [
+            'controller_name' => 'investisementController',
+        ]);
+    }
+    #[Route('/investisementadmin', name: 'app_investisementadmin')]
+    public function investisementadmin(): Response
+    {
+        return $this->render('investisement/investisementadmin.html.twig', [
+            'controller_name' => 'investisementadminController',
         ]);
     }
     #[Route('/profile', name: 'app_profile')]
@@ -39,8 +53,8 @@ final class HomeController extends AbstractController
     #[Route('/retour', name: 'app_retour')]
 public function retour(): Response
 {
-    return $this->render('retour/index.html.twig', [
-        'controller_name' => 'MenuController',
+    return $this->render('retour/retour.html.twig', [
+        'controller_name' => 'RetourController',
     ]);
 }
 }
