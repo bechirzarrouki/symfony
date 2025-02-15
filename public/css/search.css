@@ -2,7 +2,7 @@
 .app-container {
     display: flex;
     min-height: 100vh;
-
+    background-color: #FAFAFA;
 }
 /* Main Content */
 .main-content {
@@ -121,7 +121,7 @@
 
 .btn-create {
     background: white;
-    color: #53348D;
+    color: #2575fc;
     border: none;
     padding: 0 20px;
     border-radius: 8px;
@@ -199,7 +199,7 @@
 }
 
 .btn-follow {
-    background-color: #53348D;
+    background-color: #3b82f6;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
@@ -209,7 +209,7 @@
 }
 
 .btn-follow:hover {
-    background-color: #53348D;
+    background-color: #2563eb;
 }
 
 .post-image {

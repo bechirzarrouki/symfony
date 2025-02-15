@@ -1,0 +1,38 @@
+.retour-box {
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 50px auto;
+}
+.retour-box h2 {
+    text-align: center;
+    color: #53348D;
+}
+.retour-box form {
+    display: flex;
+    flex-direction: column;
+}
+.retour-box label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.retour-box input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+.retour-box button {
+    margin-top: 15px;
+    padding: 10px;
+    background: #53348D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.retour-box button:hover {
+    background: #3a246b;
+}
