@@ -153,14 +153,19 @@
   box-shadow: #53348D;
 }
 .investment-details {
-    display: none; /* Caché par défaut */
-    margin-top: 10px;
-    padding: 10px;
-    background: #f8f8f8;
-    border-radius: 5px;
-    font-size: 14px;
-    border-left: 4px solid #53348D;
+    display: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
 }
+
+.investment-details.show {
+    display: block;
+    opacity: 1;
+    max-height: 500px; /* Ajuste selon le contenu */
+}
+
         /* Ajout du style pour la popup */
         .modal {
             display: none;
@@ -259,6 +264,7 @@
     display: none; /* Caché au départ */
 }
 
+
     </style>
 {% endblock %}
 {% block javascripts %}
@@ -273,8 +279,8 @@
         <div class="create-post">
             <h2>Create Your Investment</h2>
             <div class="post-input-wrapper">
-                <input type="text" class="form-control" placeholder="Qu'avez-vous en tête ?">
-                <button class="investment-type" onclick="openModal('typeModal')">Choisir un type</button>
+                <input type="text" class="form-control" placeholder="what do you have in your mind ?">
+                <button class="investment-type" onclick="openModal('typeModal')">choose a type</button>
               <div class="post-input-wrapper p-3">
              </div>
 
@@ -282,7 +288,7 @@
       <div id="typeModal" class="modal">
        <div class="modal-content">
         <span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
-        <h2>Sélectionner des types</h2>
+        <h2>select  type</h2>
         <div id="type-list">
             <span class="type-option" data-value="Immobilier">Immobilier</span>
             <span class="type-option" data-value="Actions">Actions</span>
@@ -295,10 +301,10 @@
             </div>
             <div class="post-actions">
                <button class="action-btn add-btn" onclick="openModal('retourModal')">
-    <i class="fas fa-plus"></i> Ajouter un retour
+    <i class="fas fa-plus"></i> Add a return
          </button>
                 <button class="publish-btn">
-                    <i class="fas fa-paper-plane"></i> Publier
+                    <i class="fas fa-paper-plane"></i> Post
                 </button>
             </div>
         </div>
@@ -311,6 +317,13 @@
                 <p>XYZ Corporation</p>
             </div>
             <div class="date-time">10/02/2025 - 14:30</div>
+             <div class="options-menu">
+                    <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                    <div class="options-dropdown">
+                        <button onclick="openEditModal()">Modify</button>
+                        <button onclick="openDeleteModal()">Delete</button>
+                    </div>
+                </div>
         </div>
         <div class="investment-content">
             📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
@@ -322,14 +335,13 @@
     <div id="retourModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-        <h2>Ajouter un Retour</h2>
         <form method="post" onsubmit="return validateForm()">
             <input id="description" placeholder="Description" class="input-style" type="text" required>
-            <input id="typeRetour" placeholder="Type de Retour" class="input-style" type="text" required>
-            <input id="tauxRendement" placeholder="Taux de Rendement" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
-            <input id="date_deadline" placeholder="Date Limite" class="input-style" type="date" required>
+            <input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
+            <input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
+            <input id="date_deadline" placeholder="Deadline" class="input-style" type="date" required>
             <input id="status" placeholder="Status" class="input-style" type="text" required>
-            <button type="submit" class="submit-btn">Envoyer</button>
+            <button type="submit" class="submit-btn">Send</button>
         </form>
     </div>
 </div>
@@ -343,5 +355,103 @@
     </div>
     </div>
     </div>
-   
+        <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <h3>Modifier la publication</h3>
+            <input type="text" id="editName" class="input-style" value="">
+            <button class="submit-btn" onclick="saveChanges()">Enregistrer</button>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Voulez-vous vraiment supprimer cet investissement ?</h3>
+            <button class="submit-btn" onclick="confirmDelete()">Delete</button>
+            <button class="submit-btn" onclick="closeDeleteModal()">Cancele</button>
+        </div>
+    </div>
+
+   <style>
+        .options-menu {
+            position: relative;
+        }
+.options-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 1000;
+}
+
+.options-dropdown.show {
+    display: block;
+}
+
+.options-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.options-dropdown button:hover {
+    background: #f0f0f0;
+}
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 86%;
+            padding: 10px;
+            background-color: #53348D;
+            border: 2px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+          
+        }
+
+        .submit-btn:hover {
+            background-color: #432A70;
+        }
+    </style>
 {% endblock %}

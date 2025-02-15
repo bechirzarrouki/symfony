@@ -25,7 +25,7 @@ final class HomeController extends AbstractController
     #[Route('/investisementadmin', name: 'app_investisementadmin')]
     public function investisementadmin(): Response
     {
-        return $this->render('investisement/investisementadmin.html.twig', [
+        return $this->render('backoffice/investissement/investisementadmin.html.twig', [
             'controller_name' => 'investisementadminController',
         ]);
     }

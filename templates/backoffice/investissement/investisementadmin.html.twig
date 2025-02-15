@@ -24,8 +24,7 @@
                 <div class="options-menu">
                     <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
                     <div class="options-dropdown">
-                        <button onclick="openEditModal()">Modifier</button>
-                        <button onclick="openDeleteModal()">Supprimer</button>
+                        <button onclick="openDeleteModal()">Delete</button>
                     </div>
                 </div>
             </div>
@@ -42,20 +41,13 @@
         </div>
     </div>
 
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeEditModal()">&times;</span>
-            <h3>Modifier la publication</h3>
-            <input type="text" id="editName" class="input-style" value="">
-            <button class="submit-btn" onclick="saveChanges()">Enregistrer</button>
-        </div>
-    </div>
+
 
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <h3>Voulez-vous vraiment supprimer cet investissement ?</h3>
-            <button class="submit-btn" onclick="confirmDelete()">Supprimer</button>
-            <button class="submit-btn" onclick="closeDeleteModal()">Annuler</button>
+            <button class="submit-btn" onclick="confirmDelete()">Delete</button>
+            <button class="submit-btn" onclick="closeDeleteModal()">cancel</button>
         </div>
     </div>
 
