@@ -1,6 +1,6 @@
 <?php
-// src/Validator/PasswordMatch.php
-namespace App\Validator;
+//src/Validator/PasswordMatch.php
+namespace src\Validator;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
