@@ -43,4 +43,62 @@ public function retour(): Response
         'controller_name' => 'MenuController',
     ]);
 }
+#[Route('/test', name: 'app_test')]
+public function test(): Response
+{
+    return $this->render('test/test.html.twig', [
+        'controller_name' => 'testController',
+    ]);
 }
+#[Route('/login', name: 'app_login')]
+public function login(): Response
+{
+    return $this->render('login/login.html.twig', [
+        'controller_name' => 'loginController',
+    ]);
+
+}
+#[Route('/register', name: 'app_register')]
+public function registre(): Response
+{
+    return $this->render('login/register.html.twig', [
+        'controller_name' => 'rgisterController',
+    ]);
+
+}
+#[Route('/forgetpassword', name: 'app_forget_password')]
+public function forgetpassword(): Response
+{
+    return $this->render('login/forgetpassword.html.twig', [
+        'controller_name' => 'forgetpasswordController',
+    ]);
+
+}
+#[Route('/dashboard', name: 'app_dashboard')]
+
+public function dashboard(): Response
+{
+    return $this->render('back/dashboard.html.twig', [
+        'controller_name' => 'dashboardController',
+    ]);
+
+    
+}
+#[Route('/edituser', name: 'app_edituser')]
+public function edituser(): Response
+{
+    return $this->render('back/edituser.html.twig', [
+        'controller_name' => 'edituserController',
+    ]);
+
+}
+#[Route('/userlist', name: 'app_userlist')]
+public function userlsit(): Response
+{
+    return $this->render('back/userlist.html.twig', [
+        'controller_name' => 'userlistController',
+    ]);
+
+}
+}
+

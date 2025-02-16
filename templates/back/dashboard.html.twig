@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --purple-primary: #6B46C1;
+            --purple-light: #9F7AEA;
+            --white: #FFFFFF;
+        }
+        
+        .sidebar {
+            background-color: var(--purple-primary);
+            color: var(--white);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .main-content {
+            background-color: var(--white);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .table-header {
+            background-color: var(--purple-primary);
+            color: var(--white);
+        }
+        
+        .btn-purple {
+            background-color: var(--purple-primary);
+            color: var(--white);
+        }
+        
+        .btn-purple:hover {
+            background-color: var(--purple-light);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h3 class="mb-4">Admin Dashboard</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_dashboard') }}">Users</a>
+                </li>
+                <!-- Add more menu items here -->
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h2 class="mb-4">User Management</h2>
+            
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Number</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td> <!-- Update to use 'id' -->
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.firstname }}</td>
+                                <td>{{ user.lastname }}</td>
+                                <td>{{ user.number }}</td>
+                                <td>
+                                    <a href="{{ path('back_edituser', {'id': user.id}) }}" class="btn btn-purple btn-sm">Edit</a>
+                                    <a href="{{ path('admin_user_delete', {'id': user.id}) }}" 
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

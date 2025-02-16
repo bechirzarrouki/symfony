@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnovMatch - Sign Up</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}"> <!-- Same CSS as login -->
+</head>
+<body>
+    <div class="login-container">
+        <h1>Sign Up</h1>
+        <form id="signup-form" action="{{ path('app_register') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+
+            <!-- First Name -->
+            <div class="input-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="input-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div>
+
+            <!-- Username -->
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+                <span id="email-error" style="color: red; display: none;">Please enter a valid email address.</span>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group password-wrapper">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onclick="togglePassword('password')">👁</span>
+                <span id="password-error" style="color: red; display: none;">Password must have at least 8 characters, including uppercase, lowercase, number, and special character.</span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="input-group password-wrapper">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+                <span class="toggle-password" onclick="togglePassword('confirm_password')">👁</span>
+                <span id="confirm-password-error" style="color: red; display: none;">Passwords do not match.</span>
+            </div>
+
+            <!-- Profile Picture -->
+            <div class="input-group">
+                <label for="profile_picture">Profile Picture</label>
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required>
+            </div>
+
+            <!-- Role Selection (New part) -->
+            <div class="input-group">
+                <label>Sign in as:</label><br>
+                <input type="checkbox" id="employee" name="roles[]" value="ROLE_EMPLOYEE">
+                <label for="employee">Employee</label><br>
+                <input type="checkbox" id="investor" name="roles[]" value="ROLE_INVESTOR">
+                <label for="investor">Investor</label><br>
+                <input type="checkbox" id="project_leader" name="roles[]" value="ROLE_PROJECT_LEADER">
+                <label for="project_leader">Project Leader</label><br>
+                <span id="role-error" style="color: red; display: none;">You must select one role.</span>
+            </div>
+
+            <!-- Sign Up Button -->
+            <button type="button" class="login-btn" onclick="previewData()">Preview Data</button>
+
+            <!-- Redirect to Login -->
+            <div class="links">
+                <a href="{{ path('app_login') }}">Already have an account? Log in here</a>
+            </div>
+
+        <!-- Preview Section -->
+        <div id="preview-section" style="display: none; margin-top: 20px;">
+            <h3>Preview Your Data:</h3>
+            <p><strong>First Name:</strong> <span id="preview-first-name"></span></p>
+            <p><strong>Last Name:</strong> <span id="preview-last-name"></span></p>
+            <p><strong>Username:</strong> <span id="preview-username"></span></p>
+            <p><strong>Email:</strong> <span id="preview-email"></span></p>
+            <p><strong>Password:</strong> <span id="preview-password"></span></p>
+            <p><strong>Profile Picture:</strong> <span id="preview-profile-picture"></span></p>
+            <p><strong>Roles:</strong> <span id="preview-roles"></span></p>
+
+            <button type="submit" class="login-btn">Submit</button>
+        </div>
+                </form>
+
+    </div>
+
+    <!-- JavaScript for Password Toggle, Form Validation, and Preview -->
+    <script>
+        function togglePassword(fieldId) {
+            var passwordField = document.getElementById(fieldId);
+            passwordField.type = (passwordField.type === "password") ? "text" : "password";
+        }
+
+        function validateForm() {
+            var isValid = true;
+
+            // Validate Email
+            var email = document.getElementById("email").value;
+            var emailError = document.getElementById("email-error");
+            var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailRegex.test(email)) {
+                emailError.style.display = "inline";
+                isValid = false;
+            } else {
+                emailError.style.display = "none";
+            }
+
+            // Validate Password
+            var password = document.getElementById("password").value;
+            var passwordError = document.getElementById("password-error");
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                passwordError.style.display = "inline";
+                isValid = false;
+            } else {
+                passwordError.style.display = "none";
+            }
+
+            // Validate Confirm Password
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var confirmPasswordError = document.getElementById("confirm-password-error");
+            if (password !== confirmPassword) {
+                confirmPasswordError.style.display = "inline";
+                isValid = false;
+            } else {
+                confirmPasswordError.style.display = "none";
+            }
+
+            // Validate Role Selection
+            var roleError = document.getElementById("role-error");
+            var roleSelected = document.querySelector('input[name="roles[]"]:checked');
+            if (!roleSelected) {
+                roleError.style.display = "inline";
+                isValid = false;
+            } else {
+                roleError.style.display = "none";
+            }
+
+            return isValid;
+        }
+
+        function previewData() {
+            // Gather form data
+            var firstName = document.getElementById("first_name").value;
+            var lastName = document.getElementById("last_name").value;
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var profilePicture = document.getElementById("profile_picture").files[0] ? document.getElementById("profile_picture").files[0].name : "No file selected";
+            var roles = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map(function(checkbox) {
+                return checkbox.value;
+            }).join(", ");
+
+            // Display the data in the preview section
+            document.getElementById("preview-first-name").innerText = firstName;
+            document.getElementById("preview-last-name").innerText = lastName;
+            document.getElementById("preview-username").innerText = username;
+            document.getElementById("preview-email").innerText = email;
+            document.getElementById("preview-password").innerText = password;
+            document.getElementById("preview-profile-picture").innerText = profilePicture;
+            document.getElementById("preview-roles").innerText = roles;
+
+            // Show the preview section
+            document.getElementById("preview-section").style.display = "block";
+        }
+    </script>
+</body>
+</html>
