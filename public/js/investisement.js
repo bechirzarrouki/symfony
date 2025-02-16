@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+
+
+
+
+
     // Fonction pour ouvrir un modal spécifique
     window.openModal = function (modalId) {
         console.log("Ouverture du modal:", modalId);
@@ -148,33 +154,88 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Ouvrir le modal de modification
-function openEditModal() {
-    document.getElementById("editModal").style.display = "flex";
+function openEditModal(id) {
+    document.getElementById("editModal"+id).style.display = "flex";
 }
 
 // Fermer le modal de modification
-function closeEditModal() {
-    document.getElementById("editModal").style.display = "none";
+function closeEditModal(id) {
+    document.getElementById("editModal"+id).style.display = "none";
 }
 
 // Sauvegarder les modifications
-function saveChanges() {
+function saveChanges(id) {
     alert("Modifications enregistrées !");
-    closeEditModal();
+    closeEditModal(id);
 }
 
 // Ouvrir le modal de suppression
-function openDeleteModal() {
-    document.getElementById("deleteModal").style.display = "flex";
+function openDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display="flex";
 }
 
 // Fermer le modal de suppression
-function closeDeleteModal() {
-    document.getElementById("deleteModal").style.display = "none";
+function closeDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display = "none";
 }
 
 // Confirmer la suppression
-function confirmDelete() {
+function confirmDelete(id) {
     alert("Investissement supprimé !");
-    closeDeleteModal();
+    closeDeleteModal(id);
 }
+ // Toggle selection on type options
+  function selectTypes() {
+    const selectedOptions = document.querySelectorAll('#type-list .type-option.selected');
+    const form = document.getElementById('investmentForm');
+
+    if (!form) {
+        console.error('Investment form not found!');
+        return;
+    }
+
+    // Remove any previous hidden inputs for investmentTypes
+    document.querySelectorAll('input[name="investmentTypes[]"]').forEach(input => input.remove());
+
+    // Update a container for user feedback (optional)
+    const container = document.getElementById('selectedTypesContainer');
+    if (container) {
+        container.innerHTML = '';
+    }
+
+    // Array to hold the selected type values
+    let selectedTypes = [];
+
+    selectedOptions.forEach(option => {
+        const typeValue = option.getAttribute('data-value');
+        selectedTypes.push(typeValue);  // Add the type value to the array
+
+        // Create a new hidden input for each selected type
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'investmentTypes[]';
+        hiddenInput.value = typeValue;
+        form.appendChild(hiddenInput);
+
+        // Display the selected type (optional)
+        if (container) {
+            const span = document.createElement('span');
+            span.innerText = typeValue + ' ';
+            container.appendChild(span);
+        }
+    });
+
+    // Log the selected types to the console
+    
+
+    // Only close the modal when explicitly confirmed
+}
+
+// Ensure the function is only called when clicking the "Validate" button
+document.getElementById('validateSelection').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent accidental form submission
+    selectTypes();
+    console.log('Selected Types:', selectedTypes);
+    closeModal('typeModal'); // Close the modal only after selection is confirmed
+});
+

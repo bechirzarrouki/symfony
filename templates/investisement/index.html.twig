@@ -1,457 +1,496 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home - Purple Social{% endblock %}
+{% block title %}Home - Purple Social
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/investisement.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <style>
-        /* Styles pour la popup */
-        .modal {
-            display: none; /* Caché par défaut */
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Fond assombri */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/investisement.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        }
+	<style>
+		/* Styles pour la popup */
+		.modal {
+			display: none; /* Caché par défaut */
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5); /* Fond assombri */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
+		.modal-content {
+			background-color: white;
+			padding: 20px;
+			border-radius: 10px;
+			width: 90%;
+			max-width: 400px;
+			position: relative;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+		}
 
-        .submit-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #53348D;
-            border: 5%;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+		.close-btn {
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 24px;
+			cursor: pointer;
+		}
 
-        .submit-btn:hover {
-            background-color: #53348D;
-        }
+		.submit-btn {
+			width: 100%;
+			padding: 10px;
+			background-color: #53348D;
+			border: 5%;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			margin-top: 10px;
+		}
 
-     /* Style général des champs d'entrée */
-.input-style {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  color: #333;
-  outline: none;
-  transition: all 0.3s ease-in-out;
-  background-color: #f9f9f9;
-}
+		.submit-btn:hover {
+			background-color: #53348D;
+		}
 
-/* Effet au focus */
-.input-style:focus {
-  border-color: #53348D;
-  box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
-  background-color: #fff;
-}
+		/* Style général des champs d'entrée */
+		.input-style {
+			width: 100%;
+			padding: 12px;
+			border: 2px solid #ccc;
+			border-radius: 8px;
+			font-size: 16px;
+			color: #333;
+			outline: none;
+			transition: all 0.3s ease-in-out;
+			background-color: #f9f9f9;
+		}
 
-/* Style de la modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+		/* Effet au focus */
+		.input-style:focus {
+			border-color: #53348D;
+			box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
+			background-color: #fff;
+		}
 
-/* Contenu de la modal */
-.modal-content {
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-in-out;
-}
+		/* Style de la modal */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.4);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 
-/* Animation d'apparition */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+		/* Contenu de la modal */
+		.modal-content {
+			background: #fff;
+			padding: 25px;
+			border-radius: 10px;
+			width: 400px;
+			text-align: center;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+			animation: fadeIn 0.3s ease-in-out;
+		}
 
-/* Bouton de fermeture */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #666;
-  transition: 0.3s;
-}
+		/* Animation d'apparition */
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.9);
+			}
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
 
-.close-btn:hover {
-  color: #000;
-}
+		/* Bouton de fermeture */
+		.close-btn {
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			font-size: 24px;
+			cursor: pointer;
+			color: #666;
+			transition: 0.3s;
+		}
 
-/* Bouton d'envoi */
-.submit-btn {
-  background-color: #53348D;
-  color: white;
-  font-size: 16px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 69%;
-  transition: all 0.3s ease-in-out;
-  margin-top: 10px;
-}
+		.close-btn:hover {
+			color: #000;
+		}
 
-.submit-btn:hover {
-  background-color: #432A70;
-}
+		/* Bouton d'envoi */
+		.submit-btn {
+			background-color: #53348D;
+			color: white;
+			font-size: 16px;
+			padding: 12px 20px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			width: 69%;
+			transition: all 0.3s ease-in-out;
+			margin-top: 10px;
+		}
 
-
-.input-style:focus {
-  border-color: #53348D;
-  box-shadow: #53348D;
-}
-.investment-details {
-    display: none;
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-}
-
-.investment-details.show {
-    display: block;
-    opacity: 1;
-    max-height: 500px; /* Ajuste selon le contenu */
-}
-
-        /* Ajout du style pour la popup */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #53348D;
-            border: 5%;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            background-color: #53348D;
-        }
-
-        .input-style {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #333;
-            outline: none;
-            transition: all 0.3s ease-in-out;
-            background-color: #f9f9f9;
-        }
-
-        .input-style:focus {
-            border-color: #53348D;
-            box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
-            background-color: #fff;
-        }
-
-        .type-option {
-            display: inline-block;
-            padding: 10px 15px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            background: #53348D;
-            transition: background 0.3s, color 0.3s;
-            font-weight: bold;
-        }
-
-        .type-option.selected {
-            background: #007bff;
-            color: #fff;
-        }
-
-        /* Champs et boutons du modal */
-        #selected-types {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #f1f1f1;
-            margin-bottom: 10px;
-        }
-        .modal {
-    display: none ;
-}
-.investment-details {
-    display: none; /* Caché au départ */
-}
+		.submit-btn:hover {
+			background-color: #432A70;
+		}
 
 
-    </style>
+		.input-style:focus {
+			border-color: #53348D;
+			box-shadow: #53348D;
+		}
+		.investment-details {
+			display: none;
+			opacity: 0;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+		}
+
+		.investment-details.show {
+			display: block;
+			opacity: 1;
+			max-height: 500px; /* Ajuste selon le contenu */
+		}
+
+		/* Ajout du style pour la popup */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.modal-content {
+			background-color: white;
+			padding: 20px;
+			border-radius: 10px;
+			width: 90%;
+			max-width: 400px;
+			position: relative;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+		}
+
+		.close-btn {
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 24px;
+			cursor: pointer;
+		}
+
+		.submit-btn {
+			width: 100%;
+			padding: 10px;
+			background-color: #53348D;
+			border: 5%;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			margin-top: 10px;
+		}
+
+		.submit-btn:hover {
+			background-color: #53348D;
+		}
+
+		.input-style {
+			width: 100%;
+			padding: 12px;
+			border: 2px solid #ccc;
+			border-radius: 8px;
+			font-size: 16px;
+			color: #333;
+			outline: none;
+			transition: all 0.3s ease-in-out;
+			background-color: #f9f9f9;
+		}
+
+		.input-style:focus {
+			border-color: #53348D;
+			box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
+			background-color: #fff;
+		}
+
+		.type-option {
+			display: inline-block;
+			padding: 10px 15px;
+			margin: 5px;
+			border-radius: 5px;
+			cursor: pointer;
+			background: #53348D;
+			transition: background 0.3s, color 0.3s;
+			font-weight: bold;
+		}
+
+		.type-option.selected {
+			background: #007bff;
+			color: #fff;
+		}
+
+		/* Champs et boutons du modal */
+		#selected-types {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background: #f1f1f1;
+			margin-bottom: 10px;
+		}
+		.modal {
+			display: none;
+		}
+		.investment-details {
+			display: none; /* Caché au départ */
+		}
+	</style>
 {% endblock %}
 {% block javascripts %}
-    <script src="{{ asset('js/investisement.js') }}"></script>
+	<script src="{{ asset('js/investisement.js') }}"></script>
+	<script>
+		    const investmentContents = document.querySelectorAll('.investment-content');
+
+        investmentContents.forEach(function(investmentContent) {
+            // Ajoute un écouteur d'événement de clic sur chaque .investment-content
+			console.log('test');
+            investmentContent.addEventListener('click', function() {
+                // Trouve l'élément .investment-details correspondant à l'élément cliqué
+                const investmentDetails = investmentContent.nextElementSibling;
+
+                // Bascule l'affichage de l'élément .investment-details
+                if (investmentDetails.classList.contains('investment-details')) {
+                    if (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') {
+                        investmentDetails.style.display = 'block';
+                    } else {
+                        investmentDetails.style.display = 'none';
+                    }
+                }
+            });
+        });
+	</script>
 {% endblock %}
 
-{% block body %}  
-    {% include 'components/navbar.html.twig' %}
-    {% include 'components/sidebar.html.twig' %}
+{% block body %}
+{% include 'components/navbar.html.twig' %}
+{% include 'components/sidebar.html.twig' %}
 
-    <div class="post-container">
-        <div class="create-post">
-            <h2>Create Your Investment</h2>
-            <div class="post-input-wrapper">
-                <input type="text" class="form-control" placeholder="what do you have in your mind ?">
-                <button class="investment-type" onclick="openModal('typeModal')">choose a type</button>
-              <div class="post-input-wrapper p-3">
-             </div>
+<div class="post-container">
+	<div class="create-post">
+		<form action="/investment/new" method="post" id="investmentForm">
+			<h2>Create Your Investment</h2>
+			<div class="post-input-wrapper">
+				<input type="text" class="form-control" name="content" placeholder="what do you have in your mind ?">
+				<button type="button" class="investment-type" onclick="openModal('typeModal')">choose a type</button>
+				<div class="post-input-wrapper p-3"></div>
 
-        <!-- Modal de sélection des types -->
-      <div id="typeModal" class="modal">
-       <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
-        <h2>select  type</h2>
-        <div id="type-list">
-            <span class="type-option" data-value="Immobilier">Immobilier</span>
-            <span class="type-option" data-value="Actions">Actions</span>
-            <span class="type-option" data-value="Obligations">Obligations</span>
-            <span class="type-option" data-value="Cryptomonnaies">Cryptomonnaies</span>
-         </div>
-          <button type="button" class="submit-btn" onclick="closeModal('typeModal')">Valider</button>
-     </div>
-    </div>
-            </div>
-            <div class="post-actions">
-               <button class="action-btn add-btn" onclick="openModal('retourModal')">
-    <i class="fas fa-plus"></i> Add a return
-         </button>
-                <button class="publish-btn">
-                    <i class="fas fa-paper-plane"></i> Post
-                </button>
-            </div>
-        </div>
-        <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
-    <div class="investment-box" onclick="toggleInvestmentDetails(this)">
-        <div class="profile-section">
-            <img src="https://via.placeholder.com/50" alt="Profile" class="profile-img">
-            <div class="profile-info">
-                <h4>Jean Dupont</h4>
-                <p>XYZ Corporation</p>
-            </div>
-            <div class="date-time">10/02/2025 - 14:30</div>
-             <div class="options-menu">
-                    <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
-                    <div class="options-dropdown">
-                        <button onclick="openEditModal()">Modify</button>
-                        <button onclick="openDeleteModal()">Delete</button>
+				<!-- Modal de sélection des types -->
+				<div id="typeModal" class="modal">
+					<div class="modal-content">
+						<span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
+						<h2>select  type</h2>
+						<div id="type-list">
+							<span class="type-option" data-value="Immobilier" onclick="toggleType(this)">Immobilier</span>
+							<span class="type-option" data-value="Actions" onclick="toggleType(this)">Actions</span>
+							<span class="type-option" data-value="Obligations" onclick="toggleType(this)">Obligations</span>
+							<span class="type-option" data-value="Cryptomonnaies" onclick="toggleType(this)">Cryptomonnaies</span>
+						</div>
+						<button type="button" class="submit-btn" id="validateSelection" onclick="selectTypes()">Valider</button>
+					</div>
+
+				</div>
+			</div>
+			<div class="post-actions">
+				<button type="button" class="action-btn add-btn" onclick="openModal('retourModal')">
+					<i class="fas fa-plus"></i>
+					Add a return
+				</button>
+				<button type="submit" class="publish-btn">
+					<i class="fas fa-paper-plane"></i>
+					Post
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+	 {% for investment in investments %}
+            <div class="investment-box">
+                <div class="profile-section">
+                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                    <div class="profile-info">
+                        <h4>{{ investment.user.name }}</h4>
+                    </div>
+                    <div class="date-time">10/02/2025 - 14:30</div>
+                    <div class="options-menu">
+                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                        <div class="options-dropdown">
+                            <button onclick="openEditModal()">Modify</button>
+                            <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
+                        </div>
                     </div>
                 </div>
-        </div>
-        <div class="investment-content">
-            📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
-        </div>
-    
-    
 
-    <!-- Modal personnalisé (Popup) -->
-    <div id="retourModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-        <form method="post" onsubmit="return validateForm()">
-            <input id="description" placeholder="Description" class="input-style" type="text" required>
-            <input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
-            <input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
-            <input id="date_deadline" placeholder="Deadline" class="input-style" type="date" required>
-            <input id="status" placeholder="Status" class="input-style" type="text" required>
-            <button type="submit" class="submit-btn">Send</button>
-        </form>
-    </div>
-</div>
-</div>
-      <div class="investment-details">
-        <h3>Détails de l'Investissement</h3>
-        <p><strong>Projet:</strong> Énergie solaire pour entreprises locales</p>
-        <p><strong>Retour sur investissement:</strong> Rapide</p>
-        <p><strong>Date:</strong> 10/02/2025</p>
-        <p><strong>Investisseur:</strong> Jean Dupont</p>
-    </div>
-    </div>
-    </div>
+                <div class="investment-content">
+                    {{ investment.content }}
+                </div>
+            </div>
+
+            <!-- Investment details section -->
+            <div class="investment-details">
+                <h3>Investment Details</h3>
+                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
+                <p><strong>Return on Investment:</strong> Fast</p>
+                <p><strong>Date:</strong> 10/02/2025</p>
+                <p><strong>Investor:</strong> Jean Dupont</p>
+            </div>
+        
+
+        <!-- Modal for adding a return -->
+        <div id="retourModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
+                <form method="post" onsubmit="return validateForm()" action="{{ path('investment_new') }}">
+                    <input id="description" placeholder="Description" class="input-style" type="text" required>
+                    <input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
+                    <input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
+                    <input id="date_deadline" placeholder="Deadline" class="input-style" type="date" required>
+                    <input id="status" placeholder="Status" class="input-style" type="text" required>
+                    <button type="submit" class="submit-btn">Send</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
         <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeEditModal()">&times;</span>
-            <h3>Modifier la publication</h3>
-            <input type="text" id="editName" class="input-style" value="">
-            <button class="submit-btn" onclick="saveChanges()">Enregistrer</button>
+            <form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+                    <h3>Edit Publication</h3>
+                    <input type="text" id="editName" name="content" class="input-style" value="{{ investment.content }}">
+                    <button type="submit" class="submit-btn">Save</button>
+                </div>
+            </form>
         </div>
-    </div>
 
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <h3>Voulez-vous vraiment supprimer cet investissement ?</h3>
-            <button class="submit-btn" onclick="confirmDelete()">Delete</button>
-            <button class="submit-btn" onclick="closeDeleteModal()">Cancele</button>
+        <!-- Delete Modal -->
+        <div id="deleteModal{{ investment.id }}" class="modal">
+            <div class="modal-content">
+                <h3>Do you really want to delete this investment?</h3>
+                <form action="{{ path('investment_delete', { id: investment.id }) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
+                    <button type="submit" class="submit-btn">Delete</button>
+                </form>
+               <button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
+            </div>
         </div>
-    </div>
-
-   <style>
-        .options-menu {
-            position: relative;
-        }
+	{% endfor %}
+<style>
+.options-menu {
+	position: relative;
+}
 .options-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    padding: 5px;
-    z-index: 1000;
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 100%;
+	background: white;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	padding: 5px;
+	z-index: 1000;
 }
 
 .options-dropdown.show {
-    display: block;
+	display: block;
 }
 
 .options-dropdown button {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    border: none;
-    background: none;
-    text-align: left;
-    cursor: pointer;
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	border: none;
+	background: none;
+	text-align: left;
+	cursor: pointer;
 }
 
 .options-dropdown button:hover {
-    background: #f0f0f0;
+	background: #f0f0f0;
 }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
-        }
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	align-items: center;
+	justify-content: center;
+}
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            position: relative;
-        }
+.modal-content {
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	width: 90%;
+	max-width: 400px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	position: relative;
+}
+.investment-content {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    border-left: 4px solid #53348D;
+}
+.close-btn {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	font-size: 24px;
+	cursor: pointer;
+}
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
+.submit-btn {
+	width: 86%;
+	padding: 10px;
+	background-color: #53348D;
+	border: 2px;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	margin-top: 10px;
 
-        .submit-btn {
-            width: 86%;
-            padding: 10px;
-            background-color: #53348D;
-            border: 2px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-          
-        }
+}
 
-        .submit-btn:hover {
-            background-color: #432A70;
-        }
-    </style>
-{% endblock %}
+.submit-btn:hover {
+	background-color: #432A70;
+}</style>{% endblock %}

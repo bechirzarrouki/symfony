@@ -33,6 +33,12 @@
             color: #333;
             cursor: pointer;
         }
+        /* Additional styles for posts and comments */
+        .post { margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .post-header { display: flex; justify-content: space-between; align-items: center; }
+        .post-user { display: flex; align-items: center; }
+        .post-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 10px; }
+        .comment-box { margin-top: 10px; }
     </style>
 {% endblock %}
 
@@ -41,14 +47,15 @@
     {% include 'components/navbar.html.twig' %}
     {% include 'components/sidebar.html.twig' %}
     <main class="main-content">
-
         <!-- Create Post Box -->
         <div class="create-post">
             <h2>Create Your Post</h2>
-            <div class="post-input-wrapper">
-                <input type="text" placeholder="What's on your mind?">
-                <button class="btn-create">Create</button>
-            </div>
+            <form method="post" action="{{ path('post_new') }}">
+                <div class="post-input-wrapper">
+                    <input type="text" name="content" placeholder="What's on your mind?" required>
+                    <button type="submit" class="btn-create">Create</button>
+                </div>
+            </form>
             <div class="post-actions">
                 <button class="action-btn">
                     <i class="fas fa-camera"></i> Photo
@@ -61,51 +68,75 @@
 
         <!-- Posts Feed -->
         <div class="posts-feed">
+            {% for post in posts %}
             <div class="post">
                 <div class="post-header">
                     <div class="post-user">
                         <img src="{{ asset('images/avatar.jpg') }}" alt="Avatar" class="post-avatar">
                         <div class="post-user-info">
-                            <h4>bechir</h4>
+                            <h4>{{ post.author.name }}</h4>
                             <p>public</p>
                         </div>
                     </div>
-                    <button class="btn-follow">Follow</button>
+                    {% if app.user and app.user == post.author %}
+                    <div class="post-controls">
+                        <a href="{{ path('post_edit', { id: post.id }) }}">Edit</a>
+                        <form method="post" action="{{ path('post_delete', { id: post.id }) }}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="post-content">
-                    <p class="post-text">this is a test post</p>
-                    <img src="{{ asset('images/post-image.jpg') }}" alt="Post image" class="post-image">
-
+                    <p class="post-text">{{ post.content }}</p>
+                    {% if post.image %}
+                    <img src="{{ asset(post.image) }}" alt="Post image" class="post-image">
+                    {% endif %}
                     <div class="post-stats">
-                        <span>15 likes</span>
+                        <span>{{ post.likes }} likes</span>
                     </div>
                     
-                    <!-- Display Comment -->
+                    <!-- Display Comments -->
                     <div class="post-comments">
+                        {% for comment in post.comments %}
                         <div class="comment" style="position: relative;">
                             <div class="comment-info">
-                                <strong>John Doe</strong>
-                                <span class="comment-text">This is a sample comment.</span>
+                                <strong>{{ comment.author ? comment.author.name : 'Anonymous' }}</strong>
+                                <span class="comment-text" id="comment-content-{{ comment.id }}">
+                                    {{ comment.content }}
+                                </span>
                             </div>
-                            <div class="comment-options" style="position: absolute; top: 0; right: 0;">
-                                <a href="#" class="comment-options-link">...</a>
-                                <!-- Popup with Update and Delete options -->
-                                <div class="comment-options-popup">
-                                    <ul>
-                                        <li><a href="#" class="update-comment">Update</a></li>
-                                        <li><a href="#" class="delete-comment">Delete</a></li>
-                                    </ul>
-                                </div>
+                            <div class="comment-options">
+                                <button class="edit-comment-btn" onclick="editComment({{ comment.id }})">Edit</button>
+                                <form method="post" action="{{ path('comment_delete', { id: comment.id }) }}">
+                                    <button type="submit" class="delete-comment" style="background:none;border:none;padding:0;">Delete</button>
+                                </form>
+                            </div>
+
+                            <!-- Edit Form (Hidden by default) -->
+                            <div class="comment-edit-form" id="comment-edit-form-{{ comment.id }}" style="display:none;">
+                                <form method="post" action="{{ path('comment_edit', { id: comment.id }) }}">
+                                    <input type="text" name="comment_content" value="{{ comment.content }}" required>
+                                    <button type="submit">Save</button>
+                                    <button type="button" onclick="cancelEdit({{ comment.id }})">Cancel</button>
+                                </form>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
 
+                    <!-- Comment Box -->
                     <div class="comment-box">
-                        <input type="text" placeholder="Post a comment..." class="comment-input">
-                        <button class="btn-post">Post</button>
+                        <form method="post" action="{{ path('comment_new', { postId: post.id }) }}">
+                            <input type="text" name="comment_content" placeholder="Post a comment..." class="comment-input" required>
+                            <button type="submit" class="btn-post">Post</button>
+                        </form>
                     </div>
                 </div>
             </div>
+            {% else %}
+            <p>No posts yet.</p>
+            {% endfor %}
         </div>
     </main>
 </div>
@@ -113,5 +144,17 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/comment.js') }}"></script>
+    <script>
+        // Show the comment edit form and hide the display text
+        function editComment(commentId) {
+            document.getElementById('comment-content-' + commentId).style.display = 'none';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'block';
+        }
+
+        // Hide the edit form and show the display text again
+        function cancelEdit(commentId) {
+            document.getElementById('comment-content-' + commentId).style.display = 'block';
+            document.getElementById('comment-edit-form-' + commentId).style.display = 'none';
+        }
+    </script>
 {% endblock %}

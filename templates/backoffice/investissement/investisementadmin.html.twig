@@ -13,43 +13,53 @@
     {% include 'components/sidebar.html.twig' %}
 
     <div class="post-container">
-        <div class="investment-box">
-            <div class="profile-section">
-                <img src="https://via.placeholder.com/50" alt="Profile" class="profile-img">
-                <div class="profile-info">
-                    <h4>Jean Dupont</h4>
-                    <p>XYZ Corporation</p>
-                </div>
-                <div class="date-time">10/02/2025 - 14:30</div>
-                <div class="options-menu">
-                    <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
-                    <div class="options-dropdown">
-                        <button onclick="openDeleteModal()">Delete</button>
+       <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+	 {% for investment in investments %}
+            <div class="investment-box">
+                <div class="profile-section">
+                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                    <div class="profile-info">
+                        <h4>{{ investment.user.name }}</h4>
+                    </div>
+                    <div class="date-time">10/02/2025 - 14:30</div>
+                    <div class="options-menu">
+                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                        <div class="options-dropdown">
+                           
+                            <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
+                        </div>
                     </div>
                 </div>
+
+                <div class="investment-content">
+                    {{ investment.content }}
+                </div>
             </div>
-            <div class="investment-content" onclick="toggleInvestmentDetails(this)">
-                📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
-            </div>
+
+            <!-- Investment details section -->
             <div class="investment-details">
-                <h3>Détails de l'Investissement</h3>
-                <p><strong>Projet:</strong> Énergie solaire pour entreprises locales</p>
-                <p><strong>Retour sur investissement:</strong> Rapide</p>
+                <h3>Investment Details</h3>
+                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
+                <p><strong>Return on Investment:</strong> Fast</p>
                 <p><strong>Date:</strong> 10/02/2025</p>
-                <p><strong>Investisseur:</strong> Jean Dupont</p>
+                <p><strong>Investor:</strong> Jean Dupont</p>
+            </div>
+        
+
+
+      
+        <!-- Delete Modal -->
+        <div id="deleteModal{{ investment.id }}" class="modal">
+            <div class="modal-content">
+                <h3>Do you really want to delete this investment?</h3>
+                <form action="{{ path('investment_delete_admin', { id: investment.id }) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
+                    <button type="submit" class="submit-btn">Delete</button>
+                </form>
+               <button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
             </div>
         </div>
-    </div>
-
-
-
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <h3>Voulez-vous vraiment supprimer cet investissement ?</h3>
-            <button class="submit-btn" onclick="confirmDelete()">Delete</button>
-            <button class="submit-btn" onclick="closeDeleteModal()">cancel</button>
-        </div>
-    </div>
+	{% endfor %}
 
     <script>
         function toggleOptionsMenu(event) {
@@ -83,22 +93,26 @@
             closeEditModal();
         }
 
-        function openDeleteModal() {
-            document.getElementById("deleteModal").style.display = "flex";
-        }
+       // Ouvrir le modal de suppression
+function openDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display="flex";
+}
 
-        function closeDeleteModal() {
-            document.getElementById("deleteModal").style.display = "none";
-        }
+// Fermer le modal de suppression
+function closeDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display = "none";
+}
 
-        function confirmDelete() {
-            alert("Investissement supprimé");
-            closeDeleteModal();
-        }
+// Confirmer la suppression
+function confirmDelete(id) {
+    alert("Investissement supprimé !");
+    closeDeleteModal(id);
+}
                 // Sélectionne tous les éléments avec la classe .investment-content
         const investmentContents = document.querySelectorAll('.investment-content');
 
         investmentContents.forEach(function(investmentContent) {
+            console.log('test');
             // Ajoute un écouteur d'événement de clic sur chaque .investment-content
             investmentContent.addEventListener('click', function() {
                 // Trouve l'élément .investment-details correspondant à l'élément cliqué
@@ -117,6 +131,15 @@
     </script>
 
     <style>
+    .post-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        max-width: 40rem;
+ 
+  
+}
         .options-menu {
             position: relative;
         }
