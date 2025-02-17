@@ -70,32 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Validation du formulaire d'ajout de retour
-    window.validateForm = function () {
-        const description = document.getElementById("description").value.trim();
-        const typeRetour = document.getElementById("typeRetour").value.trim();
-        const tauxRendement = document.getElementById("tauxRendement").value.trim();
-        const dateDeadline = document.getElementById("date_deadline").value;
-        const status = document.getElementById("status").value.trim();
 
-        if (!description || !typeRetour || !tauxRendement || !dateDeadline || !status) {
-            alert("Tous les champs doivent être remplis.");
-            return false;
-        }
-
-        if (!/^\d+(\.\d{1,2})?$/.test(tauxRendement)) {
-            alert("Le taux de rendement doit être un nombre valide avec au maximum deux décimales.");
-            return false;
-        }
-
-        const today = new Date().toISOString().split("T")[0];
-        if (dateDeadline < today) {
-            alert("La date limite doit être égale ou supérieure à aujourd'hui.");
-            return false;
-        }
-
-        return true;
-    };
 
     // Gestion du menu des options (trois points)
     function toggleOptionsMenu(event) {
@@ -233,4 +208,39 @@ document.getElementById('validateSelection').addEventListener('click', function 
     console.log('Selected Types:', selectedTypes);
     closeModal('typeModal'); // Close the modal only after selection is confirmed
 });
+
+    function validateForm(event) {
+    let isValid = true;
+    const description = document.getElementById('description').value;
+    const typeRetour = document.getElementById('typeRetour').value;
+    const tauxRendement = document.getElementById('tauxRendement').value;
+    const dateDeadline = document.getElementById('date_deadline').value;
+    const status = document.getElementById('status').value;
+
+    // Vérifier si les champs sont vides
+    if (!description || !typeRetour || !tauxRendement || !dateDeadline || !status) {
+        isValid = false;
+    }
+
+    // Vérifier le format du taux de rendement (utilisation du pattern)
+    const tauxPattern = new RegExp('^\\d+(\\.\\d{1,2})?$');
+    if (tauxRendement && !tauxPattern.test(tauxRendement)) {
+        isValid = false;
+    }
+
+    // Afficher le message d'erreur si invalide
+    const errorMessage = document.getElementById('errorMessage');
+    if (isValid) {
+        errorMessage.style.display = 'none';
+    } else {
+        errorMessage.style.display = 'block';
+    }
+
+    // Prevent form submission if validation fails
+    if (!isValid) {
+        event.preventDefault();
+    }
+    return isValid;
+}
+
 

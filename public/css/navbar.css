@@ -10,8 +10,10 @@
     left: 0;
     z-index: 20;
     height: 14%;
-    border-radius: 1%;
-    background-color: #53348D;
+    border-radius: 0.5%;
+    background-color: #3C2466;
+    border-right: 2px solid #999999;
+    box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
    
   }
   

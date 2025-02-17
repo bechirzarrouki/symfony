@@ -6,16 +6,14 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/investisementA.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 {% endblock %}
 
 {% block body %}  
     {% include 'components/navbar.html.twig' %}
     {% include 'components/sidebar.html.twig' %}
 
-<div class="post-container">
-     <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
-	 {% for investment in investments %}
+    <div class="post-container">
+        {% for investment in investments %}
             <div class="investment-box">
                 <div class="profile-section">
                     <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
@@ -23,13 +21,12 @@
                         <h4>{{ investment.user.name }}</h4>
                     </div>
                     <div class="date-time">10/02/2025 - 14:30</div>
-                    
                 </div>
 
                 <div class="investment-content">
                     {{ investment.content }}
                 </div>
-            </div>
+            
 
             <!-- Investment details section -->
             <div class="investment-details">
@@ -39,30 +36,50 @@
                 <p><strong>Date:</strong> 10/02/2025</p>
                 <p><strong>Investor:</strong> Jean Dupont</p>
             </div>
- </div>
-	{% endfor %}
-   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Sélectionne tous les éléments avec la classe .investment-content
-        const investmentContents = document.querySelectorAll('.investment-content');
+            </div>
+        {% endfor %}
+    </div>
 
-        investmentContents.forEach(function(investmentContent) {
-            // Ajoute un écouteur d'événement de clic sur chaque .investment-content
-            investmentContent.addEventListener('click', function() {
-                // Trouve l'élément .investment-details correspondant à l'élément cliqué
-                const investmentDetails = investmentContent.nextElementSibling;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionne tous les éléments avec la classe .investment-content
+            const investmentContents = document.querySelectorAll('.investment-content');
 
-                // Bascule l'affichage de l'élément .investment-details
-                if (investmentDetails.classList.contains('investment-details')) {
-                    if (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') {
-                        investmentDetails.style.display = 'block';
-                    } else {
-                        investmentDetails.style.display = 'none';
+            investmentContents.forEach(function(investmentContent) {
+                // Ajoute un écouteur d'événement de clic sur chaque .investment-content
+                investmentContent.addEventListener('click', function() {
+                    // Trouve l'élément .investment-details correspondant à l'élément cliqué
+                    const investmentDetails = investmentContent.nextElementSibling;
+
+                    // Bascule l'affichage de l'élément .investment-details
+                    if (investmentDetails && investmentDetails.classList.contains('investment-details')) {
+                        const currentDisplay = investmentDetails.style.display;
+                        investmentDetails.style.display = currentDisplay === 'block' ? 'none' : 'block';
                     }
-                }
+                });
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".investment-content").forEach(function (investmentContent) {
+        investmentContent.addEventListener("click", function () {
+            // Trouver le parent .investment-box
+            const investmentBox = investmentContent.closest(".investment-box");
+            
+            if (investmentBox) {
+                // Trouver l'élément .investment-details qui suit directement le .investment-box
+                const investmentDetails = investmentBox.nextElementSibling;
+                
+                if (investmentDetails && investmentDetails.classList.contains("investment-details")) {
+                    // Basculer l'affichage
+                    investmentDetails.style.display = 
+                        investmentDetails.style.display === "none" || investmentDetails.style.display === "" 
+                        ? "block" 
+                        : "none";
+                }
+            }
+        });
     });
-</script>
+});
+    </script>
 
 {% endblock %}

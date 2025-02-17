@@ -34,17 +34,25 @@
                 <div class="investment-content">
                     {{ investment.content }}
                 </div>
-            </div>
-
+            
+            
             <!-- Investment details section -->
-            <div class="investment-details">
+             <div class="investment-details">
+              
                 <h3>Investment Details</h3>
                 <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
                 <p><strong>Return on Investment:</strong> Fast</p>
                 <p><strong>Date:</strong> 10/02/2025</p>
                 <p><strong>Investor:</strong> Jean Dupont</p>
-            </div>
-        
+                <div class="options-menu">
+                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                        <div class="options-dropdown">
+                           
+                            <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
+                        </div>
+                    </div>
+             </div>
+          </div>
 
 
       
@@ -128,9 +136,41 @@ function confirmDelete(id) {
                 }
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".investment-content").forEach(function (investmentContent) {
+        investmentContent.addEventListener("click", function () {
+            // Trouver le parent .investment-box
+            const investmentBox = investmentContent.closest(".investment-box");
+            
+            if (investmentBox) {
+                // Trouver l'élément .investment-details qui suit directement le .investment-box
+                const investmentDetails = investmentBox.nextElementSibling;
+                
+                if (investmentDetails && investmentDetails.classList.contains("investment-details")) {
+                    // Basculer l'affichage
+                    investmentDetails.style.display = 
+                        investmentDetails.style.display === "none" || investmentDetails.style.display === "" 
+                        ? "block" 
+                        : "none";
+                }
+            }
+        });
+    });
+});
     </script>
 
     <style>
+    .investment-details {
+    width: 600px; /* Même largeur que .investment-box */
+    background: #f4f2ee; /* Même fond que .investment-box */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: none; /* Caché par défaut */
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #53348D;
+}
 /* General Styles */
 html, body {
     height: auto;
@@ -153,8 +193,17 @@ html, body {
 
 .investment-box {
     width: 100%; /* Largeur fixe pour contenir le contenu */
-    min-height: 120px; /* Hauteur minimale */
+    min-height: 120px;
+      background: #fff; /* Rétablir le fond blanc pour garder le contraste */
+    color: black;/* Hauteur minimale */
     /* Conserver les autres styles */
+}
+.investment-box {
+    width: 800px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
 /* Empêcher le débordement horizontal */

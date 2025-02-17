@@ -369,12 +369,4 @@ body {
   border-color: #53348D;
   box-shadow: #53348D;
 }
-.investment-details {
-    display: none; /* Caché par défaut */
-    margin-top: 10px;
-    padding: 10px;
-    background: #53348D;
-    border-radius: 5px;
-    font-size: 14px;
-    border-left: 4px solid #53348D;
-}
+

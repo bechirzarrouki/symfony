@@ -1,7 +1,7 @@
 .sidebar {
     width: 200px;
     height: 100vh;
-    background-color: #53348D;
+    
     position: fixed;
     left: 0;
     top: 0;
@@ -10,6 +10,8 @@
     flex-direction: column;
     border-bottom: 1px solid #000000;
     border-top-right-radius: 20px;
+    border-right: 2px solid #999999;
+    box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
   }
   
   .sidebar-menu {
@@ -40,7 +42,8 @@
     transition: 0.3s;
   }
   .white-text {
-    color: white;
+    color: #53348D;
+    font-weight: bold;
   }
   .sidebar-menu li:hover .white-text {
   color: #53348D;

@@ -1,11 +1,8 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Empêcher le défilement horizontal */
 }
 .investment-details {
     display: none;
@@ -17,7 +14,10 @@ body {
     align-items: center;
     gap: 20px;
     max-width: 40rem;
-    margin-top: -18%;
+    margin: 20px auto; /* Marge normale */
+    padding: 20px;
+    height: auto; 
+    margin: 100px auto 2rem auto; /* top right bottom left */
 }
 
 .investment-box {
@@ -25,6 +25,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    width: 100%; /* Largeur fixe pour contenir le contenu */
+    min-height: 120px;
 }
 
 .profile-section {
@@ -62,15 +64,7 @@ body {
     border-left: 4px solid #53348D;
 }
 
-.investment-details {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    background: #f8f8f8;
-    border-radius: 5px;
-    font-size: 14px;
-    border-left: 4px solid #53348D;
-}
+
 
 /* Modal Styles */
 .modal {
@@ -136,4 +130,15 @@ body {
     border-color: #53348D;
     box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
     background-color: #fff;
+}
+.investment-details {
+    width: 600px; /* Même largeur que .investment-box */
+    background: #f4f2ee; /* Même fond que .investment-box */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: none; /* Caché par défaut */
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #53348D;
 }

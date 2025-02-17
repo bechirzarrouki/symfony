@@ -268,25 +268,7 @@
 {% endblock %}
 {% block javascripts %}
 	<script src="{{ asset('js/investisement.js') }}"></script>
-	<script>
-		const investmentContents = document.querySelectorAll('.investment-content');
 
-investmentContents.forEach(function (investmentContent) { // Ajoute un écouteur d'événement de clic sur chaque .investment-content
-console.log('test');
-investmentContent.addEventListener('click', function () { // Trouve l'élément .investment-details correspondant à l'élément cliqué
-const investmentDetails = investmentContent.nextElementSibling;
-
-// Bascule l'affichage de l'élément .investment-details
-if (investmentDetails.classList.contains('investment-details')) {
-if (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') {
-investmentDetails.style.display = 'block';
-} else {
-investmentDetails.style.display = 'none';
-}
-}
-});
-});
-	</script>
 {% endblock %}
 
 {% block body %}
@@ -341,9 +323,9 @@ investmentDetails.style.display = 'none';
 							<h4>{{ investment.user.name }}</h4>
 						</div>
 						<div class="date-time">10/02/2025 - 14:30</div>
-						<div class="options-menu">
-							<i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
-							<div class="options-dropdown">
+						      <div class="options-menu">
+                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                        <div class="options-dropdown">
 								<button onclick="openEditModal({{ investment.id }})">Modify</button>
 								<button onclick="openDeleteModal({{ investment.id }})">Delete</button>
 							</div>
@@ -377,7 +359,7 @@ investmentDetails.style.display = 'none';
 				<div id="retourModal" class="modal">
 					<div class="modal-content">
 						<span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-						<form method="post" onsubmit="return validateForm()" action="{{ path('investment_new') }}">
+						<form id="investmentForm" method="post" onsubmit="return validateForm(event)" action="{{ path('investment_new') }}">
 							<input id="description" placeholder="Description" class="input-style" type="text" required>
 							<input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
 							<input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
@@ -385,6 +367,7 @@ investmentDetails.style.display = 'none';
 							<input id="status" placeholder="Status" class="input-style" type="text" required>
 							<button type="submit" class="submit-btn">Send</button>
 						</form>
+						<div id="errorMessage" style="color: red; display: none;">Please fill out all fields correctly.</div>
 					</div>
 				</div>
 
@@ -414,96 +397,117 @@ investmentDetails.style.display = 'none';
 			{% endfor %}
 		</div>
 	</div>
-	</div>
-	</div>
-		<style>
-			.options-menu {
-				position: relative;
-			}
-			.options-dropdown {
-				display: none;
-				position: absolute;
-				right: 0;
-				top: 100%;
-				background: white;
-				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-				border-radius: 5px;
-				padding: 5px;
-				z-index: 1000;
-			}
+</div></div><style>
+.options-menu {
+	position: relative;
+}
+.options-dropdown {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 100%;
+	background: white;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	padding: 5px;
+	z-index: 1000;
+}
 
-			.options-dropdown.show {
-				display: block;
-			}
+.options-dropdown.show {
+	display: block;
+}
 
-			.options-dropdown button {
-				display: block;
-				width: 100%;
-				padding: 8px 12px;
-				border: none;
-				background: none;
-				text-align: left;
-				cursor: pointer;
-			}
+.options-dropdown button {
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	border: none;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+}
 
-			.options-dropdown button:hover {
-				background: #f0f0f0;
-			}
+.options-dropdown button:hover {
+	background: #f0f0f0;
+}
 
-			.modal {
-				display: none;
-				position: fixed;
-				z-index: 1000;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(0, 0, 0, 0.5);
-				align-items: center;
-				justify-content: center;
-			}
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	align-items: center;
+	justify-content: center;
+}
 
-			.modal-content {
-				background-color: white;
-				padding: 20px;
-				border-radius: 10px;
-				width: 90%;
-				max-width: 400px;
-				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-				text-align: center;
-				position: relative;
-			}
-			.investment-content {
-				margin-top: 15px;
-				padding: 10px;
-				background: #f9f9f9;
-				border-radius: 5px;
-				font-size: 14px;
-				color: #333;
-				border-left: 4px solid #53348D;
-			}
-			.close-btn {
-				position: absolute;
-				top: 10px;
-				right: 15px;
-				font-size: 24px;
-				cursor: pointer;
-			}
+.modal-content {
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	width: 90%;
+	max-width: 400px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	position: relative;
+}
+.investment-content {
+	margin-top: 15px;
+	padding: 10px;
+	background: #f9f9f9;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #333;
+	border-left: 4px solid #53348D;
+}
+.close-btn {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	font-size: 24px;
+	cursor: pointer;
+}
 
-			.submit-btn {
-				width: 86%;
-				padding: 10px;
-				background-color: #53348D;
-				border: 2px;
-				color: white;
-				font-size: 16px;
-				cursor: pointer;
-				margin-top: 10px;
+.submit-btn {
+	width: 86%;
+	padding: 10px;
+	background-color: #53348D;
+	border: 2px;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	margin-top: 10px;
 
-			}
+}
 
-			.submit-btn:hover {
-				background-color: #432A70;
-			}
-		</style>
-	{% endblock %}
+.submit-btn:hover {
+	background-color: #432A70;
+	
+}</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".investment-content").forEach(function (investmentContent) {
+        investmentContent.addEventListener("click", function () {
+            // Trouver le parent .investment-box
+            const investmentBox = investmentContent.closest(".investment-box");
+            
+            if (investmentBox) {
+                // Trouver l'élément .investment-details qui suit directement le .investment-box
+                const investmentDetails = investmentBox.nextElementSibling;
+                
+                if (investmentDetails && investmentDetails.classList.contains("investment-details")) {
+                    // Basculer l'affichage
+                    investmentDetails.style.display = 
+                        investmentDetails.style.display === "none" || investmentDetails.style.display === "" 
+                        ? "block" 
+                        : "none";
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
