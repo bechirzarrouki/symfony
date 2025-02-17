@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/cours.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/navbar.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+	<div class="app-container">
+		{% include 'components/navbar.html.twig' %}
+		{% include 'components/sidebar.html.twig' %}
+
+		<main
+			class="main-content">
+			<!-- Hero Section -->
+			<div class="hero">
+				<div class="hero-bg">
+					<div class="hero-content">
+						<div class="hero-text">
+							<h1>FIND THE BEST ONLINE COURSES & LEARN</h1>
+							<p>Enhance your skills and get certified with our wide range of courses.</p>
+						</div>
+						<div class="hero-image">
+							<img src="{{ asset('images/img.png') }}" alt="Hero Image">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Courses Section -->
+			<div class="courses">
+				<div class="container">
+					<div
+						class="courses-grid">
+						<!-- Course 1 -->
+						{% for a in tabcours %}
+							<div class="course">
+								<div class="course-content">
+									<a href="#" class="course-image">
+										<img src="{{ asset('images/course01.jpg') }}" alt="Course 1">
+									</a>
+									<div class="course-details">
+										<a href="#" class="course-title">{{ a.Nomcours }}</a>
+										<p class="course-description">
+											{{ a.description }}
+										</p>
+										<div class="course-info">
+											<span>{{ a.duree }}</span>
+											<span class="free">{{ a.type}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+{% endblock %}
