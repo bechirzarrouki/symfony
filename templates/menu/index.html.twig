@@ -39,6 +39,17 @@
         .post-user { display: flex; align-items: center; }
         .post-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 10px; }
         .comment-box { margin-top: 10px; }
+        .options-dropdown {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: 100%;
+				background: white;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+				padding: 5px;
+				z-index: 1000;
+			}
     </style>
 {% endblock %}
 
@@ -60,9 +71,6 @@
                 <button class="action-btn">
                     <i class="fas fa-camera"></i> Photo
                 </button>
-                <button class="action-btn">
-                    <i class="fas fa-smile"></i> Emoji
-                </button>
             </div>
         </div>
 
@@ -78,17 +86,27 @@
                             <p>public</p>
                         </div>
                     </div>
-                    {% if app.user and app.user == post.author %}
+                    {#{% if app.user and app.user == post.author %}#}
                     <div class="post-controls">
-                        <a href="{{ path('post_edit', { id: post.id }) }}">Edit</a>
+                        <a  onclick="editPost({{ post.id }})"> <i class="fas fa-edit"></i></a>
                         <form method="post" action="{{ path('post_delete', { id: post.id }) }}" style="display:inline;">
-                            <button type="submit">Delete</button>
+                            <button type="submit"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </div>
-                    {% endif %}
+                    {#{% endif %}#}
                 </div>
                 <div class="post-content">
-                    <p class="post-text">{{ post.content }}</p>
+                    <p class="post-text"></p>
+                    <span class="post-text" id="post-content-{{ post.id }}">
+                                    {{ post.content }}
+                    </span>
+                    <div class="post-edit-form" id="post-edit-form-{{ post.id }}" style="display:none;">
+                                <form method="post" action="{{ path('post_edit', { id: post.id }) }}">
+                                    <input type="text" name="post_content" value="{{ post.content }}" required>
+                                    <button type="submit">Save</button>
+                                    <button type="button" onclick="cancelPostEdit({{ post.id }})">Cancel</button>
+                                </form>
+                     </div>
                     {% if post.image %}
                     <img src="{{ asset(post.image) }}" alt="Post image" class="post-image">
                     {% endif %}
@@ -97,21 +115,25 @@
                     </div>
                     
                     <!-- Display Comments -->
-                    <div class="post-comments">
-                        {% for comment in post.comments %}
-                        <div class="comment" style="position: relative;">
-                            <div class="comment-info">
-                                <strong>{{ comment.author ? comment.author.name : 'Anonymous' }}</strong>
-                                <span class="comment-text" id="comment-content-{{ comment.id }}">
-                                    {{ comment.content }}
-                                </span>
-                            </div>
-                            <div class="comment-options">
-                                <button class="edit-comment-btn" onclick="editComment({{ comment.id }})">Edit</button>
-                                <form method="post" action="{{ path('comment_delete', { id: comment.id }) }}">
-                                    <button type="submit" class="delete-comment" style="background:none;border:none;padding:0;">Delete</button>
-                                </form>
-                            </div>
+<div class="post-comments">
+    {% for comment in post.comments %}
+    <div class="comment" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="comment-info">
+            <strong>{{ comment.author ? comment.author.name : 'Anonymous' }}</strong>
+            <span class="comment-text" id="comment-content-{{ comment.id }}">
+                {{ comment.content }}
+            </span>
+        </div>
+        <div class="comment-actions">
+            <button class="edit-comment-btn" onclick="editComment({{ comment.id }})" style="background:none; border:none; cursor:pointer;">
+                <i class="fas fa-edit"></i>
+            </button>
+            <form method="post" action="{{ path('comment_delete', { id: comment.id }) }}" style="display:inline;">
+                <button type="submit" class="delete-comment" style="background:none; border:none; padding:0; cursor:pointer;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </form>
+        </div>
 
                             <!-- Edit Form (Hidden by default) -->
                             <div class="comment-edit-form" id="comment-edit-form-{{ comment.id }}" style="display:none;">
@@ -124,7 +146,7 @@
                         </div>
                         {% endfor %}
                     </div>
-
+                    
                     <!-- Comment Box -->
                     <div class="comment-box">
                         <form method="post" action="{{ path('comment_new', { postId: post.id }) }}">
@@ -132,8 +154,10 @@
                             <button type="submit" class="btn-post">Post</button>
                         </form>
                     </div>
+                    
                 </div>
             </div>
+            
             {% else %}
             <p>No posts yet.</p>
             {% endfor %}
@@ -150,11 +174,18 @@
             document.getElementById('comment-content-' + commentId).style.display = 'none';
             document.getElementById('comment-edit-form-' + commentId).style.display = 'block';
         }
-
+        function editPost(commentId) {
+            document.getElementById('post-content-' + commentId).style.display = 'none';
+            document.getElementById('post-edit-form-' + commentId).style.display = 'block';
+        }
         // Hide the edit form and show the display text again
         function cancelEdit(commentId) {
             document.getElementById('comment-content-' + commentId).style.display = 'block';
             document.getElementById('comment-edit-form-' + commentId).style.display = 'none';
+        }
+        function cancelPostEdit(commentId) {
+            document.getElementById('post-content-' + commentId).style.display = 'block';
+            document.getElementById('post-edit-form-' + commentId).style.display = 'none';
         }
     </script>
 {% endblock %}

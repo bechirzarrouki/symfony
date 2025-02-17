@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\Comment;
 use App\Entity\User;
+use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,36 +67,54 @@ class PostController extends AbstractController
 
     // Edit an existing post
     #[Route('/{id}/edit', name: 'post_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Post $post, EntityManagerInterface $em): Response
-    {
-        // (Optionally check if the current user is allowed to edit this post)
-        if ($request->isMethod('POST')) {
-            $content = $request->request->get('content');
-            if (!$content) {
-                $this->addFlash('error', 'Post content cannot be empty.');
-                return $this->redirectToRoute('post_index');
-            }
-            $post->setContent($content);
-            $em->flush();
+public function edit(Request $request, int $id, PostRepository $postRepository,EntityManagerInterface $em): Response
+{
+    // Retrieve the Post entity by its ID
+    $post = $postRepository->find($id);
+    if (!$post) {
+        throw $this->createNotFoundException('Post not found');
+    }
 
-            $this->addFlash('success', 'Post updated successfully!');
+    // Handle form submission
+    if ($request->isMethod('POST')) {
+        $content = $request->request->get('post_content');
+        if (!$content) {
+            $this->addFlash('error', 'Post content cannot be empty.');
             return $this->redirectToRoute('post_index');
         }
+        
+        // Update and save the post
+        $post->setContent($content);
+        $em->persist($post);
+        $em->flush();
 
-        return $this->render('post/edit.html.twig', [
-            'post' => $post,
-        ]);
-    }
-
-    // Delete a post
-    #[Route('/{id}', name: 'post_delete', methods: ['POST'])]
-    public function delete(Request $request, Post $post, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
-            $em->remove($post);
-            $em->flush();
-            $this->addFlash('success', 'Post deleted successfully!');
-        }
+        $this->addFlash('success', 'Post updated successfully!');
         return $this->redirectToRoute('post_index');
     }
+
+    // Render the edit form
+    return $this->render('post/edit.html.twig', [
+        'post' => $post,
+    ]);
+}
+
+#[Route('/{id}', name: 'post_delete', methods: ['POST'])]
+public function delete(Request $request, int $id, PostRepository $postRepository,EntityManagerInterface $em): Response
+{
+    // Retrieve the Post entity by its ID
+    $post = $postRepository->find($id);
+    if (!$post) {
+        throw $this->createNotFoundException('Post not found');
+    }
+
+    // Validate CSRF token and remove the post
+    if ($post) {
+        $em->remove($post);
+        $em->flush();
+        $this->addFlash('success', 'Post deleted successfully!');
+    }
+    
+    return $this->redirectToRoute('post_index');
+}
+
 }
