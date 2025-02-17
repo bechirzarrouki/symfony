@@ -5,67 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnovMatch - Sign Up</title>
     <link rel="stylesheet" href="{{ asset('css/register.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            min-height: 650px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 30px; /* Add some margin below for spacing */
+        }
+
+        .upload-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .camera-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #999;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8a2be2;
+        }
+
+        .checkbox-group {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .continue-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            padding: 12px;
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .continue-btn:hover {
+            background-color: #7a1bb3;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Sign Up</h1>
+    <div class="container">
+        <!-- Image Upload Section placed above Sign Up form -->
+        <div class="upload-section">
+            <div class="upload-circle" id="upload-circle">
+                <span class="upload-text">Upload an</span>
+                <span class="upload-text">image</span>
+                <div class="camera-icon"></div>
+                <input type="file" id="profile-picture" name="profile_picture" accept="image/*" style="display:none;">
+            </div>
+        </div>
+
         <form id="signup-form" action="{{ path('app_register') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <!-- Username -->
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+            <h1>Sign Up</h1>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="123-456-7890">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password *</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
             </div>
 
-            <!-- Email -->
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
-                <span id="email-error" style="color: red; display: none;">Please enter a valid email address.</span>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="project-leader" name="roles[]" value="ROLE_PROJECT_LEADER">
+                    Project Leader
+                </label>
+                <label>
+                    <input type="checkbox" id="investor" name="roles[]" value="ROLE_INVESTOR">
+                    Investor
+                </label>
+                <label>
+                    <input type="checkbox" id="employee" name="roles[]" value="ROLE_EMPLOYEE">
+                    Employee
+                </label>
             </div>
 
-            <!-- Password -->
-            <div class="input-group password-wrapper">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-                <span class="toggle-password" onclick="togglePassword('password')">👁</span>
-                <span id="password-error" style="color: red; display: none;">Password must have at least 8 characters, including uppercase, lowercase, number, and special character.</span>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="input-group password-wrapper">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
-                <span class="toggle-password" onclick="togglePassword('confirm_password')">👁</span>
-                <span id="confirm-password-error" style="color: red; display: none;">Passwords do not match.</span>
-            </div>
-
-            <!-- Phone Number -->
-            <div class="input-group">
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" name="phone" maxlength="8" pattern="\d{8}" required>
-                <span id="phone-error" style="color: red; display: none;">Phone number must be 8 digits long and contain only numbers.</span>
-            </div>
-
-            <!-- Profile Image Input -->
-            <div class="input-group">
-                <label for="profile_image">Profile Image</label>
-                <input type="file" id="profile_image" name="profile_image" accept="image/*">
-            </div>
-
-            <!-- Role Selection -->
-            <div class="input-group">
-                <label>Sign in as:</label><br>
-                <input type="checkbox" id="employee" name="roles[]" value="ROLE_EMPLOYEE">
-                <label for="employee">Employee</label><br>
-                <input type="checkbox" id="investor" name="roles[]" value="ROLE_INVESTOR">
-                <label for="investor">Investor</label><br>
-                <input type="checkbox" id="project_leader" name="roles[]" value="ROLE_PROJECT_LEADER">
-                <label for="project_leader">Project Leader</label><br>
-                <span id="role-error" style="color: red; display: none;">You must select at least one role.</span>
-            </div>
-
-            <!-- Sign Up Button -->
-            <button type="submit" class="login-btn">Submit</button>
+            <button type="submit" class="continue-btn">Continue</button>
         </form>
 
         <div class="links">
@@ -73,71 +210,75 @@
         </div>
     </div>
 
-    <!-- JavaScript for Password Toggle, Form Validation, and Preview -->
     <script>
-        function togglePassword(fieldId) {
-            var passwordField = document.getElementById(fieldId);
-            passwordField.type = (passwordField.type === "password") ? "text" : "password";
-        }
-
         function validateForm() {
             var isValid = true;
 
             // Validate Email
             var email = document.getElementById("email").value;
-            var emailError = document.getElementById("email-error");
             var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
             if (!emailRegex.test(email)) {
-                emailError.style.display = "inline";
+                alert("Please enter a valid email address.");
                 isValid = false;
-            } else {
-                emailError.style.display = "none";
             }
 
             // Validate Password
             var password = document.getElementById("password").value;
-            var passwordError = document.getElementById("password-error");
             var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             if (!passwordRegex.test(password)) {
-                passwordError.style.display = "inline";
+                alert("Password must be at least 8 characters long, include a lowercase letter, an uppercase letter, a number, and a special character.");
                 isValid = false;
-            } else {
-                passwordError.style.display = "none";
             }
 
             // Validate Confirm Password
-            var confirmPassword = document.getElementById("confirm_password").value;
-            var confirmPasswordError = document.getElementById("confirm-password-error");
+            var confirmPassword = document.getElementById("confirm-password").value;
             if (password !== confirmPassword) {
-                confirmPasswordError.style.display = "inline";
+                alert("Passwords do not match.");
                 isValid = false;
-            } else {
-                confirmPasswordError.style.display = "none";
             }
 
             // Validate Phone Number
             var phone = document.getElementById("phone").value;
-            var phoneError = document.getElementById("phone-error");
             var phoneRegex = /^\d{8}$/;
             if (!phoneRegex.test(phone)) {
-                phoneError.style.display = "inline";
+                alert("Please enter a valid phone number (8 digits).");
                 isValid = false;
-            } else {
-                phoneError.style.display = "none";
             }
 
             // Validate Role Selection
-            var roleError = document.getElementById("role-error");
             var roleSelected = document.querySelector('input[name="roles[]"]:checked');
             if (!roleSelected) {
-                roleError.style.display = "inline";
+                alert("Please select a role.");
                 isValid = false;
-            } else {
-                roleError.style.display = "none";
             }
 
             return isValid;
         }
+
+        // Image Upload Functionality
+        document.getElementById("upload-circle").addEventListener("click", function() {
+            document.getElementById("profile-picture").click();
+        });
+
+        document.getElementById("profile-picture").addEventListener("change", function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var previewImage = document.createElement("img");
+                    previewImage.src = e.target.result;
+                    previewImage.style.maxWidth = "100px";
+                    previewImage.style.maxHeight = "100px";
+                    previewImage.style.borderRadius = "50%"; // Optional: Make it round
+                    previewImage.style.marginTop = "10px";
+                    // Clear previous content and add the new image preview
+                    var uploadCircle = document.getElementById("upload-circle");
+                    uploadCircle.innerHTML = ""; // Clear previous content
+                    uploadCircle.appendChild(previewImage); // Add the preview image
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>
