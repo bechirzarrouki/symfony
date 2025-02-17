@@ -30,6 +30,13 @@ class InvestmentController extends AbstractController
             'investments' => $investmentRepository->findAll(),
         ]);
     }
+    #[Route('/investisementafficher', name: 'investment_index_afficher', methods: ['GET'])]
+    public function indexaffichage(InvestmentRepository $investmentRepository): Response
+    {
+        return $this->render('investisement/investisement.html.twig', [
+            'investments' => $investmentRepository->findAll(),
+        ]);
+    }
 
     // Create a new investment using a dummy user if not logged in
     #[Route('/new', name: 'investment_new', methods: ['GET', 'POST'])]

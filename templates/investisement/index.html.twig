@@ -269,228 +269,241 @@
 {% block javascripts %}
 	<script src="{{ asset('js/investisement.js') }}"></script>
 	<script>
-		    const investmentContents = document.querySelectorAll('.investment-content');
+		const investmentContents = document.querySelectorAll('.investment-content');
 
-        investmentContents.forEach(function(investmentContent) {
-            // Ajoute un écouteur d'événement de clic sur chaque .investment-content
-			console.log('test');
-            investmentContent.addEventListener('click', function() {
-                // Trouve l'élément .investment-details correspondant à l'élément cliqué
-                const investmentDetails = investmentContent.nextElementSibling;
+investmentContents.forEach(function (investmentContent) { // Ajoute un écouteur d'événement de clic sur chaque .investment-content
+console.log('test');
+investmentContent.addEventListener('click', function () { // Trouve l'élément .investment-details correspondant à l'élément cliqué
+const investmentDetails = investmentContent.nextElementSibling;
 
-                // Bascule l'affichage de l'élément .investment-details
-                if (investmentDetails.classList.contains('investment-details')) {
-                    if (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') {
-                        investmentDetails.style.display = 'block';
-                    } else {
-                        investmentDetails.style.display = 'none';
-                    }
-                }
-            });
-        });
+// Bascule l'affichage de l'élément .investment-details
+if (investmentDetails.classList.contains('investment-details')) {
+if (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') {
+investmentDetails.style.display = 'block';
+} else {
+investmentDetails.style.display = 'none';
+}
+}
+});
+});
 	</script>
 {% endblock %}
 
 {% block body %}
-{% include 'components/navbar.html.twig' %}
-{% include 'components/sidebar.html.twig' %}
+	{% include 'components/navbar.html.twig' %}
+	<div class="main-wrapper">
+		{% include 'components/sidebar.html.twig' %}
 
-<div class="post-container">
-	<div class="create-post">
-		<form action="/investment/new" method="post" id="investmentForm">
-			<h2>Create Your Investment</h2>
-			<div class="post-input-wrapper">
-				<input type="text" class="form-control" name="content" placeholder="what do you have in your mind ?">
-				<button type="button" class="investment-type" onclick="openModal('typeModal')">choose a type</button>
-				<div class="post-input-wrapper p-3"></div>
+		<div class="post-container">
+			<div class="create-post">
+				<form action="/investment/new" method="post" id="investmentForm">
+					<h2>Create Your Investment</h2>
+					<div class="post-input-wrapper">
+						<input type="text" class="form-control" name="content" placeholder="what do you have in your mind ?">
+						<button type="button" class="investment-type" onclick="openModal('typeModal')">choose a type</button>
+						<div class="post-input-wrapper p-3"></div>
 
-				<!-- Modal de sélection des types -->
-				<div id="typeModal" class="modal">
-					<div class="modal-content">
-						<span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
-						<h2>select  type</h2>
-						<div id="type-list">
-							<span class="type-option" data-value="Immobilier" onclick="toggleType(this)">Immobilier</span>
-							<span class="type-option" data-value="Actions" onclick="toggleType(this)">Actions</span>
-							<span class="type-option" data-value="Obligations" onclick="toggleType(this)">Obligations</span>
-							<span class="type-option" data-value="Cryptomonnaies" onclick="toggleType(this)">Cryptomonnaies</span>
+						<!-- Modal de sélection des types -->
+						<div id="typeModal" class="modal">
+							<div class="modal-content">
+								<span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
+								<h2>select  type</h2>
+								<div id="type-list">
+									<span class="type-option" data-value="Immobilier" onclick="toggleType(this)">Immobilier</span>
+									<span class="type-option" data-value="Actions" onclick="toggleType(this)">Actions</span>
+									<span class="type-option" data-value="Obligations" onclick="toggleType(this)">Obligations</span>
+									<span class="type-option" data-value="Cryptomonnaies" onclick="toggleType(this)">Cryptomonnaies</span>
+								</div>
+								<button type="button" class="submit-btn" id="validateSelection" onclick="selectTypes()">Valider</button>
+							</div>
+
 						</div>
-						<button type="button" class="submit-btn" id="validateSelection" onclick="selectTypes()">Valider</button>
+					</div>
+					<div class="post-actions">
+						<button type="button" class="action-btn add-btn" onclick="openModal('retourModal')">
+							<i class="fas fa-plus"></i>
+							Add a return
+						</button>
+						<button type="submit" class="publish-btn">
+							<i class="fas fa-paper-plane"></i>
+							Post
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+			{% for investment in investments %}
+				<div class="investment-box">
+					<div class="profile-section">
+						<img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+						<div class="profile-info">
+							<h4>{{ investment.user.name }}</h4>
+						</div>
+						<div class="date-time">10/02/2025 - 14:30</div>
+						<div class="options-menu">
+							<i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+							<div class="options-dropdown">
+								<button onclick="openEditModal()">Modify</button>
+								<button onclick="openDeleteModal({{ investment.id }})">Delete</button>
+							</div>
+						</div>
 					</div>
 
+					<div class="investment-content">
+						{{ investment.content }}
+					</div>
 				</div>
-			</div>
-			<div class="post-actions">
-				<button type="button" class="action-btn add-btn" onclick="openModal('retourModal')">
-					<i class="fas fa-plus"></i>
-					Add a return
-				</button>
-				<button type="submit" class="publish-btn">
-					<i class="fas fa-paper-plane"></i>
-					Post
-				</button>
-			</div>
-		</form>
+
+				<!-- Investment details section -->
+				<div class="investment-details">
+					<h3>Investment Details</h3>
+					<p>
+						<strong>Project:</strong>
+						Solar Energy for Local Businesses</p>
+					<p>
+						<strong>Return on Investment:</strong>
+						Fast</p>
+					<p>
+						<strong>Date:</strong>
+						10/02/2025</p>
+					<p>
+						<strong>Investor:</strong>
+						Jean Dupont</p>
+				</div>
+
+
+				<!-- Modal for adding a return -->
+				<div id="retourModal" class="modal">
+					<div class="modal-content">
+						<span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
+						<form method="post" onsubmit="return validateForm()" action="{{ path('investment_new') }}">
+							<input id="description" placeholder="Description" class="input-style" type="text" required>
+							<input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
+							<input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
+							<input id="date_deadline" placeholder="Deadline" class="input-style" type="date" required>
+							<input id="status" placeholder="Status" class="input-style" type="text" required>
+							<button type="submit" class="submit-btn">Send</button>
+						</form>
+					</div>
+				</div>
+
+				<!-- Edit Modal -->
+				<div id="editModal" class="modal">
+					<form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
+						<div class="modal-content">
+							<span class="close-btn" onclick="closeEditModal()">&times;</span>
+							<h3>Edit Publication</h3>
+							<input type="text" id="editName" name="content" class="input-style" value="{{ investment.content }}">
+							<button type="submit" class="submit-btn">Save</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Delete Modal -->
+				<div id="deleteModal{{ investment.id }}" class="modal">
+					<div class="modal-content">
+						<h3>Do you really want to delete this investment?</h3>
+						<form action="{{ path('investment_delete', { id: investment.id }) }}" method="POST">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
+							<button type="submit" class="submit-btn">Delete</button>
+						</form>
+						<button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
 	</div>
+	</div>
+	</div>
+		<style>
+			.options-menu {
+				position: relative;
+			}
+			.options-dropdown {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: 100%;
+				background: white;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+				padding: 5px;
+				z-index: 1000;
+			}
 
-	<!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
-	 {% for investment in investments %}
-            <div class="investment-box">
-                <div class="profile-section">
-                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
-                    <div class="profile-info">
-                        <h4>{{ investment.user.name }}</h4>
-                    </div>
-                    <div class="date-time">10/02/2025 - 14:30</div>
-                    <div class="options-menu">
-                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
-                        <div class="options-dropdown">
-                            <button onclick="openEditModal()">Modify</button>
-                            <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
-                        </div>
-                    </div>
-                </div>
+			.options-dropdown.show {
+				display: block;
+			}
 
-                <div class="investment-content">
-                    {{ investment.content }}
-                </div>
-            </div>
+			.options-dropdown button {
+				display: block;
+				width: 100%;
+				padding: 8px 12px;
+				border: none;
+				background: none;
+				text-align: left;
+				cursor: pointer;
+			}
 
-            <!-- Investment details section -->
-            <div class="investment-details">
-                <h3>Investment Details</h3>
-                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
-                <p><strong>Return on Investment:</strong> Fast</p>
-                <p><strong>Date:</strong> 10/02/2025</p>
-                <p><strong>Investor:</strong> Jean Dupont</p>
-            </div>
-        
+			.options-dropdown button:hover {
+				background: #f0f0f0;
+			}
 
-        <!-- Modal for adding a return -->
-        <div id="retourModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-                <form method="post" onsubmit="return validateForm()" action="{{ path('investment_new') }}">
-                    <input id="description" placeholder="Description" class="input-style" type="text" required>
-                    <input id="typeRetour" placeholder="Return Type" class="input-style" type="text" required>
-                    <input id="tauxRendement" placeholder="Rate of Return" class="input-style" type="text" required pattern="^\d+(\.\d{1,2})?$">
-                    <input id="date_deadline" placeholder="Deadline" class="input-style" type="date" required>
-                    <input id="status" placeholder="Status" class="input-style" type="text" required>
-                    <button type="submit" class="submit-btn">Send</button>
-                </form>
-            </div>
-        </div>
+			.modal {
+				display: none;
+				position: fixed;
+				z-index: 1000;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.5);
+				align-items: center;
+				justify-content: center;
+			}
 
-        <!-- Edit Modal -->
-        <div id="editModal" class="modal">
-            <form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
-                <div class="modal-content">
-                    <span class="close-btn" onclick="closeEditModal()">&times;</span>
-                    <h3>Edit Publication</h3>
-                    <input type="text" id="editName" name="content" class="input-style" value="{{ investment.content }}">
-                    <button type="submit" class="submit-btn">Save</button>
-                </div>
-            </form>
-        </div>
+			.modal-content {
+				background-color: white;
+				padding: 20px;
+				border-radius: 10px;
+				width: 90%;
+				max-width: 400px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+				text-align: center;
+				position: relative;
+			}
+			.investment-content {
+				margin-top: 15px;
+				padding: 10px;
+				background: #f9f9f9;
+				border-radius: 5px;
+				font-size: 14px;
+				color: #333;
+				border-left: 4px solid #53348D;
+			}
+			.close-btn {
+				position: absolute;
+				top: 10px;
+				right: 15px;
+				font-size: 24px;
+				cursor: pointer;
+			}
 
-        <!-- Delete Modal -->
-        <div id="deleteModal{{ investment.id }}" class="modal">
-            <div class="modal-content">
-                <h3>Do you really want to delete this investment?</h3>
-                <form action="{{ path('investment_delete', { id: investment.id }) }}" method="POST">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
-                    <button type="submit" class="submit-btn">Delete</button>
-                </form>
-               <button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
-            </div>
-        </div>
-	{% endfor %}
-<style>
-.options-menu {
-	position: relative;
-}
-.options-dropdown {
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 100%;
-	background: white;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
-	padding: 5px;
-	z-index: 1000;
-}
+			.submit-btn {
+				width: 86%;
+				padding: 10px;
+				background-color: #53348D;
+				border: 2px;
+				color: white;
+				font-size: 16px;
+				cursor: pointer;
+				margin-top: 10px;
 
-.options-dropdown.show {
-	display: block;
-}
+			}
 
-.options-dropdown button {
-	display: block;
-	width: 100%;
-	padding: 8px 12px;
-	border: none;
-	background: none;
-	text-align: left;
-	cursor: pointer;
-}
-
-.options-dropdown button:hover {
-	background: #f0f0f0;
-}
-
-.modal {
-	display: none;
-	position: fixed;
-	z-index: 1000;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
-	align-items: center;
-	justify-content: center;
-}
-
-.modal-content {
-	background-color: white;
-	padding: 20px;
-	border-radius: 10px;
-	width: 90%;
-	max-width: 400px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-	text-align: center;
-	position: relative;
-}
-.investment-content {
-    margin-top: 15px;
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #333;
-    border-left: 4px solid #53348D;
-}
-.close-btn {
-	position: absolute;
-	top: 10px;
-	right: 15px;
-	font-size: 24px;
-	cursor: pointer;
-}
-
-.submit-btn {
-	width: 86%;
-	padding: 10px;
-	background-color: #53348D;
-	border: 2px;
-	color: white;
-	font-size: 16px;
-	cursor: pointer;
-	margin-top: 10px;
-
-}
-
-.submit-btn:hover {
-	background-color: #432A70;
-}</style>{% endblock %}
+			.submit-btn:hover {
+				background-color: #432A70;
+			}
+		</style>
+	{% endblock %}

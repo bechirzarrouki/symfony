@@ -131,14 +131,36 @@ function confirmDelete(id) {
     </script>
 
     <style>
-    .post-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        max-width: 40rem;
- 
-  
+/* General Styles */
+html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Empêcher le défilement horizontal */
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 40rem;
+    margin: 20px auto; /* Marge normale */
+    padding: 20px;
+    height: auto; /* Supprimer la hauteur fixe */
+    overflow-y: visible; /* Supprimer le défilement interne */
+}
+
+.investment-box {
+    width: 100%; /* Largeur fixe pour contenir le contenu */
+    min-height: 120px; /* Hauteur minimale */
+    /* Conserver les autres styles */
+}
+
+/* Empêcher le débordement horizontal */
+* {
+    box-sizing: border-box;
+    max-width: 100%;
 }
         .options-menu {
             position: relative;

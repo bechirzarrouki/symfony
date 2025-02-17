@@ -15,7 +15,7 @@ final class HomeController extends AbstractController
             'controller_name' => 'investisementssController',
         ]);
     }
-    #[Route('/investisementA', name: 'app_investisementA')]
+    #[Route('/investisementafficher', name: 'app_investisementafficher')]
     public function investisementA(): Response
     {
         return $this->render('investisement/investisement.html.twig', [

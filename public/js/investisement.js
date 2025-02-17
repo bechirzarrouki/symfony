@@ -1,10 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-
-
-
-
-
     // Fonction pour ouvrir un modal spécifique
     window.openModal = function (modalId) {
         console.log("Ouverture du modal:", modalId);

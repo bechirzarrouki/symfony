@@ -13,28 +13,34 @@
     {% include 'components/navbar.html.twig' %}
     {% include 'components/sidebar.html.twig' %}
 
-    <div class="post-container">
-    <div class="investment-box" onclick="toggleInvestmentDetails(this)">
-        <div class="profile-section">
-            <img src="https://via.placeholder.com/50" alt="Profile" class="profile-img">
-            <div class="profile-info">
-                <h4>Jean Dupont</h4>
-                <p>XYZ Corporation</p>
+<div class="post-container">
+     <!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
+	 {% for investment in investments %}
+            <div class="investment-box">
+                <div class="profile-section">
+                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                    <div class="profile-info">
+                        <h4>{{ investment.user.name }}</h4>
+                    </div>
+                    <div class="date-time">10/02/2025 - 14:30</div>
+                    
+                </div>
+
+                <div class="investment-content">
+                    {{ investment.content }}
+                </div>
             </div>
-            <div class="date-time">10/02/2025 - 14:30</div>
-        </div>
-        <div class="investment-content">
-            📌 Investir dans l'énergie solaire pour les entreprises locales. Un projet durable avec un retour sur investissement rapide !
-        </div>
-      <div class="investment-details">
-        <h3>Détails de l'Investissement</h3>
-        <p><strong>Projet:</strong> Énergie solaire pour entreprises locales</p>
-        <p><strong>Retour sur investissement:</strong> Rapide</p>
-        <p><strong>Date:</strong> 10/02/2025</p>
-        <p><strong>Investisseur:</strong> Jean Dupont</p>
-    </div>
-    </div>
-    </div>
+
+            <!-- Investment details section -->
+            <div class="investment-details">
+                <h3>Investment Details</h3>
+                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
+                <p><strong>Return on Investment:</strong> Fast</p>
+                <p><strong>Date:</strong> 10/02/2025</p>
+                <p><strong>Investor:</strong> Jean Dupont</p>
+            </div>
+ </div>
+	{% endfor %}
    <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Sélectionne tous les éléments avec la classe .investment-content

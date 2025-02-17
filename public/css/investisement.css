@@ -3,21 +3,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+ 
 }
 
-.post-container {
-    
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        max-width: 40rem;
-        height: 60vh; /* Hauteur définie pour que le défilement se déclenche */
-        overflow-y: auto; /* Permet le défilement vertical */
-        padding-right: 10px;
-}
 
 .photo-space {
     width: 150px;
@@ -44,6 +32,8 @@ body {
     max-width: 42rem;
     flex: 1;
     margin-top: -16%;
+    margin: 100px auto 2rem auto; /* top right bottom left */
+
 }
 
 .create-post h2 {
@@ -155,17 +145,24 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    max-width: 42rem; /* Augmenté */
+    max-width: 1000px; /* Augmenté */
     width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    justify-content: flex-end;
+    margin-left: 300px;
 }
-
+.main-wrapper {
+    display: flex;
+    flex: 1;
+}
 .create-post, .investment-box {
     background: linear-gradient(135deg, #6a11cb, #2575fc);
     border-radius: 15px;
     padding: 20px;
     color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 42rem; /* Même taille */
+    max-width: 600px; /* Même taille */
     width: 100%; /* Pour qu'elles s'étendent */
     flex: 1;
 }

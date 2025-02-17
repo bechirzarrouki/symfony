@@ -1,31 +1,4 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-.investment-details {
-    display: none;
-}
 
-.post-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 40rem;
-    margin-top: -18%;
-}
-
-.investment-box {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
 
 .profile-section {
     display: flex;
