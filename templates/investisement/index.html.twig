@@ -344,7 +344,7 @@ investmentDetails.style.display = 'none';
 						<div class="options-menu">
 							<i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
 							<div class="options-dropdown">
-								<button onclick="openEditModal()">Modify</button>
+								<button onclick="openEditModal({{ investment.id }})">Modify</button>
 								<button onclick="openDeleteModal({{ investment.id }})">Delete</button>
 							</div>
 						</div>
@@ -389,11 +389,11 @@ investmentDetails.style.display = 'none';
 				</div>
 
 				<!-- Edit Modal -->
-				<div id="editModal" class="modal">
+				<div id="editModal{{ investment.id }}" class="modal">
 					<form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
 						<div class="modal-content">
-							<span class="close-btn" onclick="closeEditModal()">&times;</span>
-							<h3>Edit Publication</h3>
+							<span class="close-btn" onclick="closeEditModal({{ investment.id }})">&times;</span>
+							<h3>Edit Investment</h3>
 							<input type="text" id="editName" name="content" class="input-style" value="{{ investment.content }}">
 							<button type="submit" class="submit-btn">Save</button>
 						</div>
