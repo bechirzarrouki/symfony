@@ -170,7 +170,7 @@
 .btn-more {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #CB1FE9;
+    background-color: #53348D;
     color: #fff;
     text-decoration: none;
     border-radius: 5px;
@@ -205,6 +205,7 @@
 .modal-content {
     background-color: white; /* Make sure it's white to avoid transparency */
     padding: 20px;
+    margin-bottom: 10px; 
     border-radius: 10px;
     width: 90%;
     max-width: 400px;
@@ -213,10 +214,10 @@
 }
 
 
-.close-btn {
+.close-btn-add {
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 10px;
     font-size: 24px;
     cursor: pointer;
 }
@@ -249,7 +250,8 @@
     outline: none;
     transition: all 0.3s ease-in-out;
     background-color: #f9f9f9;
-    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Ensures padding doesn't increase width */
 }
 
 .input-style:focus {
@@ -302,7 +304,7 @@
 
 /* Table Header */
 .app-container table th {
-    background-color: #6F1482;
+    background-color: #53348D;
     color: white;
     padding: 12px 15px;
     text-align: left;
