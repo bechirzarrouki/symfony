@@ -9,19 +9,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface; // Import the PasswordHasherInterface
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; // Import the PasswordHasherInterface
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
 {
     /**
-     * @Route("/dashboard", name="app_dashboard")
+     * @Route("/userlist", name="app_dashboard")
      */
-    public function dashboard(UserRepository $userRepository): Response
+    public function userList(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
 
-        return $this->render('back/dashboard.html.twig', [
+        return $this->render('back/userlist.html.twig', [
             'users' => $users,
         ]);
     }
@@ -30,7 +33,7 @@ class UserController extends AbstractController
     /**
      * @Route("/create", name="user_create")
      */
-    public function create(Request $request, EntityManagerInterface $em, PasswordHasherInterface $passwordHasher): Response
+    public function create(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
 
@@ -39,15 +42,27 @@ class UserController extends AbstractController
         $user->setEmail($request->get('email'));
         
         // Hash the password using PasswordHasherInterface
-        $user->setPassword($passwordHasher->hash($request->get('password')));
+        $user->setPassword($passwordHasher->HashPassword($user,$request->get('password')));
         
-        $user->setFirstname($request->get('first_name'));
-        $user->setLastname($request->get('last_name'));
+    
 
         // Handle role
         $roles = $request->get('roles');
         if ($roles) {
             $user->setRoles($roles); // The 'roles' array will hold the selected roles
+        }
+
+        // Validate user input (optional but recommended)
+        if (!$user->getUsername() || !$user->getEmail() || !$user->getPassword()) {
+            $this->addFlash('error', 'All fields are required.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Check for existing user
+        $existingUser = $em->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
+        if ($existingUser) {
+            $this->addFlash('error', 'Username already taken.');
+            return $this->redirectToRoute('app_login');
         }
 
         $em->persist($user);
@@ -61,7 +76,7 @@ class UserController extends AbstractController
      */
     public function show(User $user): Response
     {
-        return $this->render('user/show.html.twig', [
+        return $this->render('back/userlist.html.twig', [
             'user' => $user,
         ]);
     }
@@ -69,61 +84,78 @@ class UserController extends AbstractController
     /**
      * @Route("/user/{id}/edit", name="user_edit")
      */
-    public function edit(User $user, Request $request, EntityManagerInterface $em, PasswordHasherInterface $passwordHasher): Response
-    {
-        // Create the form for editing user data
-        $form = $this->createForm(UserRegistrationFormType::class, $user);
-
-        // Handle the form submission
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // If the password is updated, hash the new password
-            if ($request->get('password')) {
-                $hashedPassword = $passwordHasher->hash($request->get('password'));
-                $user->setPassword($hashedPassword);
-            }
-
-            // Handle profile image upload if updated
-            $profileImageFile = $form->get('profileImage')->getData();
-            if ($profileImageFile) {
-                $newFilename = uniqid() . '.' . $profileImageFile->guessExtension();
-                try {
-                    $profileImageFile->move(
-                        $this->getParameter('profile_image_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Handle error if image upload fails
-                }
-                $user->setProfileImage($newFilename);
-            }
-
-            // Handle role (if changed)
-            $role = $form->get('role')->getData();
-            $user->setRoles([$role]);
-
-            // Save the updated user data to the database
-            $em->flush();
-
-            return $this->redirectToRoute('user_index');
+    public function edit(Request $request, EntityManagerInterface $em, UserRepository $userRepository, int $id): Response {
+        $user = $userRepository->find($id);
+        if (!$user) {
+            $this->addFlash('error', 'User not found.');
+            return $this->redirectToRoute('app_userlist');
         }
-
-        return $this->render('back/edituser.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-        ]);
+    
+        $user->setFirstname($request->request->get('firstname'));
+        $user->setLastname($request->request->get('lastname'));
+        $user->setUsername($request->request->get('username'));
+        $user->setEmail($request->request->get('email'));
+        $user->setNumber($request->request->get('number'));
+    
+        $em->persist($user);
+        $em->flush();
+    
+        $this->addFlash('success', 'User updated successfully.');
+        return $this->redirectToRoute('app_userlist');
     }
 
     /**
      * @Route("/user/{id}/delete", name="user_delete")
      */
-    public function delete(User $user, EntityManagerInterface $em): Response
+    public function delete(int $id, EntityManagerInterface $em): Response
     {
+        // Fetch user from the database
+        $user = $em->getRepository(User::class)->find($id);
+
+        // Check if user exists
+        if (!$user) {
+            $this->addFlash('error', 'User not found.');
+            return $this->redirectToRoute('app_userlist');
+        }
+
+        // Remove the user
         $em->remove($user);
         $em->flush();
 
-        return $this->redirectToRoute('user_index');
-    }
-}
+        $this->addFlash('success', 'User deleted successfully.');
 
+        return $this->redirectToRoute('app_userlist');
+    }
+    #[Route('/login', name: 'app_login')]
+    public function login(Request $request, EntityManagerInterface $em,UserPasswordHasherInterface  $passwordHasher, SessionInterface $session): Response
+    {
+        if ($request->isMethod('POST')) {
+            $username = $request->request->get('username');
+            $password = $request->request->get('password');
+
+            $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+
+            if (!$user) {
+                $this->addFlash('error', 'User not found.');
+                return $this->redirectToRoute('app_login');
+            }
+
+            // Using PasswordHasherInterface to validate the password
+            if ($passwordHasher->isPasswordValid($user, $password)) {
+                // Store user session
+                $session->set('user_id', $user->getId());
+                $session->set('username', $user->getUsername());
+
+                $this->addFlash('success', 'Login successful!');
+                return $this->redirectToRoute('app_userlist'); // Change 'dashboard' to your desired route
+            } else {
+                $this->addFlash('error', 'Invalid password.');
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
+        return $this->render('login/login.html.twig');
+    }
+
+
+}

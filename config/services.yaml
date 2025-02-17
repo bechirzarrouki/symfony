@@ -2,7 +2,7 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 parameters:
-
+    profile_image_directory: '%kernel.project_dir%/public/uploads/profile_images'
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

@@ -50,14 +50,7 @@ public function test(): Response
         'controller_name' => 'testController',
     ]);
 }
-#[Route('/login', name: 'app_login')]
-public function login(): Response
-{
-    return $this->render('login/login.html.twig', [
-        'controller_name' => 'loginController',
-    ]);
 
-}
 #[Route('/register', name: 'app_register')]
 public function registre(): Response
 {
@@ -92,11 +85,19 @@ public function edituser(): Response
     ]);
 
 }
-#[Route('/userlist', name: 'app_userlist')]
+#[Route('/dashboard', name: 'app_userlist')]
 public function userlsit(): Response
 {
-    return $this->render('back/userlist.html.twig', [
-        'controller_name' => 'userlistController',
+    return $this->render('back/dashboard.html.twig', [
+        'controller_name' => 'dashboardController',
+    ]);
+
+}
+#[Route('/logout', name: 'app_logout')]
+public function logout(): Response
+{
+    return $this->render('back/logout.html.twig', [
+        'controller_name' => 'logoutController',
     ]);
 
 }

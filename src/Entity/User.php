@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: "gestion_user")] // Specify the correct table name here
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,9 +36,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profileImage = null; 
 
-    // ✅ Suppression de `role`, on garde `roles` (tableau JSON)
     #[ORM\Column(type: "json")]
-    private array $roles = ['ROLE_USER']; // Toujours initialisé avec ROLE_USER
+    private array $roles = ['ROLE_USER']; // Always initialized with ROLE_USER
 
     public function getId(): ?int
     {
@@ -110,7 +110,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // ✅ Gestion correcte des rôles
     public function getRoles(): array
     {
         return array_unique($this->roles);

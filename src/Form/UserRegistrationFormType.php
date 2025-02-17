@@ -2,7 +2,7 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Validator\PasswordMatch;  // Import the custom validator
+use src\Validator\PasswordMatch;  // Import the custom validator
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

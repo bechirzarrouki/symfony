@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnovMatch - Login</title>
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}"> <!-- Linking login.css -->
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
     <div class="login-container">
@@ -34,15 +34,10 @@
         </form>
     </div>
 
-    <!-- JavaScript for Password Toggle -->
     <script>
         function togglePassword() {
             var passwordField = document.getElementById("password");
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-            } else {
-                passwordField.type = "password";
-            }
+            passwordField.type = (passwordField.type === "password") ? "text" : "password";
         }
     </script>
 </body>

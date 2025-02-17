@@ -4,25 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnovMatch - Sign Up</title>
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}"> <!-- Same CSS as login -->
+    <link rel="stylesheet" href="{{ asset('css/register.css') }}">
 </head>
 <body>
     <div class="login-container">
         <h1>Sign Up</h1>
         <form id="signup-form" action="{{ path('app_register') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-
-            <!-- First Name -->
-            <div class="input-group">
-                <label for="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" required>
-            </div>
-
-            <!-- Last Name -->
-            <div class="input-group">
-                <label for="last_name">Last Name</label>
-                <input type="text" id="last_name" name="last_name" required>
-            </div>
-
             <!-- Username -->
             <div class="input-group">
                 <label for="username">Username</label>
@@ -52,13 +39,20 @@
                 <span id="confirm-password-error" style="color: red; display: none;">Passwords do not match.</span>
             </div>
 
-            <!-- Profile Picture -->
+            <!-- Phone Number -->
             <div class="input-group">
-                <label for="profile_picture">Profile Picture</label>
-                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" required>
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" maxlength="8" pattern="\d{8}" required>
+                <span id="phone-error" style="color: red; display: none;">Phone number must be 8 digits long and contain only numbers.</span>
             </div>
 
-            <!-- Role Selection (New part) -->
+            <!-- Profile Image Input -->
+            <div class="input-group">
+                <label for="profile_image">Profile Image</label>
+                <input type="file" id="profile_image" name="profile_image" accept="image/*">
+            </div>
+
+            <!-- Role Selection -->
             <div class="input-group">
                 <label>Sign in as:</label><br>
                 <input type="checkbox" id="employee" name="roles[]" value="ROLE_EMPLOYEE">
@@ -67,32 +61,16 @@
                 <label for="investor">Investor</label><br>
                 <input type="checkbox" id="project_leader" name="roles[]" value="ROLE_PROJECT_LEADER">
                 <label for="project_leader">Project Leader</label><br>
-                <span id="role-error" style="color: red; display: none;">You must select one role.</span>
+                <span id="role-error" style="color: red; display: none;">You must select at least one role.</span>
             </div>
 
             <!-- Sign Up Button -->
-            <button type="button" class="login-btn" onclick="previewData()">Preview Data</button>
-
-            <!-- Redirect to Login -->
-            <div class="links">
-                <a href="{{ path('app_login') }}">Already have an account? Log in here</a>
-            </div>
-
-        <!-- Preview Section -->
-        <div id="preview-section" style="display: none; margin-top: 20px;">
-            <h3>Preview Your Data:</h3>
-            <p><strong>First Name:</strong> <span id="preview-first-name"></span></p>
-            <p><strong>Last Name:</strong> <span id="preview-last-name"></span></p>
-            <p><strong>Username:</strong> <span id="preview-username"></span></p>
-            <p><strong>Email:</strong> <span id="preview-email"></span></p>
-            <p><strong>Password:</strong> <span id="preview-password"></span></p>
-            <p><strong>Profile Picture:</strong> <span id="preview-profile-picture"></span></p>
-            <p><strong>Roles:</strong> <span id="preview-roles"></span></p>
-
             <button type="submit" class="login-btn">Submit</button>
-        </div>
-                </form>
+        </form>
 
+        <div class="links">
+            <a href="{{ path('app_login') }}">Already have an account? Log in here</a>
+        </div>
     </div>
 
     <!-- JavaScript for Password Toggle, Form Validation, and Preview -->
@@ -137,6 +115,17 @@
                 confirmPasswordError.style.display = "none";
             }
 
+            // Validate Phone Number
+            var phone = document.getElementById("phone").value;
+            var phoneError = document.getElementById("phone-error");
+            var phoneRegex = /^\d{8}$/;
+            if (!phoneRegex.test(phone)) {
+                phoneError.style.display = "inline";
+                isValid = false;
+            } else {
+                phoneError.style.display = "none";
+            }
+
             // Validate Role Selection
             var roleError = document.getElementById("role-error");
             var roleSelected = document.querySelector('input[name="roles[]"]:checked');
@@ -148,31 +137,6 @@
             }
 
             return isValid;
-        }
-
-        function previewData() {
-            // Gather form data
-            var firstName = document.getElementById("first_name").value;
-            var lastName = document.getElementById("last_name").value;
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var profilePicture = document.getElementById("profile_picture").files[0] ? document.getElementById("profile_picture").files[0].name : "No file selected";
-            var roles = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map(function(checkbox) {
-                return checkbox.value;
-            }).join(", ");
-
-            // Display the data in the preview section
-            document.getElementById("preview-first-name").innerText = firstName;
-            document.getElementById("preview-last-name").innerText = lastName;
-            document.getElementById("preview-username").innerText = username;
-            document.getElementById("preview-email").innerText = email;
-            document.getElementById("preview-password").innerText = password;
-            document.getElementById("preview-profile-picture").innerText = profilePicture;
-            document.getElementById("preview-roles").innerText = roles;
-
-            // Show the preview section
-            document.getElementById("preview-section").style.display = "block";
         }
     </script>
 </body>
