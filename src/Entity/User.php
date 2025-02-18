@@ -2,6 +2,7 @@
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\Table(name: "gestion_user")]
 class User
 {
     #[ORM\Id]
