@@ -60,15 +60,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Ajout du toggle des détails d'investissement spécifiques
-    document.querySelectorAll('.investment-content').forEach(investmentContent => {
-        investmentContent.addEventListener('click', function () {
-            let investmentDetails = investmentContent.nextElementSibling;
-            if (investmentDetails && investmentDetails.classList.contains('investment-details')) {
-                investmentDetails.style.display = (investmentDetails.style.display === 'none' || investmentDetails.style.display === '') ? 'block' : 'none';
-            }
-        });
-    });
+ // Ajout du toggle des détails d'investissement spécifiques
+
+
+    
 
 
 
@@ -164,23 +159,23 @@ function confirmDelete(id) {
         return;
     }
 
-    // Remove any previous hidden inputs for investmentTypes
+    // Remove existing hidden inputs for investmentTypes
     document.querySelectorAll('input[name="investmentTypes[]"]').forEach(input => input.remove());
 
-    // Update a container for user feedback (optional)
+    // Get the container for displaying selected types
     const container = document.getElementById('selectedTypesContainer');
     if (container) {
-        container.innerHTML = '';
+        container.innerHTML = ''; // Clear previous selections
     }
 
     // Array to hold the selected type values
-    let selectedTypes = [];
+    const selectedTypes = [];
 
     selectedOptions.forEach(option => {
         const typeValue = option.getAttribute('data-value');
-        selectedTypes.push(typeValue);  // Add the type value to the array
+        selectedTypes.push(typeValue);
 
-        // Create a new hidden input for each selected type
+        // Create a hidden input to store the selected type in the form
         const hiddenInput = document.createElement('input');
         hiddenInput.type = 'hidden';
         hiddenInput.name = 'investmentTypes[]';
@@ -190,16 +185,36 @@ function confirmDelete(id) {
         // Display the selected type (optional)
         if (container) {
             const span = document.createElement('span');
-            span.innerText = typeValue + ' ';
+            span.textContent = typeValue;
             container.appendChild(span);
         }
     });
 
-    // Log the selected types to the console
-    
+    console.log("Selected Types:", selectedTypes);
 
-    // Only close the modal when explicitly confirmed
+    // Close modal after selection
+    closeModal('typeModal');
 }
+
+// Toggle selection state when clicking on a type
+
+
+// Function to close the modal
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Function to open the modal
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
 
 // Ensure the function is only called when clicking the "Validate" button
 document.getElementById('validateSelection').addEventListener('click', function (event) {
@@ -208,9 +223,10 @@ document.getElementById('validateSelection').addEventListener('click', function 
     console.log('Selected Types:', selectedTypes);
     closeModal('typeModal'); // Close the modal only after selection is confirmed
 });
-
-    function validateForm(event) {
+function validateForm(event) {
     let isValid = true;
+
+    // Récupérer les valeurs des champs
     const description = document.getElementById('description').value;
     const typeRetour = document.getElementById('typeRetour').value;
     const tauxRendement = document.getElementById('tauxRendement').value;
@@ -218,29 +234,58 @@ document.getElementById('validateSelection').addEventListener('click', function 
     const status = document.getElementById('status').value;
 
     // Vérifier si les champs sont vides
-    if (!description || !typeRetour || !tauxRendement || !dateDeadline || !status) {
+    if (!description==="" || !typeRetour || !tauxRendement || !dateDeadline || !status) {
         isValid = false;
+        alert('Add return on your investmenet');
+        displayErrorMessage('Tous les champs doivent être remplis.');
     }
 
     // Vérifier le format du taux de rendement (utilisation du pattern)
-    const tauxPattern = new RegExp('^\\d+(\\.\\d{1,2})?$');
+    const tauxPattern = new RegExp('^\\d+(\\.\\d{1,2})?$'); // Format : nombre entier ou décimal avec deux décimales max
     if (tauxRendement && !tauxPattern.test(tauxRendement)) {
         isValid = false;
+        displayErrorMessage('Le taux de rendement doit être un nombre valide avec jusqu\'à deux décimales.');
     }
 
-    // Afficher le message d'erreur si invalide
-    const errorMessage = document.getElementById('errorMessage');
-    if (isValid) {
-        errorMessage.style.display = 'none';
-    } else {
-        errorMessage.style.display = 'block';
-    }
+    // La validation de la date est déjà gérée par l'input de type "date"
+    // Aucune validation supplémentaire nécessaire pour la date.
 
-    // Prevent form submission if validation fails
+    // Afficher le message d'erreur si le formulaire est invalide
     if (!isValid) {
+        
         event.preventDefault();
+        // Empêcher la soumission du formulaire
     }
     return isValid;
 }
 
+// Fonction pour afficher les messages d'erreur
+function displayErrorMessage(message) {
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block'; // Afficher le message d'erreur
+}
 
+// Fonction pour masquer le message d'erreur
+function hideErrorMessage() {
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.style.display = 'none';
+}
+
+// Attacher la validation du formulaire à l'événement de soumission
+document.getElementById('form').addEventListener('submit', function(event) {
+    hideErrorMessage(); // Masquer les erreurs précédentes
+    validateForm(event);
+});
+
+function toggleOptionsMenu1(event) {
+    event.stopPropagation();
+    const dropdown = event.target.nextElementSibling;
+    document.querySelectorAll('.options-dropdown1').forEach(menu => {
+        if (menu !== dropdown) menu.classList.remove('show');
+    });
+    dropdown.classList.toggle('show');
+}
+function openDeleteReturn(id) {
+    document.getElementById("deleteReturn" + id).style.display="flex";
+}

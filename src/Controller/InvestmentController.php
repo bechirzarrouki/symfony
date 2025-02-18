@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/investment')]
@@ -40,20 +41,23 @@ class InvestmentController extends AbstractController
 
     // Create a new investment using a dummy user if not logged in
     #[Route('/new', name: 'investment_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em): Response
+    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em, SessionInterface $session): Response
     {
         $investment = new Investment();
-    
+        
         if ($request->isMethod('POST')) {
             // Retrieve values from the request
             $content = $request->request->get('content');
-            $types = $request->request->all('type'); // Ensures type is an array
-    
-    
+            $investmentTypes = $request->request->all('investmentTypes');
+            $taxRendement = (float) $request->request->get('taxRendement');  // Assuming it's a float
+            $Description = $request->request->get('description');
+            $TypeReturn = $request->request->get('typeReturn');
+            $dateDeadline = new \DateTime($request->request->get('dateDeadline'));
+            $status = $request->request->get('status');
+
             // Set investment values
             $investment->setContent($content);
-            $investment->setInvestmentTypes($types);
-    
+            $investment->setInvestmentTypes($investmentTypes);
             // Use the logged-in user if available, otherwise use/create a dummy user
             $user = $this->getUser();
             if (!$user) {
@@ -70,9 +74,24 @@ class InvestmentController extends AbstractController
     
             // Save the new investment
             $investmentRepository->save($investment);
+    
+            // Get the ID of the newly created investment
+            $id = $investment->getId();
+    
+            // Store the necessary data in the session to be used in the 'return_create' controller
+            $session->set('investmentData', [
+                'taxRendement'=>$taxRendement,
+                'Description'=>$Description,
+                'TypeReturn'=>$TypeReturn,
+                'dateDeadline'=>$dateDeadline,
+                'status'=>$status,
+            ]);
+    
+            // Flash message for successful investment creation
             $this->addFlash('success', 'Investment created successfully!');
     
-            return $this->redirectToRoute('investment_index');
+            // Redirect to the return creation page with the investment ID
+            return $this->redirectToRoute('return_create', ['investmentId' => $id]);
         }
     
         return $this->render('investment/new.html.twig', [
