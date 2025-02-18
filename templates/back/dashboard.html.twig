@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+
+        <nav class="dashboard-menu">
+            <ul>
+                <li><a href="{{ path('app_dashboard') }}" class="menu-link">Manage Users</a></li>
+                <li><a href="{{ path('app_login') }}" class="menu-link logout">Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="dashboard-content">
+            <p>Welcome, Admin! Use the navigation above to manage the system.</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .dashboard-container {
+            max-width: 90%;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .dashboard-title {
+            color: purple;
+        }
+
+        .dashboard-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .dashboard-menu li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        .menu-link {
+            text-decoration: none;
+            color: white;
+            background-color: purple;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .menu-link.logout {
+            background-color: #e74c3c;
+        }
+
+        .dashboard-content {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}

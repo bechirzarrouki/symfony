@@ -1,18 +1,19 @@
 # config/services.yaml
 
 parameters:
-  uploads_directory: "%kernel.project_dir%/public/uploads"
-
+    profile_image_directory: '%kernel.project_dir%/public/uploads/profile_images'
 services:
-  # Default configuration for services in this file
-  _defaults:
-    autowire: true # Automatically injects dependencies in your services
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-  # Automatically register services in the 'src' folder
-  App\:
-    resource: "../src/"
-    exclude:
-      - "../src/DependencyInjection/"
-      - "../src/Entity/"
-      - "../src/Kernel.php"
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Explicitly registering the PasswordMatchValidator (optional, for clarity)
+    App\Validator\PasswordMatchValidator:
+        arguments: []
