@@ -50,38 +50,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Toggle des détails de l'investissement
-    document.querySelectorAll('.investment-box').forEach(box => {
-        box.addEventListener('click', function () {
-            let details = this.querySelector('.investment-details');
-            if (details) {
-                details.style.display = details.style.display === 'block' ? 'none' : 'block';
-            }
-        });
-    });
+   
 
- // Ajout du toggle des détails d'investissement spécifiques
+ 
 
 
     
 
 
 
-    // Gestion du menu des options (trois points)
-    function toggleOptionsMenu(event) {
-        event.stopPropagation();
-        const dropdown = event.target.nextElementSibling;
-
-        // Fermer tous les autres menus
-        document.querySelectorAll('.options-dropdown').forEach(menu => {
-            if (menu !== dropdown) {
-                menu.classList.remove('show');
-            }
-        });
-
-        // Afficher/masquer le menu actuel
-        dropdown.classList.toggle('show');
-    }
+ 
 
     // Écouteur d'événement sur les trois points
     document.querySelectorAll(".options-menu i").forEach(icon => {
@@ -118,37 +96,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Ouvrir le modal de modification
-function openEditModal(id) {
-    document.getElementById("editModal"+id).style.display = "flex";
-}
-
-// Fermer le modal de modification
-function closeEditModal(id) {
-    document.getElementById("editModal"+id).style.display = "none";
-}
-
-// Sauvegarder les modifications
-function saveChanges(id) {
-    alert("Modifications enregistrées !");
-    closeEditModal(id);
-}
-
-// Ouvrir le modal de suppression
-function openDeleteModal(id) {
-    document.getElementById("deleteModal" + id).style.display="flex";
-}
-
-// Fermer le modal de suppression
-function closeDeleteModal(id) {
-    document.getElementById("deleteModal" + id).style.display = "none";
-}
-
-// Confirmer la suppression
-function confirmDelete(id) {
-    alert("Investissement supprimé !");
-    closeDeleteModal(id);
-}
  // Toggle selection on type options
   function selectTypes() {
     const selectedOptions = document.querySelectorAll('#type-list .type-option.selected');
@@ -277,7 +224,11 @@ document.getElementById('form').addEventListener('submit', function(event) {
     hideErrorMessage(); // Masquer les erreurs précédentes
     validateForm(event);
 });
+function toggleType(element) {
+    const currentDisplay = element.style.display;
 
+ currentDisplay.classList.toggle('selected');
+}
 function toggleOptionsMenu1(event) {
     event.stopPropagation();
     const dropdown = event.target.nextElementSibling;

@@ -175,20 +175,6 @@ body {
     color: black;
 }
 
-/* Styles pour la popup */
-.modal {
-    display: none; /* Caché par défaut */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond assombri */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .modal-content {
     background-color: white;
@@ -232,38 +218,11 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-        /* Styles pour la popup */
-        .modal {
-            display: none; /* Caché par défaut */
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Fond assombri */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+ 
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
+
+   
 
         .submit-btn {
             width: 100%;
@@ -300,26 +259,9 @@ body {
   background-color: #fff;
 }
 
-/* Style de la modal */
-.modal {
-    display: none;  /* Par défaut, le modal est caché */
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Ombre de fond */
-}
 
-.modal-content {
-    position: relative;
-    margin: auto;
-    padding: 20px;
-    background: white;
-    max-width: 500px;
-    border-radius: 10px;
-}
+
+
 
 
 /* Animation d'apparition */
@@ -334,16 +276,7 @@ body {
   }
 }
 
-/* Bouton de fermeture */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #666;
-  transition: 0.3s;
-}
+
 
 .close-btn:hover {
   color: #000;
@@ -371,5 +304,98 @@ body {
 .input-style:focus {
   border-color: #53348D;
   box-shadow: #53348D;
+}
+
+.modal {
+    display: none; /* Par défaut, le modal est masqué */
+}
+
+.modal.show {
+    display: flex; /* Ou 'block', en fonction de ton design */
+}
+.options-menu {
+	position: relative;
+}
+.options-dropdown {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 100%;
+	background: white;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	padding: 5px;
+	z-index: 1000;
+}
+
+.options-dropdown.show {
+	display: block;
+}
+
+.options-dropdown button {
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	border: none;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+}
+
+.options-dropdown button:hover {
+	background: #f0f0f0;
+}
+.options-dropdown1 {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 100%;
+	background: white;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	padding: 5px;
+	z-index: 1000;
+}
+
+.options-dropdown1.show {
+	display: block;
+}
+
+.options-dropdown1 button {
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	border: none;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+}
+
+.options-dropdown1 button:hover {
+	background: #f0f0f0;
+}
+.modal {
+    display: none;  /* Modale cachée par défaut */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 1000px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.investment-content {
+	margin-top: 15px;
+	padding: 10px;
+	background: #f9f9f9;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #333;
+	border-left: 4px solid #53348D;
 }
 

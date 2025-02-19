@@ -7,307 +7,7 @@
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('css/investisement.css') }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<script>
-		// Sélectionne tous les éléments avec la classe .investment-content
-           // Sélectionne tous les éléments avec la classe .investment-content
-            document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded and parsed.");
-    
-    // Sélectionne tous les éléments avec la classe .investment-content
-    const investmentContents = document.querySelectorAll('.investment-content');
-    console.log("Found", investmentContents.length, ".investment-content elements.");
-
-    investmentContents.forEach(function(investmentContent, index) {
-        console.log(`Setting up click listener for .investment-content #${index}`);
-        
-        investmentContent.addEventListener('click', function() {
-            console.log(".investment-content clicked.");
-            
-            // Trouve l'élément .investment-details correspondant à l'élément cliqué
-            const investmentDetails = investmentContent.nextElementSibling;
-            if (!investmentDetails) {
-                console.warn("No .investment-details found next to clicked .investment-content");
-                return;
-            }
-            if (!investmentDetails.classList.contains('investment-details')) {
-                console.warn("Next sibling is not .investment-details");
-                return;
-            }
-            
-            console.log("Toggling .investment-details visibility.");
-            const currentDisplay = investmentDetails.style.display;
-            investmentDetails.style.display = currentDisplay === 'block' ? 'none' : 'block';
-            
-            // Get the investment ID from a data attribute
-            const investmentId = investmentContent.getAttribute("data-investment-id");
-            console.log("Investment ID:", investmentId);
-            if (!investmentId) {
-                console.error("Investment ID is missing!");
-                return;
-            }
-
-            const returnsContainer = investmentDetails.querySelector(".returns-list");
-            if (!returnsContainer) {
-                console.error("No .returns-list found inside .investment-details");
-                return;
-            }
-
-            // Fetch returns only if they are not already loaded
-            if (returnsContainer.innerHTML.trim() === "") {
-                console.log("Fetching returns for investment ID:", investmentId);
-                fetch(`/api/investment/${investmentId}/returns`)
-                    .then(response => {
-                        console.log("Received response from API.", response);
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("Received data:", data);
-                        returnsContainer.innerHTML = ""; // Clear previous content
-
-                        if (data.length === 0) {
-                            console.log("No returns found for this investment.");
-                            returnsContainer.innerHTML = "<p>No returns found for this investment.</p>";
-                        } else {
-                            data.forEach((returnItem, itemIndex) => {
-                                console.log(`Processing return item #${itemIndex}:`, returnItem);
-                                returnsContainer.innerHTML += `
-                                    <div class="return-item">
-                                        <p><strong>Description:</strong> ${returnItem.description}</p>
-                                        <p><strong>Type:</strong> ${returnItem.typeReturn}</p>
-                                        <p><strong>Tax Rendement:</strong> ${returnItem.taxRendement}</p>
-                                        <p><strong>Date Deadline:</strong> ${returnItem.dateDeadline}</p>
-                                        <p><strong>Status:</strong> ${returnItem.status}</p>                                            
-                                        <div class="options-menu">
-                                            <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu1(event)"></i>
-                                            <div class="options-dropdown1">
-											<button onclick="openEditReturn(${returnItem.id})">Edit</button>
-                                                <button onclick="openDeleteReturn(${returnItem.id})">Delete</button>
-                                            </div>
-                                        </div>
-
-                                        <!-- Delete Confirmation Modal -->
-                                        <div id="deleteReturn${returnItem.id}" class="modal">
-                                            <div class="modal-content">
-                                                <h3>Do you really want to delete this investment?</h3>
-                                                <form action="/return/${returnItem.id}/delete" method="POST">
-                                                    <button type="submit" class="submit-btn">Delete</button>
-                                                </form>
-                                                <button class="submit-btn" onclick="closeDeletereturn(${returnItem.id})">Cancel</button>
-                                            </div>
-                                        </div>
-										<div id="editReturnModal${returnItem.id}" class="modal">
-											<form action="/return/${returnItem.id}/edit" method="POST">
-													<div class="modal-content">
-																		<span class="close-btn" onclick="closeEditReturnModal(${returnItem.id})">&times;</span>
-																		<h3>Edit Return</h3>
-																		<input type="text" id="editDescription${
-															returnItem.id
-															}" name="description" class="input-style" value="${
-															returnItem.description
-															}" required>
-																		<input type="text" id="editTypeReturn${
-															returnItem.id
-															}" name="typeReturn" class="input-style" value="${
-															returnItem.typeReturn
-															}" required>
-																		<input type="number" id="editTaxRendement${
-															returnItem.id
-															}" name="taxRendement" class="input-style" value="${
-															returnItem.taxRendement
-															}" required pattern="^\d+(\.\d{1,2})?$">
-																		<input type="date" id="editDateDeadline${
-															returnItem.id
-															}" name="dateDeadline" class="input-style" value="${
-															returnItem.dateDeadline
-															}" required>
-																		<input type="text" id="editStatus${
-															returnItem.id
-															}" name="status" class="input-style" value="${
-															returnItem.status
-															}" required>
-																		<button type="submit" class="submit-btn">Save</button>
-																	</div>
-																</form>
-															</div>
-                                    </div>
-                                `;
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error fetching returns:", error);
-                        returnsContainer.innerHTML =`<p>Error loading returns.</p>${error}`;
-                    });
-            }
-        });
-    });
-});
-
-// Add event listener for the options menu to stop propagation
-const optionsMenus = document.querySelectorAll(".options-menu");
-optionsMenus.forEach(function (menu) {
-menu.addEventListener("click", function (event) { // Prevents the click from propagating to the investment box
-});
-});
-
-function toggleOptionsMenu1(event) {
-event.stopPropagation();
-const dropdown = event.target.nextElementSibling;
-document.querySelectorAll('.options-dropdown1').forEach(menu => {
-if (menu !== dropdown) 
-menu.classList.remove('show');
-
-});
-dropdown.classList.toggle('show');
-}
-
-
-function openEditReturn(returnId) {
-const modal = document.getElementById (`editReturnModal${returnId}`);
-if (modal) {
-modal.style.display = "block";
-}
-}
-
-function closeEditReturn(returnId) {
-const modal = document.getElementById (`editReturnModal${returnId}`);
-if (modal) {
-modal.style.display = "none";
-}
-}
-function toggleType(element) {
-       const currentDisplay = element.style.display;
-
-    if (currentDisplay === "none" || currentDisplay === "") {
-        element.style.display = "block";
-    } else {
-        element.style.display = "none";
-    }
-}
-	</script>
-	<style>
-
-
-		.close-btn {
-			position: absolute;
-			top: 10px;
-			right: 15px;
-			font-size: 24px;
-			cursor: pointer;
-		}
-		.investment-details {
-			width: 500px;
-			background: #f4f2ee;
-			border-radius: 10px;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-			padding: 20px;
-			display: none;
-			margin-top: 10px;
-			font-size: 14px;
-			border-left: 4px solid #53348D;
-		}
-		.submit-btn {
-			width: 100%;
-			padding: 10px;
-			background-color: #53348D;
-			border: 5%;
-			color: white;
-			font-size: 16px;
-			cursor: pointer;
-			margin-top: 10px;
-		}
-
-		.submit-btn:hover {
-			background-color: #53348D;
-		}
-
-		/* Style général des champs d'entrée */
-		.input-style {
-			width: 100%;
-			padding: 12px;
-			border: 2px solid #ccc;
-			border-radius: 8px;
-			font-size: 16px;
-			color: #333;
-			outline: none;
-			transition: all 0.3s ease-in-out;
-			background-color: #f9f9f9;
-		}
-
-		/* Effet au focus */
-		.input-style:focus {
-			border-color: #53348D;
-			box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
-			background-color: #fff;
-		}
-
-
-		/* Animation d'apparition */
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: scale(0.9);
-			}
-			to {
-				opacity: 1;
-				transform: scale(1);
-			}
-		}
-
-		/* Bouton de fermeture */
-		.close-btn {
-			position: absolute;
-			top: 15px;
-			right: 20px;
-			font-size: 24px;
-			cursor: pointer;
-			color: #666;
-			transition: 0.3s;
-		}
-
-		.close-btn:hover {
-			color: #000;
-		}
-
-
-		.close-btn {
-			position: absolute;
-			top: 10px;
-			right: 15px;
-			font-size: 24px;
-			cursor: pointer;
-		}
-
-
-		.type-option {
-			display: inline-block;
-			padding: 10px 15px;
-			margin: 5px;
-			border-radius: 5px;
-			cursor: pointer;
-			background: #53348D;
-			transition: background 0.3s, color 0.3s;
-			font-weight: bold;
-		}
-
-		.type-option.selected {
-			background: #007bff;
-			color: #fff;
-		}
-
-		/* Champs et boutons du modal */
-		#selected-types {
-			width: 100%;
-			padding: 10px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			background: #f1f1f1;
-			margin-bottom: 10px;
-		}
-		.modal {
-			display: none;
-		}
-	</style>
+	
 {% endblock %}
 {% block javascripts %}
 	<script src="{{ asset('js/investisement.js') }}"></script>
@@ -373,9 +73,8 @@ function toggleType(element) {
 </form>
 
 			</form>
-			<!-- L'investment-box est maintenant sous create-post mais toujours dans post-container -->
 			{% for investment in investments %}
-				<div class="investment-box">
+          <div class="investment-box">
     <div class="profile-section">
         <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
         <div class="profile-info">
@@ -399,12 +98,15 @@ function toggleType(element) {
         <!-- Returns will be injected here -->
         <div class="returns-section" id="returns-{{ investment.id }}">
             <h4>Returns</h4>
-            <div class="returns-list"></div>
+            <div class="returns-list">
+        
+
+        </div>
         </div>
     </div>
 </div>
 
-				<div id="editModal{{investment.id}}" class="modal">
+				<div id="editModal{{ investment.id }}" class="modal">
 					<form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
 						<div class="modal-content">
 							<span class="close-btn" onclick="closeEditModal({{ investment.id }})">&times;</span>
@@ -415,128 +117,331 @@ function toggleType(element) {
 					</form>
 				</div>
 
-
-				<!-- Delete Modal -->
-				<div id="deleteModal{{ investment.id }}" class="modal">
-					<div class="modal-content">
-						<h3>Do you really want to delete this investment?</h3>
-						<form action="{{ path('investment_delete', { id: investment.id }) }}" method="POST">
-							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
-							<button type="submit" class="submit-btn">Delete</button>
-						</form>
-						<button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
-					</div>
+      
+        <!-- Delete Modal -->
+        <div id="deleteModal{{ investment.id }}" class="modal">
+            <div class="modal-content">
+                <h3>Do you really want to delete this investment?</h3>
+                <form action="{{ path('investment_delete_admin', { id: investment.id }) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ investment.id) }}">
+                    <button type="submit" class="submit-btn">Delete</button>
+                </form>
+               <button class="submit-btn" onclick="closeDeleteModal('{{ investment.id }}')">Cancel</button>
+            </div>
+        </div>
+        	<div id="editModal{{investment.id}}" class="modal">
+					<form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">
+						<div class="modal-content">
+							<span class="close-btn" onclick="closeEditModal({{ investment.id }})">&times;</span>
+							<h3>Edit Investment</h3>
+							<input type="text" id="editName" name="content" class="input-style" value="{{ investment.content }}">
+							<button type="submit" class="submit-btn">Save</button>
+						</div>
+					</form>
 				</div>
-			{% endfor %}
-		</div>
-	</div>
-</div></div><style>
-.modal {
-    display: none; /* Par défaut, le modal est masqué */
+	
+	{% endfor %}
+    <script>
+    // Add these functions to your existing script
+function openEditReturnModal(returnId) {
+    document.getElementById(`editReturnModal${returnId}`).style.display = "flex";
 }
 
-.modal.show {
-    display: flex; /* Ou 'block', en fonction de ton design */
-}
-.options-menu {
-	position: relative;
-}
-.options-dropdown {
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 100%;
-	background: white;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
-	padding: 5px;
-	z-index: 1000;
+function closeEditReturnModal(returnId) {
+    document.getElementById(`editReturnModal${returnId}`).style.display = "none";
 }
 
-.options-dropdown.show {
-	display: block;
+// Correct the typo in delete return function name
+function closeDeleteReturn(returnId) {  // Renamed from closeDeletereturn
+    document.getElementById(`deleteReturn${returnId}`).style.display = "none";
+}
+     function toggleOptionsMenu(event) {
+    event.stopPropagation(); // Empêche la fermeture immédiate du menu
+    const dropdown = event.target.nextElementSibling;
+    document.querySelectorAll('.options-dropdown').forEach(menu => {
+        if (menu !== dropdown) menu.classList.remove('show');
+    });
+    dropdown.classList.toggle('show');
+}
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.options-dropdown').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        });
+
+        function openEditModal(id) {
+            document.getElementById("editModal"+id).style.display = "flex";
+        }
+
+        function closeEditModal(id) {
+            document.getElementById("editModal"+id).style.display = "none";
+        }
+function saveChanges(id) {
+    alert("Modifications enregistrées !");
+    closeEditModal(id);
+}
+       // Ouvrir le modal de suppression
+// Ouvrir le modal de suppression
+function openDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display = "flex";
 }
 
-.options-dropdown button {
-	display: block;
-	width: 100%;
-	padding: 8px 12px;
-	border: none;
-	background: none;
-	text-align: left;
-	cursor: pointer;
+// Fermer le modal de suppression
+function closeDeleteModal(id) {
+    document.getElementById("deleteModal" + id).style.display = "none";
 }
 
-.options-dropdown button:hover {
-	background: #f0f0f0;
+
+// Confirmer la suppression
+function confirmDelete(id) {
+    alert("Investissement supprimé !");
+    closeDeleteModal(id);
 }
-.options-dropdown1 {
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 100%;
-	background: white;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
-	padding: 5px;
-	z-index: 1000;
+function openDeleteReturn(id) {
+    document.getElementById("deleteReturn" + id).style.display="flex";
 }
 
-.options-dropdown1.show {
-	display: block;
+// Fermer le modal de suppression
+function closeDeleteReturn(id) {
+    document.getElementById("deleteReturn" + id).style.display = "none";
 }
+const csrfTokens = {
+        delete: "{{ csrf_token('delete') }}"
+    };
+// Confirmer la suppression
+                // Sélectionne tous les éléments avec la classe .investment-content
+      document.addEventListener("DOMContentLoaded", function () {
+    const investmentContents = document.querySelectorAll(".investment-content");
 
-.options-dropdown1 button {
-	display: block;
-	width: 100%;
-	padding: 8px 12px;
-	border: none;
-	background: none;
-	text-align: left;
-	cursor: pointer;
-}
+    investmentContents.forEach(function (investmentContent) {
+        investmentContent.addEventListener("click", function () {
+            // Find the corresponding .investment-details section
+            const investmentDetails = investmentContent.nextElementSibling;
+            
+            if (!investmentDetails || !investmentDetails.classList.contains("investment-details")) return;
 
-.options-dropdown1 button:hover {
-	background: #f0f0f0;
-}
-.modal {
-    display: none;  /* Modale cachée par défaut */
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-}
+            // Toggle the display of .investment-details
+            if (investmentDetails.style.display === "none" || investmentDetails.style.display === "") {
+                investmentDetails.style.display = "block";
 
-.modal-content {
-    background-color: white;
-    padding: 20px;
+                // Get the investment ID from a data attribute
+                const investmentId = investmentContent.getAttribute("data-investment-id");
+                const returnsContainer = investmentDetails.querySelector(".returns-list");
+
+                // Fetch returns only if they are not already loaded
+                if (returnsContainer && returnsContainer.innerHTML.trim() === "") {
+                    fetch(`/api/investment/${investmentId}/returns`)
+                        .then(response => response.json())
+                        .then(data => {
+                            returnsContainer.innerHTML = ""; // Clear previous content
+                            if (data.length === 0) {
+                                returnsContainer.innerHTML = "<p>No returns found for this investment.</p>";
+                            } else {
+                                data.forEach(returnItem => {
+                                    console.log("Processing return item:", returnItem);
+                                   returnsContainer.innerHTML += `
+    <div class="return-item">
+        <p><strong>Description:</strong> ${returnItem.description}</p>
+        <p><strong>Type:</strong> ${returnItem.typeReturn}</p>
+        <p><strong>Tax Rendement:</strong> ${returnItem.taxRendement}</p>
+        <p><strong>Date Deadline:</strong> ${returnItem.dateDeadline}</p>
+        <p><strong>Status:</strong> ${returnItem.status}</p>                                           
+        <div class="options-menu">
+            <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+            <div class="options-dropdown">
+                <button onclick="openDeleteReturn(${returnItem.id})">Delete</button>
+                <button onclick="openEditReturnModal(${returnItem.id})">Edit</button>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteReturn${returnItem.id}" class="modal">
+            <div class="modal-content">
+                <h3>Do you really want to delete this investment?</h3>
+                <form action="/return/${returnItem.id}/delete" method="POST">
+                    <input type="hidden" name="_token" value="${csrfTokens.delete}">
+                    <button type="submit" class="submit-btn">Delete</button>
+                </form>
+                <button class="submit-btn" onclick="closeDeletereturn(${returnItem.id})">Cancel</button>
+            </div>
+        </div>
+        	<div id="editReturnModal${returnItem.id}" class="modal">
+											<form action="/return/${returnItem.id}/edit" method="POST">
+													<div class="modal-content">
+																		<span class="close-btn" onclick="closeEditReturnModal(${returnItem.id})">&times;</span>
+																		<h3>Edit Return</h3>
+																		<input type="text" id="editDescription${
+															returnItem.id
+															}" name="description" class="input-style" value="${
+															returnItem.description
+															}" required>
+																		<input type="text" id="editTypeReturn${
+															returnItem.id
+															}" name="typeReturn" class="input-style" value="${
+															returnItem.typeReturn
+															}" required>
+																		<input type="number" id="editTaxRendement${
+															returnItem.id
+															}" name="taxRendement" class="input-style" value="${
+															returnItem.taxRendement
+															}" required pattern="^\d+(\.\d{1,2})?$">
+																		<input type="date" id="editDateDeadline${
+															returnItem.id
+															}" name="dateDeadline" class="input-style" value="${
+															returnItem.dateDeadline
+															}" required>
+																		<input type="text" id="editStatus${
+															returnItem.id
+															}" name="status" class="input-style" value="${
+															returnItem.status
+															}" required>
+																		<button type="submit" class="submit-btn">Save</button>
+																	</div>
+																</form>
+															</div>
+    </div>
+`;  
+
+                                });
+                             
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching returns:", error);
+                            returnsContainer.innerHTML = "<p>Error loading returns.</p>";
+                        });
+                }
+            } else {
+                investmentDetails.style.display = "none";
+            }
+        });
+    });
+      });
+
+    </script>
+
+    <style>
+    .type-option {
+			display: inline-block;
+			padding: 10px 15px;
+			margin: 5px;
+			border-radius: 5px;
+			cursor: pointer;
+			background: #53348D;
+			transition: background 0.3s, color 0.3s;
+			font-weight: bold;
+		}
+
+		.type-option.selected {
+			background: #007bff;
+			color: #fff;
+		}
+    .investment-details {
+    width: 600px; /* Même largeur que .investment-box */
+    background: #f4f2ee; /* Même fond que .investment-box */
     border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: none; /* Caché par défaut */
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #53348D;
+}
+/* General Styles */
+html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Empêcher le défilement horizontal */
 }
 
-.investment-content {
-	margin-top: 15px;
-	padding: 10px;
-	background: #f9f9f9;
-	border-radius: 5px;
-	font-size: 14px;
-	color: #333;
-	border-left: 4px solid #53348D;
+.post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 40rem;
+    margin: 20px auto; /* Marge normale */
+    padding: 20px;
+    height: auto; /* Supprimer la hauteur fixe */
+    overflow-y: visible; /* Supprimer le défilement interne */
 }
 
-.close-btn {
-	position: absolute;
-	top: 10px;
-	right: 15px;
-	font-size: 24px;
-	cursor: pointer;
-}</style><script></script>{% endblock %}
+.investment-box {
+    width: 100%; /* Largeur fixe pour contenir le contenu */
+      background: #fff; /* Rétablir le fond blanc pour garder le contraste */
+    color: black;/* Hauteur minimale */
+    /* Conserver les autres styles */
+}
+.investment-box {
+    width: 800px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Empêcher le débordement horizontal */
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+        .options-menu {
+            position: relative;
+        }
+
+        .options-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            z-index: 10;
+            width: 120px;
+        }
+
+        .options-dropdown.show {
+            display: block;
+        }
+
+        .options-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .options-dropdown button:hover {
+            background: #f0f0f0;    
+        }
+
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 86%;
+            padding: 10px;
+            background-color: #53348D;
+            border: 2px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+          
+        }
+
+        .submit-btn:hover {
+            background-color: #432A70;
+        }
+    </style>{% endblock %}

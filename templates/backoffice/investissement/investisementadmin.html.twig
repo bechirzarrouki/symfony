@@ -19,7 +19,7 @@
     <div class="profile-section">
         <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
         <div class="profile-info">
-            <h4>{{ investment.user.name }}</h4>
+            <h4>{{ investment.user.username }}</h4>
         </div>
         <div class="date-time">10/02/2025 - 14:30</div>
         <div class="options-menu">
@@ -237,7 +237,6 @@ html, body {
 
 .investment-box {
     width: 100%; /* Largeur fixe pour contenir le contenu */
-    min-height: 120px;
       background: #fff; /* Rétablir le fond blanc pour garder le contraste */
     color: black;/* Hauteur minimale */
     /* Conserver les autres styles */
