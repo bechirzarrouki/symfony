@@ -63,9 +63,10 @@ class InvestmentController extends AbstractController
             if (!$user) {
                 $user = $em->getRepository(User::class)->findOneBy([]) ?? new User();
                 if (!$user->getId()) {
-                    $user->setName('Dummy Investor');
+                    $user->setUsername('Dummy Investor');
                     $user->setEmail('dummy@investor.com');
-                    $user->setRole('ROLE_INVESTOR');
+                    $user->setRoles(['ROLE_INVESTOR']);
+                    
                     $em->persist($user);
                     $em->flush();
                 }

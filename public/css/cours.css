@@ -298,8 +298,7 @@
     border-collapse: collapse;
     margin: 20px 0;
     font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    table-layout: fixed; /* This can help control the column width better */
+    background-color: #f9f9f9; /* This can help control the column width better */
 }
 
 /* Table Header */

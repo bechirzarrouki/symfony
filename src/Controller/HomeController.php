@@ -8,6 +8,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class HomeController extends AbstractController
 {
+    #[Route('/back', name: 'app_home_back')]
+    public function backhome(): Response
+    {
+        return $this->render('back/home.html.twig', [
+            'controller_name' => 'homeController',
+        ]);
+    }
     #[Route('/', name: 'app_home')]
     public function home(): Response
     {
@@ -15,25 +22,11 @@ final class HomeController extends AbstractController
             'controller_name' => 'homeController',
         ]);
     }
-    #[Route('/', name: 'app_investisement')]
-    public function investisement(): Response
-    {
-        return $this->render('investisement/index.html.twig', [
-            'controller_name' => 'investisementssController',
-        ]);
-    }
     #[Route('/investisementafficher', name: 'app_investisementafficher')]
     public function investisementA(): Response
     {
         return $this->render('investisement/investisement.html.twig', [
             'controller_name' => 'investisementController',
-        ]);
-    }
-    #[Route('/investisementadmin', name: 'app_investisementadmin')]
-    public function investisementadmin(): Response
-    {
-        return $this->render('backoffice/investissement/investisementadmin.html.twig', [
-            'controller_name' => 'investisementadminController',
         ]);
     }
     #[Route('/profile', name: 'app_profile')]
@@ -55,13 +48,6 @@ public function retour(): Response
 {
     return $this->render('retour/retour.html.twig', [
         'controller_name' => 'RetourController',
-    ]);
-}
-#[Route('/test', name: 'app_test')]
-public function test(): Response
-{
-    return $this->render('test/test.html.twig', [
-        'controller_name' => 'testController',
     ]);
 }
 

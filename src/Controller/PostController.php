@@ -46,9 +46,9 @@ class PostController extends AbstractController
             if (!$dummyUser) {
                 // Create a dummy user if none exists.
                 $dummyUser = new User();
-                $dummyUser->setName('Dummy User');
+                $dummyUser->setUserName('Dummy User');
                 $dummyUser->setEmail('dummy@example.com');
-                $dummyUser->setRole('ROLE_CLIENT'); // or any role you prefer
+                $dummyUser->setRoles(['ROLE_CLIENT']); // or any role you prefer
                 $em->persist($dummyUser);
                 $em->flush();
             }

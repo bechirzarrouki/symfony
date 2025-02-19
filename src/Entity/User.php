@@ -1,44 +1,50 @@
 <?php
-use Doctrine\ORM\Mapping as ORM;
+namespace App\Entity;
 
-#[ORM\Entity]
-#[ORM\Table(name: "gestion_user")]
-class User
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(length: 255)]
+    private ?string $username = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(length: 255, unique: true)] 
     private ?string $email = null;
 
-    // This field distinguishes between different user types (client, investor, company, admin, etc.)
-    #[ORM\Column(type: 'string', length: 50)]
-    private ?string $role = null;
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $profession = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $number = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $summary = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImage = null; 
+
+    #[ORM\Column(type: "json")]
+    private array $roles = ['ROLE_USER']; // Always initialized with ROLE_USER
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function setUsername(string $username): static
     {
-        $this->name = $name;
+        $this->username = $username;
         return $this;
     }
 
@@ -47,42 +53,64 @@ class User
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getPassword(): ?string
     {
-        return $this->role;
+        return $this->password;
     }
 
-    public function setRole(string $role): self
+    public function setPassword(string $password): static
     {
-        $this->role = $role;
+        $this->password = $password;
         return $this;
     }
 
-    public function getProfession(): ?string
+
+
+    public function getNumber(): ?int
     {
-        return $this->profession;
+        return $this->number;
     }
 
-    public function setProfession(?string $profession): self
+    public function setNumber(int $number): static
     {
-        $this->profession = $profession;
+        $this->number = $number;
         return $this;
     }
 
-    public function getSummary(): ?string
+    public function getRoles(): array
     {
-        return $this->summary;
+        return array_unique($this->roles);
     }
 
-    public function setSummary(?string $summary): self
+    public function setRoles(array $roles): self
     {
-        $this->summary = $summary;
+        $this->roles = array_values(array_unique($roles));
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): static
+    {
+        $this->profileImage = $profileImage;
         return $this;
     }
 }

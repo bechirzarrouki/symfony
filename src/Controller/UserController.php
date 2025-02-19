@@ -90,9 +90,6 @@ class UserController extends AbstractController
             $this->addFlash('error', 'User not found.');
             return $this->redirectToRoute('app_userlist');
         }
-    
-        $user->setFirstname($request->request->get('firstname'));
-        $user->setLastname($request->request->get('lastname'));
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
         $user->setNumber($request->request->get('number'));
