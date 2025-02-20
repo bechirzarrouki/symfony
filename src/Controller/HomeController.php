@@ -101,5 +101,20 @@ public function logout(): Response
     ]);
 
 }
+#[Route('/userpdf', name: 'app_userpdf')]
+public function userpdf(): Response
+{
+    return $this->render('admin/userpdf.html.twig', [
+        'controller_name' => 'userpdfController',
+    ]);
+}
+#[Route('/userrows', name: 'app_userrows')]
+public function userrows(): Response
+{
+    return $this->render('back/userrows.html.twig', [
+        'controller_name' => 'userrowsController',
+    ]);
 }
 
+
+}

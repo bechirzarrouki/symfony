@@ -5,10 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnovMatch - Login</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <style>
+        .alert-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border: 2px solid red;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
         <h1>Login</h1>
+
+        <!-- Display Flash Messages (Error, including Banned User Warning) -->
+        {% for message in app.flashes('error') %}
+            <div class="alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         <form action="{{ path('app_login') }}" method="POST">
             <!-- Username Input -->
             <div class="input-group">
