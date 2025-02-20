@@ -142,9 +142,12 @@ class UserController extends AbstractController
                 // Store user session
                 $session->set('user_id', $user->getId());
                 $session->set('username', $user->getUsername());
-
+                $session->set('Roles',$user->getRoles());
                 $this->addFlash('success', 'Login successful!');
-                return $this->redirectToRoute('app_userlist'); // Change 'dashboard' to your desired route
+                if (in_array("ROLE_admin", $user->getRoles()))
+                    return $this->redirectToRoute('app_userlist');
+                else
+                    return $this->redirectToRoute('post_index');
             } else {
                 $this->addFlash('error', 'Invalid password.');
                 return $this->redirectToRoute('app_login');

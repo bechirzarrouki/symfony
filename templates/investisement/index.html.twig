@@ -13,7 +13,7 @@
 	<script src="{{ asset('js/investisement.js') }}"></script>
 
 {% endblock %}
-
+{% set roles = app.session.get('Roles') %}
 {% block body %}
 	{% include 'components/navbar.html.twig' %}
 	<div class="main-wrapper">

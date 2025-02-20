@@ -2,13 +2,25 @@
 	<link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
+{% set roles = app.session.get('Roles') %}
 <div class="sidebar">
     <ul class="sidebar-menu">
         <li><a href="{{path('post_index')}}" class="white-text"><i class="fas fa-bars"></i> Menu</a></li>
-        <li><a href="#" class="white-text"><i class="fas fa-user"></i> Profile</a></li>
-        <li><a href="{{path('investment_index')}}" class="white-text"><i class="fas fa-chart-line"></i> Investment</a></li>
+
+        {% if "ROLE_INVESTOR" in roles %}
+        <li><a href="{{path('investment_index')}}" class="white-text"><i class="fas fa-chart-line"></i>Create Investment</a></li>
+        <li><a href="{{path('investment_index_afficher')}}" class="white-text"><i class="fas fa-chart-line"></i> Investments</a></li>
+        <li><a href="{{path('project_index')}}" class="white-text"><i class="fas fa-project-diagram"></i> Project</a></li>
+        {% endif %}
+        {% if 'ROLE_PROJECT_LEADER' in roles %}
+        <li><a href="{{path('investment_index_afficher')}}" class="white-text"><i class="fas fa-chart-line"></i> Investment</a></li>
+        <li><a href="{{path('project_index')}}" class="white-text"><i class="fas fa-project-diagram"></i> Project</a></li>
+        {% endif %}
+        {% if 'ROLE_EMPLOYEE' in roles %}
         <li><a href="{{path('project_index')}}" class="white-text"><i class="fas fa-project-diagram"></i> Project</a></li>
         <li><a href="{{path('app_showcours')}}" class="white-text"><i class="fas fa-book"></i> Courses</a></li>
-        <li><a href="#" class="white-text"><i class="fas fa-sign-out-alt"></i> Log out</a></li>
+        {% endif %}
+
+        <li><a href="{{ path('app_login') }}" class="white-text"><i class="fas fa-sign-out-alt"></i> Log out</a></li>
     </ul>
 </div>
