@@ -1,7 +1,12 @@
 <?php
 
 namespace App\Controller;
-
+use App\Service\GmailOAuth2TokenProvider;
+use App\Service\FlaskApiService;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
+use App\Service\MailerService;
 use App\Entity\Investment;
 use App\Entity\Project;
 use App\Entity\User;
@@ -12,10 +17,45 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 
 #[Route('/investment')]
 class InvestmentController extends AbstractController
 {
+    
+    public function __construct(GmailOAuth2TokenProvider $tokenProvider)
+    {
+        $this->tokenProvider = $tokenProvider;
+    }
+    public function sendMail(String $data): Response
+    {
+        // Get the latest access token
+        $accessToken = $this->tokenProvider->getAccessToken();
+
+        // Build the DSN: replace 'your-email@gmail.com' with your actual Gmail address
+        $mailerDsn = sprintf(
+            'smtp://%s:%s@smtp.gmail.com:587?encryption=tls&auth_mode=xoauth2',
+            'yager.2250@gmail.com',
+            $accessToken
+        );
+
+        // Create the transport and mailer
+        $transport = Transport::fromDsn($mailerDsn);
+        $mailer = new Mailer($transport);
+
+        // Compose your email
+        $email = (new Email())
+            ->from('yager.2250@gmail.com')
+            ->to('bechir.zarrouki00@gmail.com')
+            ->subject('this a prediction on your last investment post')
+            ->text($data);
+
+        // Send the email
+        $mailer->send($email);
+
+        return new Response('Email sent successfully.');
+    }
     // List all investments
     #[Route('/', name: 'investment_index', methods: ['GET'])]
     public function index(InvestmentRepository $investmentRepository): Response
@@ -41,7 +81,7 @@ class InvestmentController extends AbstractController
 
     // Create a new investment using a dummy user if not logged in
     #[Route('/new', name: 'investment_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em, SessionInterface $session): Response
+    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em, SessionInterface $session,FlaskApiService $api): Response
     {
         $investment = new Investment();
         
@@ -78,7 +118,7 @@ class InvestmentController extends AbstractController
     
             // Get the ID of the newly created investment
             $id = $investment->getId();
-    
+            
             // Store the necessary data in the session to be used in the 'return_create' controller
             $session->set('investmentData', [
                 'taxRendement'=>$taxRendement,
@@ -87,10 +127,12 @@ class InvestmentController extends AbstractController
                 'dateDeadline'=>$dateDeadline,
                 'status'=>$status,
             ]);
-    
+            $type=implode(',', $investmentTypes);
+            $mail=$api->predictROI($content,$type,(float)$TypeReturn);
+            $data = json_encode($mail, JSON_PRETTY_PRINT);
+            $this->sendMail($data);
             // Flash message for successful investment creation
             $this->addFlash('success', 'Investment created successfully!');
-    
             // Redirect to the return creation page with the investment ID
             return $this->redirectToRoute('return_create', ['investmentId' => $id]);
         }

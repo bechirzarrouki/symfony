@@ -14,72 +14,149 @@
 
     <div class="post-container">
         {% for investment in investments %}
-            <div class="investment-box">
-                <div class="profile-section">
-                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
-                    <div class="profile-info">
-                        <h4>{{ investment.user.username }}</h4>
+            <div class="main-wrapper">
+                <div class="investment-box">
+                    <div class="profile-section">
+                        <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                        <div class="profile-info">
+                            <h4>{{ investment.user.username }}</h4>
+                        </div>
+                        <!-- Message icon -->
+                        <div class="message-icon-container" data-investment-id="{{ investment.id }}">
+                            <i class="fas fa-comment message-icon"></i> <!-- Font Awesome comment icon -->
+                        </div>
+                        <div class="date-time">10/02/2025 - 14:30</div>
                     </div>
-                    <div class="date-time">10/02/2025 - 14:30</div>
-                </div>
 
-                <div class="investment-content">
-                    {{ investment.content }}
-                </div>
-            
+                    <div class="investment-content">
+                        {{ investment.content }}
+                    </div>
 
-            <!-- Investment details section -->
-            <div class="investment-details">
-                <h3>Investment Details</h3>
-                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
-                <p><strong>Return on Investment:</strong> Fast</p>
-                <p><strong>Date:</strong> 10/02/2025</p>
-                <p><strong>Investor:</strong> Jean Dupont</p>
-            </div>
+                    <!-- Investment details section -->
+                    <div class="investment-details">
+                        <h3>Investment Details</h3>
+                        <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
+                        <p><strong>Return on Investment:</strong> Fast</p>
+                        <p><strong>Date:</strong> 10/02/2025</p>
+                        <p><strong>Investor:</strong> Jean Dupont</p>
+                    </div>
+                    
+                </div>
             </div>
         {% endfor %}
     </div>
 
+    <!-- Suggested Users Sidebar -->
+    <div class="suggested-users-sidebar">
+        <div class="suggested-users-container">
+            <div class="user-list">
+                {% set suggested_users = [
+                    {'username': 'Alice', 'profile_picture': 'images/alice-avatar.jpg'},
+                    {'username': 'Bob', 'profile_picture': 'images/bob-avatar.jpg'},
+                    {'username': 'Charlie', 'profile_picture': 'images/charlie-avatar.jpg'},
+                    {'username': 'Diana', 'profile_picture': null},
+                    {'username': 'Eve', 'profile_picture': 'images/eve-avatar.jpg'}
+                ] %}
+
+                {% for user in suggested_users %}
+                    <div class="user-item">
+                        {% if user.profile_picture %}
+                            <img src="{{ asset(user.profile_picture) }}" alt="Profile" class="suggested-user-img">
+                        {% else %}
+                            <img src="{{ asset('images/default-avatar.jpg') }}" alt="Default Profile" class="suggested-user-img">
+                        {% endif %}
+                        <div class="user-info">
+                            <h4>{{ user.username }}</h4>
+                            <button class="follow-btn">Follow</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="message-modal" id="messageModal" style="display: none;">
+        <div class="message-modal-content">
+            <span class="message-close-btn">&times;</span>
+            <div class="message-modal-header">New Message</div>
+            <div class="message-modal-body">
+                <p>Enter your message here...</p>
+                <input type="text" class="input-style" id="messageText" placeholder="Type your message">
+                <input type="hidden" id="investmentId">
+            </div>
+            <div class="message-modal-footer">
+                <button class="message-modal-submit-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sélectionne tous les éléments avec la classe .investment-content
+            // Toggle investment details
             const investmentContents = document.querySelectorAll('.investment-content');
-
             investmentContents.forEach(function(investmentContent) {
-                // Ajoute un écouteur d'événement de clic sur chaque .investment-content
                 investmentContent.addEventListener('click', function() {
-                    // Trouve l'élément .investment-details correspondant à l'élément cliqué
-                    const investmentDetails = investmentContent.nextElementSibling;
-
-                    // Bascule l'affichage de l'élément .investment-details
-                    if (investmentDetails && investmentDetails.classList.contains('investment-details')) {
+                    const investmentBox = investmentContent.closest('.investment-box');
+                    const investmentDetails = investmentBox.querySelector('.investment-details');
+                    if (investmentDetails) {
                         const currentDisplay = investmentDetails.style.display;
                         investmentDetails.style.display = currentDisplay === 'block' ? 'none' : 'block';
                     }
                 });
             });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".investment-content").forEach(function (investmentContent) {
-        investmentContent.addEventListener("click", function () {
-            // Trouver le parent .investment-box
-            const investmentBox = investmentContent.closest(".investment-box");
-            
-            if (investmentBox) {
-                // Trouver l'élément .investment-details qui suit directement le .investment-box
-                const investmentDetails = investmentBox.nextElementSibling;
-                
-                if (investmentDetails && investmentDetails.classList.contains("investment-details")) {
-                    // Basculer l'affichage
-                    investmentDetails.style.display = 
-                        investmentDetails.style.display === "none" || investmentDetails.style.display === "" 
-                        ? "block" 
-                        : "none";
-                }
-            }
-        });
-    });
-});
-    </script>
 
+            // Message modal functionality
+            const messageIcons = document.querySelectorAll('.message-icon');
+            const modal = document.getElementById('messageModal');
+            const closeModal = document.querySelector('.message-close-btn');
+            const messageForm = document.querySelector('.message-modal-footer');
+            const investmentIdInput = document.getElementById('investmentId');
+
+            // Open modal when clicking on message icon
+            messageIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const investmentId = this.closest('.message-icon-container').getAttribute('data-investment-id');
+                    investmentIdInput.value = investmentId; // Set investment ID in the form
+                    modal.style.display = 'block'; // Show the modal
+                });
+            });
+
+            // Close modal when clicking on the close button
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Handle form submission
+            messageForm.addEventListener('click', function(event) {
+                event.preventDefault();
+                const investmentId = investmentIdInput.value;
+                const message = document.getElementById('messageText').value;
+
+                // Send data to the server (example using fetch)
+                fetch('/send-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ investmentId, message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Message envoyé avec succès !');
+                    modal.style.display = 'none'; // Close the modal
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                });
+            });
+        });
+    </script>
 {% endblock %}
