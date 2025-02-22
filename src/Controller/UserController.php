@@ -196,37 +196,60 @@ public function search(Request $request, UserRepository $userRepository): Respon
         return $this->redirectToRoute('app_userlist');
     }
     #[Route('/login', name: 'app_login')]
-    public function login(Request $request, EntityManagerInterface $em,UserPasswordHasherInterface  $passwordHasher, SessionInterface $session): Response
-    {
-        if ($request->isMethod('POST')) {
-            $username = $request->request->get('username');
-            $password = $request->request->get('password');
+public function login(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
+{
+    if ($request->isMethod('POST')) {
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
 
-            $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
 
-            if (!$user) {
-                $this->addFlash('error', 'User not found.');
-                return $this->redirectToRoute('app_login');
-            }
-            if($user->isBanned()){
-                $this->addFlash('error', ' this user is banned.');
-                return $this->redirectToRoute('app_login');
-            }
-            // Using PasswordHasherInterface to validate the password
-            if ($passwordHasher->isPasswordValid($user, $password)) {
-                // Store user session
-                $session->set('user_id', $user->getId());
-                $session->set('username', $user->getUsername());
-
-                $this->addFlash('success', 'Login successful!');
-                return $this->redirectToRoute('app_userlist'); // Change 'dashboard' to your desired route
-            } else {
-                $this->addFlash('error', 'Invalid password.');
-                return $this->redirectToRoute('app_login');
-            }
+        if (!$user) {
+            $this->addFlash('error', 'User not found.');
+            return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('login/login.html.twig');
+        if ($user->isBanned()) {
+            $this->addFlash('error', 'This user is banned.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($passwordHasher->isPasswordValid($user, $password)) {
+            // Store user session
+            $session->set('user', [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'firstname' => $user->getFirstname(),
+                'lastname' => $user->getLastname(),
+                'number' => $user->getNumber(),
+                'profileImage' => $user->getProfileImage(),
+                'roles' => $user->getRoles(),
+            ]);
+
+            $this->addFlash('success', 'Login successful!');
+            return $this->redirectToRoute('app_profile');
+        } else {
+            $this->addFlash('error', 'Invalid password.');
+            return $this->redirectToRoute('app_login');
+        }
     }
+
+    return $this->render('login/login.html.twig');
+}
+
+#[Route('/profile', name: 'app_profile')]
+public function profile(SessionInterface $session): Response
+{
+    $user = $session->get('user');
+
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    return $this->render('login/edit.html.twig', [
+        'user' => $user,
+    ]);
+}
 
 }

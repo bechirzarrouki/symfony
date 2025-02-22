@@ -116,5 +116,13 @@ public function userrows(): Response
     ]);
 }
 
+#[Route('/edit', name: 'app_edit')]
+public function edit(): Response
+{
+    return $this->render('login/edit.html.twig', [
+        'controller_name' => 'editController',
+    ]);
+}
+
 
 }
