@@ -28,7 +28,7 @@ class InvestmentController extends AbstractController
     {
         $this->tokenProvider = $tokenProvider;
     }
-    public function sendMail(String $data): Response
+    public function sendMail(String $data,String $email): Response
     {
         // Get the latest access token
         $accessToken = $this->tokenProvider->getAccessToken();
@@ -47,7 +47,7 @@ class InvestmentController extends AbstractController
         // Compose your email
         $email = (new Email())
             ->from('yager.2250@gmail.com')
-            ->to('bechir.zarrouki00@gmail.com')
+            ->to($email)
             ->subject('this a prediction on your last investment post')
             ->text($data);
 
@@ -99,18 +99,12 @@ class InvestmentController extends AbstractController
             $investment->setContent($content);
             $investment->setInvestmentTypes($investmentTypes);
             // Use the logged-in user if available, otherwise use/create a dummy user
-            $user = $this->getUser();
-            if (!$user) {
-                $user = $em->getRepository(User::class)->findOneBy([]) ?? new User();
-                if (!$user->getId()) {
-                    $user->setUsername('Dummy Investor');
-                    $user->setEmail('dummy@investor.com');
-                    $user->setRoles(['ROLE_INVESTOR']);
-                    
-                    $em->persist($user);
-                    $em->flush();
-                }
-            }
+            $user = new User;
+            $user->setId((int)$session->get('user_id'));
+            $user->setUsername($session->get('username'));
+            $user->setEmail($session->get('user_email'));
+            $user->setRoles($session->get('Roles'));
+            $user = $em->getRepository(User::class)->find($session->get('user_id'));
             $investment->setUser($user);
     
             // Save the new investment
@@ -129,8 +123,8 @@ class InvestmentController extends AbstractController
             ]);
             $type=implode(',', $investmentTypes);
             $mail=$api->predictROI($content,$type,(float)$TypeReturn);
-            $data = json_encode($mail, JSON_PRETTY_PRINT);
-            $this->sendMail($data);
+            $data = json_encode($mail, JSON_UNESCAPED_SLASHES);
+            $this->sendMail($data,$user->getEmail());
             // Flash message for successful investment creation
             $this->addFlash('success', 'Investment created successfully!');
             // Redirect to the return creation page with the investment ID

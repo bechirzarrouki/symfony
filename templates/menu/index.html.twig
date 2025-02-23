@@ -119,7 +119,7 @@
     {% for comment in post.comments %}
     <div class="comment" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="comment-info">
-            <strong>{{ comment.author ? comment.author.name : 'Anonymous' }}</strong>
+            <strong>{{ comment.author ? comment.author.username : 'Anonymous' }}</strong>
             <span class="comment-text" id="comment-content-{{ comment.id }}">
                 {{ comment.content }}
             </span>
