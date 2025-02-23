@@ -271,20 +271,45 @@ html, body {
         .options-dropdown.show {
             display: block;
         }
+.options-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 1000;
+    min-width: 150px; /* Optional: Set a minimum width for better appearance */
+}
 
-        .options-dropdown button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            text-align: left;
-        }
+.options-dropdown.show {
+    display: block;
+}
 
-        .options-dropdown button:hover {
-            background: #f0f0f0;    
-        }
+.options-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.options-dropdown button:hover {
+    background-color: #f0f0f0; /* Changed from shorthand 'background' for clarity */
+}
+
+.options-dropdown button:focus {
+    outline: none; /* Ensure no outline appears on focus */
+    background-color: #e0e0e0; /* Slightly different hover/focus state */
+}
+
 .modal {
     display: none;  /* Modale cachée par défaut */
     position: fixed;

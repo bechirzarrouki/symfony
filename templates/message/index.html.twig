@@ -1,0 +1,316 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Reset CSS */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            height: 100%;
+        }
+
+        /* Conteneur principal */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar des contacts */
+        .contacts-container {
+            width: 250px;
+            background-color: #fff;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            height: 100vh;
+        }
+
+        /* Liste des contacts */
+        .contact-list {
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        /* Style d'un contact */
+        .contact {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .contact:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Photo de profil */
+        .contact-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #ccc;
+        }
+
+        /* Détails du contact */
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .contact-last-message {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Zone de chat principale */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Zone des messages avec défilement */
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        /* Style des messages */
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        /* Message envoyé */
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        /* Message reçu */
+        .message.received {
+            background-color: #e9ecef;
+            color: #000;
+            margin-right: auto;
+        }
+
+        /* Zone de saisie fixe */
+        .chat-input {
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .chat-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sendButton = document.getElementById('send-button');
+            const messageInput = document.getElementById('message-input');
+            const chatMessages = document.getElementById('chat-messages');
+        });
+ 
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatId = 1; // Remplace par l'ID réel du chat
+            const userId = 2; // Remplace par l'ID réel de l'utilisateur connecté
+            const messageInput = document.getElementById('message-input');
+            const chatMessages = document.getElementById('chat-messages');
+
+            function loadMessages() {
+                fetch(/message/chat/${chatId})
+                    .then(response => response.json())
+                    .then(messages => {
+                        chatMessages.innerHTML = '';
+                        messages.forEach(msg => {
+                            const div = document.createElement('div');
+                            div.className = message ${msg.sender == userId ? 'sent' : 'received'};
+                            div.textContent = msg.content;
+                            chatMessages.appendChild(div);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    });
+            }
+
+           function sendMessage() {
+    console.log("sendMessage function triggered");
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    if (!message) {
+        console.log("No message to send.");
+        return;
+    }
+                fetch('/message/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat: chatId, sender: userId, content: message })
+                })
+    .then(response => {
+        console.log("Response received:", response);
+        if (!response.ok) {
+            console.error("Failed to send message. Status:", response.status);
+            throw new Error("Request failed with status: " + response.status);
+        }
+        return response.json();  // Fix: Return JSON parsing
+    })
+    .then(msg => {
+        console.log("Message saved:", msg);
+
+        const div = document.createElement('div');
+        div.className = 'message sent';
+        div.textContent = msg.content;
+        chatMessages.appendChild(div);
+        messageInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+            document.getElementById('send-button').addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            loadMessages();
+            setInterval(loadMessages, 5000);
+        });
+document.addEventListener('DOMContentLoaded', function () {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    // Fonction pour charger les messages d'une conversation
+    function loadMessages(chatId) {
+        fetch(`/message/chat/${chatId}`)
+            .then(response => response.json())
+            .then(messages => {
+                chatMessages.innerHTML = ''; // Vider les messages actuels
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `message ${msg.sender === userId ? 'sent' : 'received'}`;
+                    div.textContent = msg.content;
+                    chatMessages.appendChild(div);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+    }
+
+    // Ajouter un gestionnaire de clic sur chaque contact
+    document.querySelectorAll('.contact').forEach(contact => {
+        contact.addEventListener('click', function() {
+            const chatId = contact.getAttribute('data-chat-id');
+            loadMessages(chatId); // Charger les messages de la conversation
+        });
+    });
+
+    // Envoi du message
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        fetch('/message/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat: chatId, sender: userId, content: message })
+        })
+        .then(response => response.json())
+        .then(msg => {
+            const div = document.createElement('div');
+            div.className = 'message sent';
+            div.textContent = msg.content;
+            chatMessages.appendChild(div);
+            messageInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        })
+        .catch(error => console.error("Error:", error));
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
+
+    </script>
+{% endblock %}
+
+
+{% block body %}
+    {% include 'components/navbar.html.twig' %}
+    <div class="app-container">
+        <!-- Sidebar des contacts -->
+        <div class="contacts-container">
+          {% for conversation in conversations %}
+    <div class="contact" data-chat-id="{{ conversation.id }}">
+        <div class="contact-photo">
+            <img src="{{ conversation.getUser1().getProfileImage() }}" alt="Photo de {{conversation.getUser1().getProfileImage()  }}">
+        </div>
+        <div class="contact-details">
+            <div class="contact-name">
+                {{ conversation.getUser1().getUsername() }}
+            </div>
+            <div class="contact-last-message">
+                {{ conversation.lastMessage.content|default('Aucun message') }}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+
+        </div>
+
+        <!-- Zone de chat principale -->
+        <div class="chat-container">
+            <!-- Messages -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="message received">Salut !</div>
+                <div class="message sent">Ça va ?</div>
+            </div>
+
+            <!-- Input fixe -->
+            <div class="chat-input">
+                <input type="text" 
+                       id="message-input" 
+                       placeholder="Écrivez un message..."
+                       autocomplete="off">
+                <button id="send-button" style="display: none;" Onclick"sendmessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

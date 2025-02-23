@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Entity\User;
+use App\Controller\RequirementController;
+use App\Entity\Requirement;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +27,7 @@ class ProjectController extends AbstractController
 
     // Create a new project
     #[Route('/new', name: 'project_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $em): Response
+    public function new(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $em,RequirementController $rc): Response
     {
         $project = new Project();
     
@@ -41,7 +43,7 @@ class ProjectController extends AbstractController
             $project->setDescription($description);
             $project->setBudget($budget);
             $project->setStatus("test");
-    
+            
             // Use the logged-in user if available, otherwise use/create a dummy user
             $user = $this->getUser();
             if (!$user) {
@@ -58,6 +60,9 @@ class ProjectController extends AbstractController
     
             // Save the new project
             $projectRepository->save($project);
+            $title = $request->request->get('pri');
+            $description = $request->request->get('des');
+            $requirement=$rc->createRequirement($project->getId(),$title,$description,$em,$projectRepository);
             $this->addFlash('success', 'Project created successfully!');
     
             return $this->redirectToRoute('project_index');
