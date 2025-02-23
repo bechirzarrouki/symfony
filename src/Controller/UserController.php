@@ -142,6 +142,7 @@ class UserController extends AbstractController
                 // Store user session
                 $session->set('user_id', $user->getId());
                 $session->set('user', $user);
+                $session->set('user_email', $user->getEmail());
                 $session->set('username', $user->getUsername());
                 $session->set('Roles',$user->getRoles());
                 $this->addFlash('success', 'Login successful!');
