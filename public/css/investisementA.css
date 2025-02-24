@@ -1,0 +1,144 @@
+html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Empêcher le défilement horizontal */
+}
+.investment-details {
+    display: none;
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 40rem;
+    margin: 20px auto; /* Marge normale */
+    padding: 20px;
+    height: auto; 
+    margin: 100px auto 2rem auto; /* top right bottom left */
+}
+
+.investment-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Largeur fixe pour contenir le contenu */
+    min-height: 120px;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.date-time {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+}
+
+.investment-content {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    border-left: 4px solid #53348D;
+}
+
+
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #53348D;
+    border: 5%;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #432A70;
+}
+
+/* Input Styles */
+.input-style {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    background-color: #f9f9f9;
+}
+
+.input-style:focus {
+    border-color: #53348D;
+    box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
+    background-color: #fff;
+}
+.investment-details {
+    width: 600px; /* Même largeur que .investment-box */
+    background: #f4f2ee; /* Même fond que .investment-box */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: none; /* Caché par défaut */
+    margin-top: 10px;
+    font-size: 14px;
+    border-left: 4px solid #53348D;
+}

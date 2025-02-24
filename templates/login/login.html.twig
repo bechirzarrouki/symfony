@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnovMatch - Login</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form action="{{ path('app_login') }}" method="POST">
+            <!-- Username Input -->
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <!-- Password Input -->
+            <div class="input-group password-wrapper">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-btn">Login</button>
+
+            <!-- Links -->
+            <div class="links">
+                <a href="{{ path('app_forget_password') }}">Forgot your password?</a>
+                <a href="{{ path('app_register') }}">Don't have an account? Sign up here</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("password");
+            passwordField.type = (passwordField.type === "password") ? "text" : "password";
+        }
+    </script>
+</body>
+</html>

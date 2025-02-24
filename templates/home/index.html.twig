@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+   
+{% endblock %}
+
+
+
+{% block body %}
+    <nav>
+        <div class="nav__logo">InnovMatch</div>
+        <ul class="nav__links">
+            <li class="link"><a href="#">Home</a></li>
+            <li class="link"><a href="#">About</a></li>
+        </ul>
+        <button class="btn"><a href="{{ path('app_login') }}" style="color:white;">Login</a></button>
+    </nav>
+
+    <header class="section__container header__container">
+        <h1 class="section__header">Where Ideas Meet<br />Investment & Skills</h1>
+        <img src="{{ asset('photo/ttt.jpg') }}" alt="header" />
+    </header>
+
+    <section class="section__container plan__container">
+        <p class="subheader">Connect & Create.</p>
+        <h2 class="section__header">Match with investors, project holders, and skilled professionals effortlessly.</h2>
+        <p class="description">
+            Join a thriving ecosystem where ideas get funded, talents find opportunities, and businesses grow.
+        </p>
+        <div class="plan__grid">
+            <div class="plan__content">
+                <span class="number">01</span>
+                <h4>Project Holder</h4>
+                <p>
+                    Have a groundbreaking idea but need support? Connect with investors who believe in your vision and skilled professionals who can bring your project to life. Turn your concept into reality with the right team by your side.
+                </p>
+                <span class="number">02</span>
+                <h4>Investor</h4>
+                <p>
+                    Looking for the next big opportunity? Discover innovative projects with high potential and connect with passionate entrepreneurs. Invest in ideas that align with your vision and drive meaningful impact.
+                </p>
+                <span class="number">03</span>
+                <h4>Skilled Individual</h4>
+                <p>
+                    Ready to put your expertise to work? Join exciting projects that match your skills and ambitions. Collaborate with visionary founders and help build the future while growing your career.
+                </p>
+            </div>
+            <div class="plan__image">
+                <img src="{{ asset('photo/left-infos.jpg') }}" alt="plan" />
+                <img src="{{ asset('photo/happyclient-01.jpg') }}" alt="plan" />
+                <img src="{{ asset('photo/banner-right.png') }}" alt="plan" />
+            </div>
+        </div>
+    </section>
+
+    <section class="memories">
+        <div class="section__container memories__container">
+            <div class="memories__header">
+                <h2 class="section__header">
+                    Optimize Your Journey: Plan, Connect, and Succeed
+                </h2>
+                <button class="view__all">View All</button>
+            </div>
+            <div class="memories__grid">
+                <div class="memories__card">
+                    <span><i class="ri-calendar-2-line"></i></span>
+                    <h4>Stay on Schedule</h4>
+                    <p>
+                        Keep your projects moving forward with seamless coordination. Set clear milestones, track progress, and ensure every step is completed on time.
+                    </p>
+                </div>
+                <div class="memories__card">
+                    <span><i class="ri-shield-check-line"></i></span>
+                    <h4>Find the Perfect Match</h4>
+                    <p>
+                        Connect with the right investors, project holders, or skilled individuals effortlessly. Our platform helps you find the best opportunities tailored to your needs.
+                    </p>
+                </div>
+                <div class="memories__card">
+                    <span><i class="ri-bookmark-2-line"></i></span>
+                    <h4>Save Time & Resources</h4>
+                    <p>
+                        Optimize your search, reduce costs, and accelerate success. By bringing together the right people in one place, we make the process faster and more efficient.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section__container lounge__container">
+        <div class="lounge__image">
+            <img src="{{ asset('photo/img.png') }}" alt="lounge" />
+            <img src="{{ asset('photo/happyclient-01.jpg') }}" alt="lounge" />
+        </div>
+        <div class="lounge__content">
+            <h2 class="section__header">Empower Your Growth and Opportunities</h2>
+            <div class="lounge__grid">
+                <div class="lounge__details">
+                    <h4>Courses & Certifications</h4>
+                    <p>
+                        Enhance your skills and boost your credibility with a variety of courses and certifications. Learn new concepts, stay up-to-date with industry trends, and demonstrate your expertise to stand out.
+                    </p>
+                </div>
+                <div class="lounge__details">
+                    <h4>Post Your Opportunities</h4>
+                    <p>
+                        Share your ideas with the world! Post your projects, needs, or expertise, and attract the right collaborators, investors, or team members who are ready to support your vision.
+                    </p>
+                </div>
+                <div class="lounge__details">
+                    <h4>Upload Your Projects</h4>
+                    <p>
+                        Showcase your work to a wider audience. Whether you're an entrepreneur or a skilled professional, uploading your projects helps you get noticed, get feedback, and get connected to the right people.
+                    </p>
+                </div>
+                <div class="lounge__details">
+                    <h4>Investors: Upload or Choose to Invest</h4>
+                    <p>
+                        Investors have the flexibility to upload investment propositions and seek out projects that align with their goals. Alternatively, they can browse and choose projects they believe in and invest to help them grow.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section__container travellers__container">
+        <h2 class="section__header">Meet Our Team</h2>
+        <div class="travellers__grid">
+            <div class="travellers__card__content">
+                <img src="{{ asset('photo/raed.jpg') }}" alt="client" />
+                <h4>Nefzi raed</h4>
+                <p>CEO</p>
+            </div>
+            <div class="travellers__card__content">
+                <img src="{{ asset('photo/bechir.jpg') }}" alt="client" />
+                <h4>Zarrouki bechir</h4>
+                <p>Program Cordinator</p>
+            </div>
+            <div class="travellers__card__content">
+                <img src="{{ asset('photo/eya.jpg') }}" alt="client" />
+                <h4>Latiri eya</h4>
+                <p>Public Relations</p>
+            </div>
+            <div class="travellers__card__content">
+                <img src="{{ asset('photo/mhimed.jpg') }}" alt="client" />
+                <h4>Langliz mahmoud</h4>
+                <p>Fundraising Officer</p>
+            </div>
+            <div class="travellers__card__content">
+                <img src="{{ asset('photo/client-4.jpg') }}" alt="client" />
+                <h4>Aziz Gharbi</h4>
+                <p>Marketing Responsible</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="subscribe">
+        <div class="section__container subscribe__container">
+            <h2 class="section__header">Subscribe newsletter & get latest news</h2>
+            <form class="subscribe__form">
+                <input type="text" placeholder="Enter your email here" />
+                <button class="btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="section__container footer__container">
+            <div class="footer__col">
+                <h3>PROJECT</h3>
+                <p>
+                    Our project aims to create a dynamic platform that connects investors, project holders, and skilled individuals to foster innovation, collaboration, and growth. By bringing together diverse talents and resources, we help transform ideas into successful ventures, drive meaningful investments, and provide professionals with exciting opportunities.
+                </p>
+                <p>
+                    With a focus on efficiency, transparency, and community, we are committed to making the process of turning visions into reality faster and more accessible for everyone involved.
+                </p>
+            </div>
+            <div class="footer__col">
+                <h4>INFORMATION</h4>
+                <p>Home</p>
+                <p>About</p>
+            </div>
+            <div class="footer__col">
+                <h4>CONTACT</h4>
+                <p>Support</p>
+                <p>Media</p>
+                <p>Socials</p>
+            </div>
+        </div>
+        <div class="section__container footer__bar">
+            <div class="socials">
+                <span><i class="ri-facebook-fill"></i></span>
+                <span><i class="ri-twitter-fill"></i></span>
+                <span><i class="ri-instagram-line"></i></span>
+                <span><i class="ri-youtube-fill"></i></span>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

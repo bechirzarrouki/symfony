@@ -1,0 +1,29 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+<div class="navbar-container">
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">
+                <span class="logo-text">InnovMatch</span>
+            </a>
+
+            <div class="nav-search">
+                <input type="text" placeholder="Rechercher..." class="search-input" />
+            </div>
+            
+            <div class="nav-right">
+                <div class="profile-circle">
+                    <i class="icon fas fa-bell" style="color: #53348D;"></i>
+                </div>
+                <div class="profile-circle">
+                    <i class="icon fas fa-comment" style="color: #53348D;"></i>
+                </div>
+            </div>
+            <div class="profile-circle">
+                <img src="https://via.placeholder.com/40" alt="Profil" class="profile-image" />
+            </div>
+        </div>
+    </nav>
+</div>

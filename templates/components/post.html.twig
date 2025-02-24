@@ -1,0 +1,150 @@
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="{{ asset('images/avatar.jpg') }}" alt="Avatar" class="post-avatar">
+                        <div class="post-user-info">
+                            <h4>bechir</h4>
+                            <p>public</p>
+                        </div>
+                    </div>
+                    <button class="btn-follow">Follow</button>
+                </div>
+                <div class="post-content">
+                    <p class="post-text">this is a test post</p>
+                    <img src="{{ asset('images/post-image.jpg') }}" alt="Post image" class="post-image">
+
+                    <div class="post-stats">
+                        <span>15 likes</span>
+                    </div>
+                    
+                    <!-- Display Comment -->
+                    <div class="post-comments">
+                        <div class="comment" style="position: relative;">
+                        
+                            <div class="comment-info">
+                                <strong>John Doe</strong>
+                                <span class="comment-text">This is a sample comment.</span>
+                            </div>
+                            <div class="comment-options" style="position: absolute; top: 0; right: 0;">
+                                <a href="#" class="comment-options-link">...</a>
+                                <!-- Popup with Update and Delete options -->
+                                <div class="comment-options-popup">
+                                    <ul>
+                                        <li><a href="#" class="update-comment">Update</a></li>
+                                        <li><a href="#" class="delete-comment">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-box">
+                        <input type="text" placeholder="Post a comment..." class="comment-input">
+                        <button class="btn-post">Post</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<style>.post-comments {
+    margin-top: 10px;
+}
+
+.comment {
+    background: #f9f9f9; /* Light gray background */
+    padding: 10px;
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 8px; /* Space between comments */
+    border: 1px solid #ddd; /* Subtle border */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    transition: background 0.3s ease-in-out;
+}
+
+.comment:hover {
+    background: #f1f1f1; /* Slightly darker background on hover */
+}
+
+.comment-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment strong {
+    font-size: 14px;
+    color: #333;
+}
+
+.comment-text {
+    font-size: 13px;
+    color: #555;
+    margin-top: 2px;
+}
+
+/* Three dots menu */
+.comment-options {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.comment-options-link {
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: bold;
+    color: #666;
+    text-decoration: none;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: background 0.3s ease-in-out, color 0.3s;
+}
+
+.comment-options-link:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+/* Dropdown menu */
+.comment-options-popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    padding: 5px 0;
+    width: 100px;
+}
+
+.comment-options-popup ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.comment-options-popup ul li {
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.comment-options-popup ul li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    transition: background 0.3s, color 0.3s;
+}
+
+.comment-options-popup ul li a:hover {
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+
+</style>

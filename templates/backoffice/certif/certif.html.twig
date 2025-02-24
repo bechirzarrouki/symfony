@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Certificats
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/cours.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('js/navbar.js') }}"></script>
+	<script src="{{ asset('js/certif.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+	<div class="app-container">
+		{% include 'components/navbar.html.twig' %}
+		{% include 'components/sidebar.html.twig' %}
+
+		<main
+			class="main-content">
+			<!-- Hero Section -->
+			<div class="hero">
+				<div class="hero-bg">
+					<div class="hero-content">
+						<div class="hero-text">
+							<h1>LIST OF CERTIFACTS</h1>
+							<p>You may find down below the list of certificats</p>
+						</div>
+						<div class="hero-image">
+							<img src="{{ asset('images/img.png') }}" alt="Hero Image">
+						</div>
+					</div>
+				</div>
+				<div
+					class="text-center">
+					{# Open the add modal via JS #}
+					<a href="javascript:void(0);" class="btn-more">Add Certificats</a>
+				</div>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>IdCertificat</th>
+						<th>TitreCertificat</th>
+						<th>Date</th>
+						<th>Duree</th>
+						<th>NomEtudiant</th>
+						<th>IdCours</th>
+						<th>Modifier</th>
+						<th>Supprimer</th>
+						<th>PDF</th>
+						<th>Mail</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for a in tabcertif %}
+						<tr>
+							<td>{{ a.id }}</td>
+							<td>{{ a.titre }}</td>
+							<td>{{ a.date|date('Y-m-d') }}</td>
+							<td>{{ a.duree }}</td>
+							<td>{{ a.NomUser }}</td>
+							<td>{{ a.IdCours.id }}</td>
+							<td>
+								<a href="{{ path('app_editcertif', {'id': a.id}) }}" class="btn-modify" data-id="{{ a.id }}" data-titre="{{ a.titre }}" data-date="{{ a.date|date('Y-m-d') }}" data-duree="{{ a.duree }}" data-nomuser="{{ a.NomUser }}" data-idcours="{{ a.IdCours.id }}">
+									<i class="fas fa-edit"></i>
+								</a>
+							</td>
+							<td>
+								<a href="{{ path('app_deletecertif', {'id': a.id}) }}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this certificat?');">
+									<i class="fas fa-trash"></i>
+								</a>
+							</td>
+							<td><!-- PDF action if needed --></td>
+							<td><!-- Mail action if needed --></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</main>
+	</div>
+
+	<!-- Modal for Adding Certif -->
+	<div id="addCertifModal" class="modal">
+		<div class="modal-content">
+			<span class="close-btn-add">&times;</span>
+			<h2>Add Certificat</h2>
+			<form method="POST" action="{{ path('app_addcertif') }}">
+				<input type="text" name="titre" placeholder="Titre Certificat" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="date" name="date" placeholder="Date" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="text" name="duree" placeholder="Duree" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="text" name="NomUser" placeholder="Nom Etudiant" class="input-style" required>
+				<span class="error-message"></span>
+
+				{# Replace the IdCours text input with a select dropdown #}
+				<select name="IdCours" class="input-style" required>
+					<option value="">Select a Course</option>
+					{% for course in tabcours %}
+						<option value="{{ course.id }}">{{ course.NomCours }}</option>
+					{% endfor %}
+				</select>
+				<span class="error-message"></span>
+
+				<button type="submit" class="submit-btn">Add Certificat</button>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal for Editing Certif -->
+	<div id="editCertifModal" class="modal">
+		<div class="modal-content">
+			<span class="close-btn-edit">&times;</span>
+			<h2>Edit Certificat</h2>
+			<form id="editCertifForm" action="{{ path('app_editcertif', {'id': 'PLACEHOLDER_ID'}) }}" method="post">
+				<input type="text" name="titre" placeholder="Titre Certificat" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="date" name="date" placeholder="Date" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="text" name="duree" placeholder="Duree" class="input-style" required>
+				<span class="error-message"></span>
+
+				<input type="text" name="NomUser" placeholder="Nom Etudiant" class="input-style" required>
+				<span class="error-message"></span>
+
+				{# Replace the IdCours text input with a select dropdown #}
+				<select name="IdCours" class="input-style" required>
+					<option value="">Select a Course</option>
+					{% for course in tabcours %}
+						<option value="{{ course.id }}">{{ course.NomCours }}</option>
+					{% endfor %}
+				</select>
+				<span class="error-message"></span>
+
+				<button type="submit" class="submit-btn">Save Changes</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
