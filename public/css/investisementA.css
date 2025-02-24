@@ -1,25 +1,13 @@
+/* Base layout */
 html, body {
     height: auto;
     min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden; /* Empêcher le défilement horizontal */
-}
-.investment-details {
-    display: none;
-}
-/* Conteneur principal pour aligner les sections */
-.main-content {
-    display: flex;
-    justify-content: center; /* Centrer le contenu */
-    align-items: flex-start;
-    gap: 20px;
-    width: 75%;
-    padding: 20px;
+    background-color: #f9fafb;
+    overflow-x: hidden;
 }
 
-/* Section des posts */
+/* Post container layout */
 .post-container {
-    flex: 2; /* Prend plus d'espace */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,261 +15,40 @@ html, body {
     max-width: 40rem;
     padding: 20px;
     margin-top: 8%;
+    margin-left: 300px;
 }
 
-/* Sidebar des utilisateurs suggérés */
-.suggested-users-sidebar {
-    /* Ajuste automatiquement */
-    max-width: 300px; /* Largeur contrôlée */
-    margin-top: -40%;
-    
-    
-
+/* Main wrapper */
+.main-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-
-
+/* Investment box */
 .investment-box {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 100%; /* Largeur fixe pour contenir le contenu */
-    min-height: 120px;
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.investment-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile section */
 .profile-section {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
-}
-
-.profile-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profile-info h4 {
-    margin: 0;
-    font-size: 14px;
-}
-
-.date-time {
-    font-size: 12px;
-    color: #777;
-    text-align: right;
-}
-
-.investment-content {
-    margin-top: 15px;
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #333;
-    border-left: 4px solid #53348D;
-}
-
-
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.submit-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #53348D;
-    border: 5%;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.submit-btn:hover {
-    background-color: #432A70;
-}
-
-/* Input Styles */
-.input-style {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    color: #333;
-    outline: none;
-    transition: all 0.3s ease-in-out;
-    background-color: #f9f9f9;
-}
-
-.input-style:focus {
-    border-color: #53348D;
-    box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
-    background-color: #fff;
-}
-.investment-details {
-    width: 600px; /* Même largeur que .investment-box */
-    background: #f4f2ee; /* Même fond que .investment-box */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    display: none; /* Caché par défaut */
-    margin-top: 10px;
-    font-size: 14px;
-    border-left: 4px solid #53348D;
-}
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
- 
-}
-
-
-.photo-space {
-    width: 150px;
-    height: 200px;
-    background-color: #ddd;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-bottom: 15px;
     position: relative;
 }
 
-.plus-icon {
-    font-size: 30px;
-    color: #7c3aed;
-}
-
-.create-post {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    border-radius: 15px;
-    padding: 20px;
-    color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 42rem;
-    flex: 1;
-    margin-top: -16%;
-    margin: 100px auto 2rem auto; /* top right bottom left */
-
-}
-
-.create-post h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #000;
-}
-
-.post-input-wrapper {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.post-input-wrapper input {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-}
-
-.investment-type {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    background-color: #fff;
-}
-
-.post-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.publish-btn, .add-btn {
-    background: white;
-    color: #53348D;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-* {
-    box-sizing: border-box;
-    max-width: 100%;
-}
-.publish-btn i, .add-btn i {
-    font-size: 16px;
-}
-
-.publish-btn:hover, .add-btn:hover {
-    background: #f8f9fa;
-}
-
-.investment-box {
-    width: 200px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-.investment-header {
-    font-size: 18px;
-    font-weight: bold;
-    color: #53348D;
-    text-align: center;
-    margin-bottom: 15px;
-}
-.profile-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
 .profile-img {
     width: 50px;
     height: 50px;
@@ -289,383 +56,148 @@ body {
     object-fit: cover;
     border: 2px solid #53348D;
 }
+
 .profile-info {
     flex-grow: 1;
 }
+
 .profile-info h4 {
     margin: 0;
-    font-size: 14px;
-    color: #333;
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: 600;
 }
-.profile-info p {
-    margin: 2px 0;
-    font-size: 12px;
-    color: gray;
-}
+
 .date-time {
     font-size: 12px;
-    color: #777;
-    text-align: right;
+    color: #6b7280;
 }
 
-.post-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 1000px; /* Augmenté */
-    width: 100%;
-    overflow: hidden;
-    border-radius: 8px;
-    justify-content: flex-end;
-    margin-left: 300px;
-}
-.main-wrapper {
-    display: flex;
-    flex: 1;
-}
-.create-post, .investment-box {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    border-radius: 15px;
-    padding: 20px;
-    color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px; /* Même taille */
-    width: 100%; /* Pour qu'elles s'étendent */
-    flex: 1;
+/* Message icon */
+.message-icon-container {
+    margin-left: auto;
+    margin-right: 10px;
 }
 
-.investment-box {
-    background: #fff; /* Rétablir le fond blanc pour garder le contraste */
-    color: black;
-}
-
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
+.message-icon {
+    font-size: 20px;
+    color: #53348D;
     cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.submit-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
+.message-icon:hover {
+    transform: scale(1.1);
+    color: #432A70;
 }
 
-.submit-btn:hover {
-    background-color: #218838;
-}
-
-/* Champs du formulaire */
-.modal-content input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
- 
-
-
-
-   
-
-        .submit-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #53348D;
-            border: 5%;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            background-color: #53348D;
-        }
-
-     /* Style général des champs d'entrée */
-.input-style {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  color: #333;
-  outline: none;
-  transition: all 0.3s ease-in-out;
-  background-color: #f9f9f9;
-}
-
-/* Effet au focus */
-.input-style:focus {
-  border-color: #53348D;
-  box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
-  background-color: #fff;
-}
-
-
-
-
-
-
-/* Animation d'apparition */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-
-
-.close-btn:hover {
-  color: #000;
-}
-
-/* Bouton d'envoi */
-.submit-btn {
-  background-color: #53348D;
-  color: white;
-  font-size: 16px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 69%;
-  transition: all 0.3s ease-in-out;
-  margin-top: 10px;
-}
-
-.submit-btn:hover {
-  background-color: #432A70;
-}
-
-
-.input-style:focus {
-  border-color: #53348D;
-  box-shadow: #53348D;
-}
-
-.modal {
-    display: none; /* Par défaut, le modal est masqué */
-}
-
-.modal.show {
-    display: flex; /* Ou 'block', en fonction de ton design */
-}
-.options-menu {
-	position: relative;
-}
-.options-dropdown {
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 100%;
-	background: white;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
-	padding: 5px;
-	z-index: 1000;
-}
-
-.options-dropdown.show {
-	display: block;
-}
-
-.options-dropdown button {
-	display: block;
-	width: 100%;
-	padding: 8px 12px;
-	border: none;
-	background: none;
-	text-align: left;
-	cursor: pointer;
-}
-
-.options-dropdown button:hover {
-	background: #f0f0f0;
-}
-.options-dropdown1 {
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 100%;
-	background: white;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
-	padding: 5px;
-	z-index: 1000;
-}
-
-.options-dropdown1.show {
-	display: block;
-}
-
-.options-dropdown1 button {
-	display: block;
-	width: 100%;
-	padding: 8px 12px;
-	border: none;
-	background: none;
-	text-align: left;
-	cursor: pointer;
-}
-
-.options-dropdown1 button:hover {
-	background: #f0f0f0;
-}
-.modal {
-    display: none;  /* Modale cachée par défaut */
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 1000px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-}
-
-
-
+/* Investment content */
 .investment-content {
-	margin-top: 15px;
-	padding: 10px;
-	background: #f9f9f9;
-	border-radius: 5px;
-	font-size: 14px;
-	color: #333;
-	border-left: 4px solid #53348D;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #4b5563;
+    border-left: 4px solid #53348D;
+    cursor: pointer;
 }
-/* Conteneur principal pour les deux boîtes */
-.main-wrapper {
-    flex: 10; /* Augmenter la flexibilité pour prendre plus d'espace */
-    padding: 2px;
-    min-height: 200px; /* Augmenter la hauteur minimale */
-    width: 100%;
-    max-width: 800px; /* Ajuster la largeur */
-    margin: 0 auto; /* Centrer si nécessaire */
+
+/* Investment details */
+.investment-details {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f4f2ee;
+    border-radius: 8px;
+    border-left: 4px solid #53348D;
 }
-/* Boîte d'investissement */
-.investment-box {
-    flex: 8; /* Prend plus d'espace que avant */
-    background: #fff;
+
+.returns-section h4 {
+    margin: 0 0 10px 0;
+    color: #1f2937;
+}
+
+.return-item {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.return-item:last-child {
+    border-bottom: none;
+}
+
+/* Suggested users sidebar */
+.suggested-users-sidebar {
+    position: fixed;
+    right: 30px;
+    top: 100px;
+    width: 300px;
+    background: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    min-height: 120px;
+}
+
+.suggested-users-container {
     width: 100%;
 }
 
-/* Boîte utilisateur (à droite) */
-.user-sidebar {
-    flex: 3; /* Prend moins d'espace que l'investment-box */
-     /* Fixe la largeur à 300px ou ajustez selon vos besoins */
-    background: #f4f2ee; /* Fond similaire à celui de l'investment box */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.user-list {
     display: flex;
     flex-direction: column;
-    width: 800px;
+    gap: 15px;
 }
 
-/* Styles pour l'image et le contenu utilisateur */
-.user-info-box {
-    background: #fff;
-    padding: 6px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.user-profile-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-.follow-btn {
-    background: #53348D;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.follow-btn:hover {
-    background: #432A70;
-}
-
-
-
-/* Each individual user box in gray */
 .user-item {
-    background-color: #ffffff; /* Gray background */
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 8px;
     display: flex;
     align-items: center;
-    
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 
-.user-item img.suggested-user-img {
-    border-radius: 50%;
+.user-item:hover {
+    background-color: #f9fafb;
+}
+
+.suggested-user-img {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
     margin-right: 15px;
+}
+
+.user-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .user-info h4 {
     margin: 0;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 14px;
+    color: #1f2937;
 }
 
 .follow-btn {
-    background-color: #007bff;
+    background-color: #53348D;
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .follow-btn:hover {
-    background-color: #0056b3;
+    background-color: #432A70;
 }
 
-/* Message Modal Styles */
+/* Message Modal */
 .message-modal {
     position: fixed;
     z-index: 1000;
@@ -673,77 +205,117 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
-    display: flex;
-    display: grid; /* Use CSS Grid to center content */
-    place-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
 }
 
 .message-modal-content {
     background-color: white;
-    padding: 20px;
     border-radius: 10px;
-    width: 80%;
+    padding: 20px;
+    width: 90%;
     max-width: 500px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin-top: 8%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .message-close-btn {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    right: 20px;
+    top: 15px;
     font-size: 24px;
-    color: #53348D;
+    color: #6b7280;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 .message-close-btn:hover {
-    color: #432A70;
+    color: #1f2937;
 }
 
 .message-modal-header {
     font-size: 18px;
-    font-weight: bold;
-    color: #53348D;
-    margin-bottom: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+    padding-right: 20px;
 }
 
 .message-modal-body {
+    margin-bottom: 20px;
+}
+
+.message-modal-body p {
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.input-style {
+    width: 96%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
     font-size: 14px;
-    color: #333;
-    margin-bottom: 15px;
+    color: #1f2937;
+    transition: border-color 0.2s ease;
+}
+
+.input-style:focus {
+    border-color: #53348D;
+    outline: none;
 }
 
 .message-modal-footer {
-    display: flex;
-    justify-content: flex-end;
+    text-align: right;
 }
 
 .message-modal-submit-btn {
-    padding: 10px 20px;
     background-color: #53348D;
-    border: none;
     color: white;
+    border: none;
+    padding: 8px 20px;
     border-radius: 8px;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .message-modal-submit-btn:hover {
     background-color: #432A70;
 }
-/* Message Icon Styles */
-.message-icon {
-    font-size: 25px;
-    color: #53348D;
-    cursor: pointer;
-    transition: transform 0.3s ease, color 0.3s ease;
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .post-container {
+        margin-left: 100px;
+    }
+    
+    .suggested-users-sidebar {
+        width: 250px;
+    }
 }
 
-.message-icon:hover {
-    color: #432A70;
-    transform: scale(1.1); /* Slightly enlarge the icon on hover */
+@media (max-width: 992px) {
+    .post-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    
+    .suggested-users-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .post-container {
+        margin: 20px;
+        padding: 10px;
+    }
+    
+    .investment-box {
+        padding: 15px;
+    }
 }

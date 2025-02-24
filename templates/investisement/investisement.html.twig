@@ -12,7 +12,14 @@
 {% block body %}
 	{% include 'components/navbar.html.twig' %}
 	{% include 'components/sidebar.html.twig' %}
-
+    <script>
+    function openMessageModal(id) {
+    document.getElementById("messageModal" + id).style.display = "block";
+}
+function closeMessageModal(id) {
+    document.getElementById("messageModal" + id).style.display = "none";
+}
+    </script>
 	<div class="post-container">
 		{% for investment in investments %}
 			<div class="main-wrapper">
@@ -24,9 +31,9 @@
 						</div>
 						<!-- Message icon -->
 						<div class="message-icon-container" data-investment-id="{{ investment.id }}">
-							<i class="fas fa-comment message-icon"></i>
-							<!-- Font Awesome comment icon -->
-						</div>
+                            <i class="fas fa-comment message-icon" onclick="openMessageModal({{ investment.id }})"></i>
+                        </div>
+
 						<div class="date-time">10/02/2025 - 14:30</div>
 					</div>
 
@@ -48,12 +55,12 @@
 			</div>
 			<!-- Message Modal -->
 			<form method="POST" action="{{ path('chat_create', { 'id1': investment.user.getId(), 'id2': userid }) }}">
-				<div class="message-modal" id="messageModal" style="display: none;">
+				<div class="message-modal" id="messageModal{{investment.id}}" style="display: none;">
 					<div class="message-modal-content">
-						<span class="message-close-btn">&times;</span>
+						<span class="message-close-btn" onclick="closeMessageModal({{investment.id}})">&times;</span>
 						<div class="message-modal-header">New Message</div>
 						<div class="message-modal-body">
-							<p>Enter your message here...</p>
+							<p>Enter your message here{{investment.user.getId()}}</p>
 							<input type="text" class="input-style" id="messageText" name="message" placeholder="Type your message">
 							<input
 							type="hidden" id="recipientId">
@@ -122,13 +129,7 @@
     const recipientIdInput = document.getElementById('recipientId');
 
     // Open modal when clicking on message icon
-    messageIcons.forEach(icon => {
-        icon.addEventListener('click', function () {
-            const investmentId = this.closest('.message-icon-container').getAttribute('data-investment-id');
-            recipientIdInput.value = investmentId; // Set recipient ID
-            modal.style.display = 'block'; // Show modal
-        });
-    });
+    
 
     // Close modal
     closeModal.addEventListener('click', function () {

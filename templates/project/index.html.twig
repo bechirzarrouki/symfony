@@ -250,7 +250,7 @@
             <div id="deleteReturn${returnItem.id}" class="modal">
                 <div class="modal-content">
                     <h3>Do you really want to delete this investment?</h3>
-                    <form action="/return/${returnItem.id}/delete" method="POST">
+                    <form action="/requirement/${returnItem.id}/delete" method="POST">
                         <input type="hidden" name="_token" value="${csrfTokens.delete}">
                         <button type="submit" class="submit-btn">Delete</button>
                     </form>
@@ -258,35 +258,12 @@
                 </div>
             </div>
                 <div id="editReturnModal${returnItem.id}" class="modal">
-                                                <form action="/return/${returnItem.id}/edit" method="POST">
+                                                <form action="/requirement/${returnItem.id}/edit" method="POST">
                                                         <div class="modal-content">
                                                                             <span class="close-btn" onclick="closeEditReturnModal(${returnItem.id})">&times;</span>
                                                                             <h3>Edit Return</h3>
-                                                                            <input type="text" id="editDescription${
-                                                                returnItem.id
-                                                                }" name="description" class="input-style" value="${
-                                                                returnItem.description
-                                                                }" required>
-                                                                            <input type="text" id="editTypeReturn${
-                                                                returnItem.id
-                                                                }" name="typeReturn" class="input-style" value="${
-                                                                returnItem.typeReturn
-                                                                }" required>
-                                                                            <input type="number" id="editTaxRendement${
-                                                                returnItem.id
-                                                                }" name="taxRendement" class="input-style" value="${
-                                                                returnItem.taxRendement
-                                                                }" required pattern="^\d+(\.\d{1,2})?$">
-                                                                            <input type="date" id="editDateDeadline${
-                                                                returnItem.id
-                                                                }" name="dateDeadline" class="input-style" value="${
-                                                                returnItem.dateDeadline
-                                                                }" required>
-                                                                            <input type="text" id="editStatus${
-                                                                returnItem.id
-                                                                }" name="status" class="input-style" value="${
-                                                                returnItem.status
-                                                                }" required>
+                                                                                    <input id="description" placeholder="Description" name="des" class="input-style" type="text" value="${returnItem.description}" required>
+                                                                                    <input id="priority" placeholder="Priority" name="pri"class="input-style" type="text" value="${returnItem.title}"required>
                                                                             <button type="submit" class="submit-btn">Save</button>
                                                                         </div>
                                                                     </form>

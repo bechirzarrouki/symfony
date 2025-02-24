@@ -107,7 +107,7 @@ class RequirementController extends AbstractController
         $this->addFlash('success', 'Requirement has been deleted successfully.');
 
         // Redirect to the project details page
-        return $this->redirectToRoute('project_show', ['id' => $requirement->getProject()->getId()]);
+        return $this->redirectToRoute('project_index');
     }
 
     #[Route('/requirement/{id}/edit', name: 'requirement_edit', methods: ['POST'])]
@@ -120,12 +120,12 @@ class RequirementController extends AbstractController
         }
 
         // Update the Requirement fields
-        $requirement->setTitle($request->request->get('title'));
-        $requirement->setDescription($request->request->get('description'));
+        $requirement->setTitle($request->request->get('pri'));
+        $requirement->setDescription($request->request->get('des'));
 
         $entityManager->persist($requirement);
         $entityManager->flush();
 
-        return $this->redirectToRoute('project_show', ['id' => $requirement->getProject()->getId()]);
+        return $this->redirectToRoute('project_index');
     }
 }
