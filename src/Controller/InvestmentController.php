@@ -18,7 +18,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Security;
+    
 
 #[Route('/investment')]
 class InvestmentController extends AbstractController
@@ -219,4 +223,27 @@ class InvestmentController extends AbstractController
         
             return $this->redirectToRoute('investment_index_admin');
         }
+        #[Route('/investment/{id}/like', name: 'investment_like', methods: ['POST'])]
+public function like(int $id, EntityManagerInterface $entityManager, InvestmentRepository $investmentRepository, SessionInterface $session): Response
+{
+    $user_id=$session->get('user_id');
+    $user =  $entityManager->getRepository(User::class)->find($user_id);
+    if (!$user) {
+        return $this->json(['error' => 'Unauthorized'], 403);
+    }
+    $investment = $investmentRepository->find($id);
+    if ($investment->isLikedByUser($user)) {
+        $investment->removeLike($user);
+        $liked = false;
+    } else {
+        $investment->addLike($user);
+        $liked = true;
+    }
+
+    $entityManager->persist($investment);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('investment_index_afficher');
+}
+
 }

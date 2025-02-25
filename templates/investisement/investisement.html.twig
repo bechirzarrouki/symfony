@@ -10,7 +10,7 @@
 {% endblock %}
 {% set userid = app.session.get('user_id') %}
 {% block body %}
-	{% include 'components/navbar.html.twig' %}
+	{% include 'components/navbar1.html.twig' %}
 	{% include 'components/sidebar.html.twig' %}
     <script>
     function openMessageModal(id) {
@@ -50,8 +50,16 @@ function closeMessageModal(id) {
 							<div class="returns-list"></div>
 						</div>
 					</div>
-
+                                                <div class="like-section">
+                        <form method="POST" action="{{ path('investment_like', {'id': investment.id}) }}" class="like-form">
+                            <button type="submit" class="like-button {% if investment.isLikedByUser(app.user) %}liked{% endif %}">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">{{ investment.likes|length }}</span>
+                            </button>
+                        </form>
+                    </div>
 				</div>
+                
 			</div>
 			<!-- Message Modal -->
 			<form method="POST" action="{{ path('chat_create', { 'id1': investment.user.getId(), 'id2': userid }) }}">
@@ -72,6 +80,7 @@ function closeMessageModal(id) {
 					</div>
 				</div>
 			</form>
+
 		{% endfor %}
 	</div>
 

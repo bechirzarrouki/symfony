@@ -131,7 +131,7 @@ html, body {
 .suggested-users-sidebar {
     position: fixed;
     right: 30px;
-    top: 100px;
+    top: 137px;
     width: 300px;
     background: white;
     border-radius: 10px;
@@ -318,4 +318,34 @@ html, body {
     .investment-box {
         padding: 15px;
     }
+}
+
+.like-section {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #777;
+    transition: color 0.3s;
+}
+
+.like-button:hover, .like-button.liked {
+    color: #e74c3c;
+}
+
+.like-button i {
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+.like-count {
+    font-size: 14px;
 }

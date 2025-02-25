@@ -35,6 +35,15 @@ final class HomeController extends AbstractController
         return $this->render('message/index.html.twig', [
             'controller_name' => 'messageController',
         ]);
+        
+    }
+    #[Route('/inevstafficher', name: 'app_inevstafficher')]
+    public function inevstafficher(): Response
+    {
+        return $this->render('investisement/inevstafficher.html.twig', [
+            'controller_name' => 'messageController',
+        ]);
+        
     }
     #[Route('/profile', name: 'app_profile')]
     public function profile(): Response

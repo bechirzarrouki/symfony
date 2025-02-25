@@ -7,7 +7,9 @@
             {{ parent() }}
             <link rel="stylesheet" href="{{ asset('css/investisement.css') }}">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         {% endblock %}
         {% block javascripts %}
             <script src="{{ asset('js/investisement.js') }}"></script>
@@ -57,55 +59,59 @@
                         </div>
                     
                         <form id="form" onsubmit="return validateForm(event)">
-            <div id="retourModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
+                           <div id="retourModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
 
-                    <input id="description" name="description" placeholder="Description" class="input-style" type="text" >
-                    <input id="typeRetour" name="typeReturn" placeholder="Return Type" class="input-style" type="text">
-                    <input id="tauxRendement" name="taxRendement" placeholder="Rate of Return" class="input-style" type="text" >
-                    <input id="date_deadline" name="dateDeadline" placeholder="Deadline" class="input-style" type="date" >
-                    <input id="status" name="status" placeholder="Status" class="input-style" type="text">
-                    <button type="submit" class="submit-btn">Send</button>
+                                    <input id="description" name="description" placeholder="Description" class="input-style" type="text" >
+                                    <input id="typeRetour" name="typeReturn" placeholder="Return Type" class="input-style" type="text">
+                                    <input id="tauxRendement" name="taxRendement" placeholder="Rate of Return" class="input-style" type="text" >
+                                    <input id="date_deadline" name="dateDeadline" placeholder="Deadline" class="input-style" type="date" >
+                                    <input id="status" name="status" placeholder="Status" class="input-style" type="text">
+                                    <button type="submit" class="submit-btn">Send</button>
 
-                    <div id="errorMessage" style="color: red; display: none;">Please fill out all fields correctly.</div>
-                </div>
-            </div>
-        </form>
+                                    <div id="errorMessage" style="color: red; display: none;">Please fill out all fields correctly.</div>
+                                </div>
+                            </div>
+                       </form>
 
                     </form>
                     {% for investment in investments %}
-        <div class="investment-box">
-            <div class="profile-section">
-                <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
-                <div class="profile-info">
-                    <h4>{{ investment.user.username }}</h4>
-                </div>
-                <div class="date-time">10/02/2025 - 14:30</div>
-                <div class="options-menu">
-                    <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
-                    <div class="options-dropdown">
-                        <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
-                    </div>
-                </div>
-            </div>
+                            <div class="investment-box">
+                                <div class="profile-section">
+                                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                                    <div class="profile-info">
+                                        <h4>{{ investment.user.username }}</h4>
+                                    </div>
+                                    <div class="date-time">10/02/2025 - 14:30</div>
+                                    <div class="options-menu">
+                                        <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
+                                        <div class="options-dropdown">
+                                            <button onclick="openDeleteModal({{ investment.id }})">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <div class="investment-content" data-investment-id="{{ investment.id }}">
-                {{ investment.content }}
-            </div>
+   <div class="investment-content" data-investment-id="{{ investment.id }}">
+   <div><i class="fas fa-file-alt"></i>   {{ investment.content }}</div>
+    <div><i class="fas fa-wallet"></i>   {{ investment.getInvestmentTypes() | join(', ') }}</div>
+    
+</div>
 
-            <!-- Investment details section -->
-            <div class="investment-details" id="details-{{ investment.id }}">
-                <!-- Returns will be injected here -->
-                <div class="returns-section" id="returns-{{ investment.id }}">
-                    <h4>Returns</h4>
-                    <div class="returns-list">
-                
 
-                </div>
-                </div>
-            </div>
-        </div>
+
+                                <!-- Investment details section -->
+                                <div class="investment-details" id="details-{{ investment.id }}">
+                                    <!-- Returns will be injected here -->
+                                    <div class="returns-section" id="returns-{{ investment.id }}">
+                                        <h4>Returns</h4>
+                                        <div class="returns-list">
+                                    
+
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         <div id="editModal{{ investment.id }}" class="modal">
                             <form action="{{ path('investment_edit', { id: investment.id }) }}" method="POST">

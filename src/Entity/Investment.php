@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 
@@ -24,6 +26,15 @@ class Investment
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'investment_likes')]
+    private Collection $likes;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,26 +48,17 @@ class Investment
     public function setContent(string $content): self
     {
         $this->content = $content;
-
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getInvestmentTypes(): array
     {
         return $this->investmentTypes;
     }
 
-    /**
-     * @param array $investmentTypes
-     * @return self
-     */
     public function setInvestmentTypes(array $investmentTypes): self
     {
         $this->investmentTypes = $investmentTypes;
-
         return $this;
     }
 
@@ -68,7 +70,34 @@ class Investment
     public function setUser(User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
+
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(User $user): self
+    {
+        if (!$this->likes->contains($user)) {
+            $this->likes->add($user);
+        }
+        return $this;
+    }
+
+    public function removeLike(User $user): self
+    {
+        $this->likes->removeElement($user);
+        return $this;
+    }
+
+    public function isLikedByUser(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        return $this->likes->contains($user);
+    }
+    
 }
