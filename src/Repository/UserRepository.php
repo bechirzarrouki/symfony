@@ -30,4 +30,14 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+   // src/Repository/UserRepository.php
+
+public function findByEmailLike(string $email): array
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.email LIKE :email')
+        ->setParameter('email', '%' . $email . '%')
+        ->getQuery()
+        ->getResult();
+}
 }

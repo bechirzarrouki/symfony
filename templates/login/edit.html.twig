@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Profil | InnovMatch</title>
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+       
+        <!-- Main Content -->
+        <main class="profile">
+            
+              
+              
+           
+            <div class="header"></div>
+            <div class="profile-info">
+                <img src="{{ asset(user.profileImage ?: 'default.jpg') }}" alt="Profile" class="profile-pic">
+                <div class="data">
+                    <div class="stats">
+                        <span>2.5K <br> Followers</span>
+                        <span>1.1K <br> Following</span>
+                        <span>655 <br> Supporters</span>
+                    </div>
+                    <div class="titre">    
+                        <h2>{{ user.firstname }} {{ user.lastname }}</h2>
+                        <p>@{{ user.username }}</p>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i> <!-- Une étoile vide -->
+                        </div>
+                    </div>
+                    <p class="bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                </div>
+
+                <div class="buttons">
+                    <button class="schedule">Schedule</button>
+                    <button class="follow">Follow</button>
+                    <button class="message">Message</button>
+                </div>
+            </div>
+
+            <div class="sections">
+                <div class="box"><h3>Education</h3><p>Nothing ...</p></div>
+                <div class="box"><h3>Certificates</h3><p>Nothing ...</p></div>
+                <div class="box"><h3>Posts</h3><p>Nothing ...</p></div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -135,3 +135,26 @@ button:hover {
 .links a:hover {
     text-decoration: underline;
 }
+.alert-danger {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid red;
+    padding: 10px;
+}
+/* Custom button styles */
+.btn-custom {
+    background-color: #800080; /* Purple color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px 20px; /* Adjust padding as needed */
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px; /* Optional: rounded corners */
+    margin-left: 20px; /* Move the button slightly to the right */
+}
+
+.btn-custom:hover {
+    background-color: #6a006a; /* Darker purple on hover */
+}
+

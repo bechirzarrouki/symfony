@@ -31,6 +31,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: "json")]
     private array $roles = ['ROLE_USER']; // Always initialized with ROLE_USER
+    #[ORM\Column(type: "boolean", options: ["default" => false])]
+    private ?bool $banned = false;
 
     public function setId(int $id): static
     {
@@ -92,6 +94,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return array_unique($this->roles);
     }
+    public function isBanned(): ?bool
+{
+    return $this->banned;
+}
+public function setBanned(bool $banned): static
+{
+    $this->banned = $banned;
+    return $this;
+}
 
     public function setRoles(array $roles): self
     {
