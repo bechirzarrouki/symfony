@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    App\Service\GmailOAuth2TokenProvider:
+        arguments:
+            $clientId: '601891516572-4a3td1gq34hv28vro7qjoht0ipc3901a'
+            $clientSecret: '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'
+            $refreshToken: 'your-refresh-token'

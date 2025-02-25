@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 html, body {
     height: auto;
     min-height: 100vh;
@@ -8,32 +9,77 @@ html, body {
     display: none;
 }
 
+=======
+/* Base layout */
+html, body {
+    height: auto;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    overflow-x: hidden;
+}
+
+/* Post container layout */
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 .post-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     max-width: 40rem;
+<<<<<<< HEAD
     margin: 20px auto; /* Marge normale */
     padding: 20px;
     height: auto; 
     margin: 100px auto 2rem auto; /* top right bottom left */
 }
 
+=======
+    padding: 20px;
+    margin-top: 8%;
+    margin-left: 300px;
+}
+
+/* Main wrapper */
+.main-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Investment box */
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 .investment-box {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+<<<<<<< HEAD
     width: 100%; /* Largeur fixe pour contenir le contenu */
     min-height: 120px;
 }
 
+=======
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.investment-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile section */
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 .profile-section {
     display: flex;
     align-items: center;
     gap: 10px;
+<<<<<<< HEAD
     margin-bottom: 10px;
+=======
+    margin-bottom: 15px;
+    position: relative;
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 }
 
 .profile-img {
@@ -41,15 +87,30 @@ html, body {
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+<<<<<<< HEAD
+=======
+    border: 2px solid #53348D;
+}
+
+.profile-info {
+    flex-grow: 1;
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 }
 
 .profile-info h4 {
     margin: 0;
+<<<<<<< HEAD
     font-size: 14px;
+=======
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: 600;
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 }
 
 .date-time {
     font-size: 12px;
+<<<<<<< HEAD
     color: #777;
     text-align: right;
 }
@@ -69,6 +130,137 @@ html, body {
 /* Modal Styles */
 .modal {
     display: none;
+=======
+    color: #6b7280;
+}
+
+/* Message icon */
+.message-icon-container {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.message-icon {
+    font-size: 20px;
+    color: #53348D;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.message-icon:hover {
+    transform: scale(1.1);
+    color: #432A70;
+}
+
+/* Investment content */
+.investment-content {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #4b5563;
+    border-left: 4px solid #53348D;
+    cursor: pointer;
+}
+
+/* Investment details */
+.investment-details {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f4f2ee;
+    border-radius: 8px;
+    border-left: 4px solid #53348D;
+}
+
+.returns-section h4 {
+    margin: 0 0 10px 0;
+    color: #1f2937;
+}
+
+.return-item {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.return-item:last-child {
+    border-bottom: none;
+}
+
+/* Suggested users sidebar */
+.suggested-users-sidebar {
+    position: fixed;
+    right: 30px;
+    top: 137px;
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.suggested-users-container {
+    width: 100%;
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.user-item:hover {
+    background-color: #f9fafb;
+}
+
+.suggested-user-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.user-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.follow-btn {
+    background-color: #53348D;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.follow-btn:hover {
+    background-color: #432A70;
+}
+
+/* Message Modal */
+.message-modal {
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
     position: fixed;
     z-index: 1000;
     top: 0;
@@ -76,6 +268,7 @@ html, body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+<<<<<<< HEAD
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,10 +317,68 @@ html, body {
     outline: none;
     transition: all 0.3s ease-in-out;
     background-color: #f9f9f9;
+=======
+    display: none;
+}
+
+.message-modal-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.message-close-btn {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.message-close-btn:hover {
+    color: #1f2937;
+}
+
+.message-modal-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+    padding-right: 20px;
+}
+
+.message-modal-body {
+    margin-bottom: 20px;
+}
+
+.message-modal-body p {
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.input-style {
+    width: 96%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1f2937;
+    transition: border-color 0.2s ease;
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 }
 
 .input-style:focus {
     border-color: #53348D;
+<<<<<<< HEAD
     box-shadow: 0 0 8px rgba(83, 52, 141, 0.3);
     background-color: #fff;
 }
@@ -142,3 +393,89 @@ html, body {
     font-size: 14px;
     border-left: 4px solid #53348D;
 }
+=======
+    outline: none;
+}
+
+.message-modal-footer {
+    text-align: right;
+}
+
+.message-modal-submit-btn {
+    background-color: #53348D;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.message-modal-submit-btn:hover {
+    background-color: #432A70;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .post-container {
+        margin-left: 100px;
+    }
+    
+    .suggested-users-sidebar {
+        width: 250px;
+    }
+}
+
+@media (max-width: 992px) {
+    .post-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    
+    .suggested-users-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .post-container {
+        margin: 20px;
+        padding: 10px;
+    }
+    
+    .investment-box {
+        padding: 15px;
+    }
+}
+
+.like-section {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #777;
+    transition: color 0.3s;
+}
+
+.like-button:hover, .like-button.liked {
+    color: #e74c3c;
+}
+
+.like-button i {
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+.like-count {
+    font-size: 14px;
+}
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9

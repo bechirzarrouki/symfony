@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Home - InoovMatch{% endblock %}
-
+{% set user_id = app.session.get('user_id') %}
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
@@ -54,6 +54,78 @@
 {% endblock %}
 
 {% block body %}
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const uploadForm = document.getElementById("uploadForm");
+    const fileInput = document.getElementById("fileInput");
+    const resultImage = document.getElementById("resultImage");
+    const loadingText = document.getElementById("loadingText");
+    const error = document.getElementById("error");
+    const uploadButton = document.getElementById("uploadButton");
+    let allowSubmission = false;
+    uploadButton.addEventListener("click", function () {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length) {
+            uploadForm.dispatchEvent(new Event("submit"));
+        }
+    });
+uploadForm.addEventListener("submit", async function (event) {
+        
+        if (!fileInput.files.length) {
+            error.style.display = "block";
+            event.preventDefault();
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append("image", fileInput.files[0]);
+
+        loadingText.style.display = "block";
+        resultImage.style.display = "none";
+        error.style.display = "none";
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/detect", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to process image");
+            }
+
+            // Always show image if URL exists
+            if (result.image_url) {
+                const imageUrl = `http://127.0.0.1:5000${result.image_url}`;
+                resultImage.src = imageUrl;
+                resultImage.style.display = "block";
+                resultImage.style.width = "300px";
+                resultImage.style.height = "300px";
+            }
+
+            // Show appropriate alert
+            if (result.nudity_detected) {
+                alert("Warning: Nudity detected in the image!");
+                event.preventDefault();
+                fileInput.value = ""; // Clear the file input
+                return;
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.message);
+            
+        } finally {
+            loadingText.style.display = "none";
+            
+        }
+    });
+});
+</script>
 <div class="app-container">
     {% include 'components/navbar.html.twig' %}
     {% include 'components/sidebar.html.twig' %}
@@ -61,17 +133,27 @@
         <!-- Create Post Box -->
         <div class="create-post">
             <h2>Create Your Post</h2>
-            <form method="post" action="{{ path('post_new') }}">
-                <div class="post-input-wrapper">
-                    <input type="text" name="content" placeholder="What's on your mind?" required>
-                    <button type="submit" class="btn-create">Create</button>
-                </div>
-            </form>
-            <div class="post-actions">
-                <button class="action-btn">
-                    <i class="fas fa-camera"></i> Photo
-                </button>
-            </div>
+<form id="uploadForm" method="post" action="{{ path('post_new') }}" enctype="multipart/form-data">
+    <div class="post-input-wrapper">
+        <input type="text" name="content" placeholder="What's on your mind?" required>
+        <button type="submit" class="btn-create">Create</button>
+    </div>
+    
+    <div class="post-actions">
+        <button type="button" class="action-btn" id="uploadButton">
+            <i class="fas fa-camera"></i> Photo
+        </button>
+    </div>
+    
+    <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;">
+    
+</form>
+
+<p id="loadingText" style="display: none;">Processing...</p>
+<p id="error" style="display: none;color:red;">add image</p>
+<img id="resultImage" style="display: none;" alt="Processed Image">
+
+
         </div>
 
         <!-- Posts Feed -->
@@ -86,14 +168,14 @@
                             <p>public</p>
                         </div>
                     </div>
-                    {#{% if app.user and app.user == post.author %}#}
+                    {% if user_id == post.author.id %}
                     <div class="post-controls">
                         <a  onclick="editPost({{ post.id }})"> <i class="fas fa-edit"></i></a>
                         <form method="post" action="{{ path('post_delete', { id: post.id }) }}" style="display:inline;">
                             <button type="submit"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </div>
-                    {#{% endif %}#}
+                    {% endif %}
                 </div>
                 <div class="post-content">
                     <p class="post-text"></p>
@@ -108,7 +190,7 @@
                                 </form>
                      </div>
                     {% if post.image %}
-                    <img src="{{ asset(post.image) }}" alt="Post image" class="post-image">
+                    <img src="{{ asset('/uploads/posts/' ~ post.image) }}" alt="Post image" class="post-image" style="width:300px;height:300px;">
                     {% endif %}
                     <div class="post-stats">
                         <span>{{ post.likes }} likes</span>
@@ -119,11 +201,12 @@
     {% for comment in post.comments %}
     <div class="comment" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="comment-info">
-            <strong>{{ comment.author ? comment.author.name : 'Anonymous' }}</strong>
+            <strong>{{ comment.author ? comment.author.username : 'Anonymous' }}</strong>
             <span class="comment-text" id="comment-content-{{ comment.id }}">
                 {{ comment.content }}
             </span>
         </div>
+         {% if user_id == comment.author.id %}
         <div class="comment-actions">
             <button class="edit-comment-btn" onclick="editComment({{ comment.id }})" style="background:none; border:none; cursor:pointer;">
                 <i class="fas fa-edit"></i>
@@ -134,6 +217,7 @@
                 </button>
             </form>
         </div>
+        {% endif %}
 
                             <!-- Edit Form (Hidden by default) -->
                             <div class="comment-edit-form" id="comment-edit-form-{{ comment.id }}" style="display:none;">
@@ -187,5 +271,7 @@
             document.getElementById('post-content-' + commentId).style.display = 'block';
             document.getElementById('post-edit-form-' + commentId).style.display = 'none';
         }
+        
+
     </script>
 {% endblock %}

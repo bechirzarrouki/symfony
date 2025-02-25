@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/comment')]
@@ -18,7 +19,7 @@ class CommentController extends AbstractController
 {
     // Create a new comment for a given post.
     #[Route('/new/{postId}', name: 'comment_new', methods: ['POST'])]
-    public function new(Request $request, int $postId, EntityManagerInterface $em): Response
+    public function new(Request $request, int $postId, EntityManagerInterface $em,SessionInterface $session): Response
     {
         // Fetch the Post entity
         $post = $em->getRepository(Post::class)->find($postId);
@@ -41,17 +42,15 @@ class CommentController extends AbstractController
         $comment->setDateModification(new \DateTime());
 
         // Use a dummy user instead of a logged-in user
-        $dummyUser = $em->getRepository(User::class)->findOneBy([]);
-        if (!$dummyUser) {
-            // Create a dummy user if none exists
-            $dummyUser = new User();
-            $dummyUser->setName('Dummy User');
-            $dummyUser->setEmail('dummy@example.com');
-            $dummyUser->setRole('ROLE_CLIENT');
-            $em->persist($dummyUser);
-            $em->flush();
-        }
-        $comment->setAuthor($dummyUser);
+        $id = $session->get('user_id');
+            $user = $em->getRepository(User::class)->find($id);
+    
+            if (!$user) {
+                // Handle missing user case
+                $this->addFlash('error', 'User not found.');
+                return $this->redirectToRoute('post_index');
+            }
+        $comment->setAuthor($user);
 
         // Persist the comment
         $em->persist($comment);

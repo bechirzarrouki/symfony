@@ -9,8 +9,10 @@ use App\Entity\User;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/post')]
@@ -28,31 +30,54 @@ class PostController extends AbstractController
 
     // Create a new post (if you are not using a dedicated form type, you can handle request data manually)
     #[Route('/new', name: 'post_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
     {
         if ($request->isMethod('POST')) {
             $content = $request->request->get('content');
-            if (!$content) {
-                $this->addFlash('error', 'Post content cannot be empty.');
+            $imageFile = $request->files->get('image');
+    
+            if (!$content && !$imageFile) {
+                $this->addFlash('error', 'Post must have text or an image.');
                 return $this->redirectToRoute('post_index');
             }
-            
+    
             $post = new Post();
             $post->setContent($content);
             $post->setLikes(0);
+            
+            // Retrieve user from session
+            $id = $session->get('user_id');
+            $user = $em->getRepository(User::class)->find($id);
     
-            // Instead of using $this->getUser(), use a dummy user:
-            $dummyUser = $em->getRepository(User::class)->findOneBy([]);
-            if (!$dummyUser) {
-                // Create a dummy user if none exists.
-                $dummyUser = new User();
-                $dummyUser->setUserName('Dummy User');
-                $dummyUser->setEmail('dummy@example.com');
-                $dummyUser->setRoles(['ROLE_CLIENT']); // or any role you prefer
-                $em->persist($dummyUser);
-                $em->flush();
+            if (!$user) {
+                // Handle missing user case
+                $this->addFlash('error', 'User not found.');
+                return $this->redirectToRoute('post_index');
             }
-            $post->setAuthor($dummyUser);
+    
+            $post->setAuthor($user);
+    
+            // Handle image upload
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $uploadDirectory = __DIR__ . '/../../public/uploads/posts';
+                if (!is_dir($uploadDirectory)) {
+                    mkdir($uploadDirectory, 0777, true);
+                }
+                try {
+                    // Move the file to the directory where images are stored
+                    $imageFile->move(
+                        $uploadDirectory, // Ensure this is defined in services.yaml
+                        $newFilename
+                    );
+            
+                    // Set the image path in the post entity
+                    $post->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'There was an error uploading the post image.');
+                }
+            }
+            
     
             $em->persist($post);
             $em->flush();
@@ -63,6 +88,7 @@ class PostController extends AbstractController
     
         return $this->render('post/new.html.twig');
     }
+    
     
 
     // Edit an existing post

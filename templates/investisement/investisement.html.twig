@@ -1,85 +1,228 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home - Purple Social{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/investisementA.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% block title %}Home - Purple Social
 {% endblock %}
 
-{% block body %}  
-    {% include 'components/navbar.html.twig' %}
-    {% include 'components/sidebar.html.twig' %}
-
-    <div class="post-container">
-        {% for investment in investments %}
-            <div class="investment-box">
-                <div class="profile-section">
-                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
-                    <div class="profile-info">
-                        <h4>{{ investment.user.username }}</h4>
-                    </div>
-                    <div class="date-time">10/02/2025 - 14:30</div>
-                </div>
-
-                <div class="investment-content">
-                    {{ investment.content }}
-                </div>
-            
-
-            <!-- Investment details section -->
-            <div class="investment-details">
-                <h3>Investment Details</h3>
-                <p><strong>Project:</strong> Solar Energy for Local Businesses</p>
-                <p><strong>Return on Investment:</strong> Fast</p>
-                <p><strong>Date:</strong> 10/02/2025</p>
-                <p><strong>Investor:</strong> Jean Dupont</p>
-            </div>
-            </div>
-        {% endfor %}
-    </div>
-
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/investisementA.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+{% set userid = app.session.get('user_id') %}
+{% block body %}
+	{% include 'components/navbar1.html.twig' %}
+	{% include 'components/sidebar.html.twig' %}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sélectionne tous les éléments avec la classe .investment-content
-            const investmentContents = document.querySelectorAll('.investment-content');
+    function openMessageModal(id) {
+    document.getElementById("messageModal" + id).style.display = "block";
+}
+function closeMessageModal(id) {
+    document.getElementById("messageModal" + id).style.display = "none";
+}
+    </script>
+	<div class="post-container">
+		{% for investment in investments %}
+			<div class="main-wrapper">
+				<div class="investment-box">
+					<div class="profile-section">
+						<img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+						<div class="profile-info">
+							<h4>{{ investment.user.username }}</h4>
+						</div>
+						<!-- Message icon -->
+						<div class="message-icon-container" data-investment-id="{{ investment.id }}">
+                            <i class="fas fa-comment message-icon" onclick="openMessageModal({{ investment.id }})"></i>
+                        </div>
 
-            investmentContents.forEach(function(investmentContent) {
-                // Ajoute un écouteur d'événement de clic sur chaque .investment-content
-                investmentContent.addEventListener('click', function() {
-                    // Trouve l'élément .investment-details correspondant à l'élément cliqué
-                    const investmentDetails = investmentContent.nextElementSibling;
+						<div class="date-time">10/02/2025 - 14:30</div>
+					</div>
 
-                    // Bascule l'affichage de l'élément .investment-details
-                    if (investmentDetails && investmentDetails.classList.contains('investment-details')) {
-                        const currentDisplay = investmentDetails.style.display;
-                        investmentDetails.style.display = currentDisplay === 'block' ? 'none' : 'block';
-                    }
-                });
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".investment-content").forEach(function (investmentContent) {
-        investmentContent.addEventListener("click", function () {
-            // Trouver le parent .investment-box
-            const investmentBox = investmentContent.closest(".investment-box");
-            
-            if (investmentBox) {
-                // Trouver l'élément .investment-details qui suit directement le .investment-box
-                const investmentDetails = investmentBox.nextElementSibling;
+					<div class="investment-content" data-investment-id="{{ investment.id }}">
+						{{ investment.content }}
+					</div>
+
+					<!-- Investment details section -->
+					<div
+						class="investment-details" id="details-{{ investment.id }}">
+						<!-- Returns will be injected here -->
+						<div class="returns-section" id="returns-{{ investment.id }}">
+							<h4>Returns</h4>
+							<div class="returns-list"></div>
+						</div>
+					</div>
+                                                <div class="like-section">
+                        <form method="POST" action="{{ path('investment_like', {'id': investment.id}) }}" class="like-form">
+                            <button type="submit" class="like-button {% if investment.isLikedByUser(app.user) %}liked{% endif %}">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">{{ investment.likes|length }}</span>
+                            </button>
+                        </form>
+                    </div>
+				</div>
                 
-                if (investmentDetails && investmentDetails.classList.contains("investment-details")) {
-                    // Basculer l'affichage
-                    investmentDetails.style.display = 
-                        investmentDetails.style.display === "none" || investmentDetails.style.display === "" 
-                        ? "block" 
-                        : "none";
-                }
+			</div>
+			<!-- Message Modal -->
+			<form method="POST" action="{{ path('chat_create', { 'id1': investment.user.getId(), 'id2': userid }) }}">
+				<div class="message-modal" id="messageModal{{investment.id}}" style="display: none;">
+					<div class="message-modal-content">
+						<span class="message-close-btn" onclick="closeMessageModal({{investment.id}})">&times;</span>
+						<div class="message-modal-header">New Message</div>
+						<div class="message-modal-body">
+							<p>Enter your message here{{investment.user.getId()}}</p>
+							<input type="text" class="input-style" id="messageText" name="message" placeholder="Type your message">
+							<input
+							type="hidden" id="recipientId">
+						<!-- Stocke l'ID du destinataire -->
+						</div>
+						<div class="message-modal-footer">
+							<button class="message-modal-submit-btn" id="sendMessageBtn">Send</button>
+						</div>
+					</div>
+				</div>
+			</form>
+
+		{% endfor %}
+	</div>
+
+	<!-- Suggested Users Sidebar -->
+	<div class="suggested-users-sidebar">
+		<div class="suggested-users-container">
+			<div class="user-list">
+				{% set suggested_users = [
+                    {'username': 'Alice', 'profile_picture': 'images/alice-avatar.jpg'},
+                    {'username': 'Bob', 'profile_picture': 'images/bob-avatar.jpg'},
+                    {'username': 'Charlie', 'profile_picture': 'images/charlie-avatar.jpg'},
+                    {'username': 'Diana', 'profile_picture': null},
+                    {'username': 'Eve', 'profile_picture': 'images/eve-avatar.jpg'}
+                ] %}
+
+				{% for user in suggested_users %}
+					<div class="user-item">
+						{% if user.profile_picture %}
+							<img src="{{ asset(user.profile_picture) }}" alt="Profile" class="suggested-user-img">
+						{% else %}
+							<img src="{{ asset('images/default-avatar.jpg') }}" alt="Default Profile" class="suggested-user-img">
+						{% endif %}
+						<div class="user-info">
+							<h4>{{ user.username }}</h4>
+							<button class="follow-btn">Follow</button>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+    // Toggle investment details
+    const investmentContents = document.querySelectorAll('.investment-content');
+    investmentContents.forEach(function (investmentContent) {
+        investmentContent.addEventListener('click', function () {
+            const investmentBox = investmentContent.closest('.investment-box');
+            const investmentDetails = investmentBox.querySelector('.investment-details');
+            if (investmentDetails) {
+                const currentDisplay = investmentDetails.style.display;
+                investmentDetails.style.display = currentDisplay === 'block' ? 'none' : 'block';
+            }
+        });
+    });
+
+    // Message modal functionality
+    const messageIcons = document.querySelectorAll('.message-icon');
+    const modal = document.getElementById('messageModal');
+    const closeModal = document.querySelector('.message-close-btn');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const messageText = document.getElementById('messageText');
+    const recipientIdInput = document.getElementById('recipientId');
+
+    // Open modal when clicking on message icon
+    
+
+    // Close modal
+    closeModal.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    // Send message functionality
+    sendMessageBtn.addEventListener('click', function () {
+        const messageContent = messageText.value.trim();
+        const recipientId = recipientIdInput.value;
+
+        if (!messageContent) {
+            alert('Please enter a message.');
+            return;
+        }
+
+        fetch('/message/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: currentUserId, // Assuming currentUserId is available
+                recipient: recipientId,
+                content: messageContent
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Error sending the message.');
+            }
+            return response.json();
+        }).then(data => {
+            alert('Message sent successfully!');
+            messageText.value = ''; // Clear input
+            modal.style.display = 'none'; // Close modal
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    // Fetch investment returns dynamically
+    investmentContents.forEach(function (investmentContent) {
+        investmentContent.addEventListener('click', function () {
+            const investmentDetails = investmentContent.nextElementSibling;
+            if (!investmentDetails || !investmentDetails.classList.contains('investment-details')) return;
+
+            const investmentId = investmentContent.getAttribute('data-investment-id');
+            const returnsContainer = investmentDetails.querySelector('.returns-list');
+
+            // Load returns only if not already loaded
+            if (returnsContainer && returnsContainer.innerHTML.trim() === '') {
+                fetch(`/api/investment/${investmentId}/returns`)
+                    .then(response => response.json())
+                    .then(data => {
+                        returnsContainer.innerHTML = ''; // Clear previous content
+                        if (data.length === 0) {
+                            returnsContainer.innerHTML = '<p>No returns found for this investment.</p>';
+                        } else {
+                            data.forEach(returnItem => {
+                                returnsContainer.innerHTML += `
+                                    <div class="return-item">
+                                        <p><strong>Description:</strong> ${returnItem.description}</p>
+                                        <p><strong>Type:</strong> ${returnItem.typeReturn}</p>
+                                        <p><strong>Tax Rendement:</strong> ${returnItem.taxRendement}</p>
+                                        <p><strong>Date Deadline:</strong> ${returnItem.dateDeadline}</p>
+                                        <p><strong>Status:</strong> ${returnItem.status}</p>
+                                    </div>
+                                `;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching returns:', error);
+                        returnsContainer.innerHTML = '<p>Error loading returns.</p>';
+                    });
             }
         });
     });
 });
+<<<<<<< HEAD
     </script>
 
+=======
+
+	</script>
+>>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 {% endblock %}

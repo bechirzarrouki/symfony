@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Controller;
-
+use App\Service\GmailOAuth2TokenProvider;
+use App\Service\FlaskApiService;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 use App\Entity\Investment;
-use App\Entity\Project;
 use App\Entity\User;
 use App\Repository\InvestmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,9 +16,44 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+    
+
 #[Route('/investment')]
 class InvestmentController extends AbstractController
 {
+    
+    public function __construct(GmailOAuth2TokenProvider $tokenProvider)
+    {
+        $this->tokenProvider = $tokenProvider;
+    }
+    public function sendMail(String $data,String $email): Response
+    {
+        // Get the latest access token
+        $accessToken = $this->tokenProvider->getAccessToken();
+
+        // Build the DSN: replace 'your-email@gmail.com' with your actual Gmail address
+        $mailerDsn = sprintf(
+            'smtp://%s:%s@smtp.gmail.com:587?encryption=tls&auth_mode=xoauth2',
+            'yager.2250@gmail.com',
+            $accessToken
+        );
+
+        // Create the transport and mailer
+        $transport = Transport::fromDsn($mailerDsn);
+        $mailer = new Mailer($transport);
+
+        // Compose your email
+        $email = (new Email())
+            ->from('yager.2250@gmail.com')
+            ->to($email)
+            ->subject('this a prediction on your last investment post')
+            ->text($data);
+
+        // Send the email
+        $mailer->send($email);
+
+        return new Response('Email sent successfully.');
+    }
     // List all investments
     #[Route('/', name: 'investment_index', methods: ['GET'])]
     public function index(InvestmentRepository $investmentRepository): Response
@@ -41,7 +79,7 @@ class InvestmentController extends AbstractController
 
     // Create a new investment using a dummy user if not logged in
     #[Route('/new', name: 'investment_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em, SessionInterface $session): Response
+    public function new(Request $request, InvestmentRepository $investmentRepository, EntityManagerInterface $em, SessionInterface $session,FlaskApiService $api): Response
     {
         $investment = new Investment();
         
@@ -59,18 +97,12 @@ class InvestmentController extends AbstractController
             $investment->setContent($content);
             $investment->setInvestmentTypes($investmentTypes);
             // Use the logged-in user if available, otherwise use/create a dummy user
-            $user = $this->getUser();
-            if (!$user) {
-                $user = $em->getRepository(User::class)->findOneBy([]) ?? new User();
-                if (!$user->getId()) {
-                    $user->setUsername('Dummy Investor');
-                    $user->setEmail('dummy@investor.com');
-                    $user->setRoles(['ROLE_INVESTOR']);
-                    
-                    $em->persist($user);
-                    $em->flush();
-                }
-            }
+            $user = new User;
+            $user->setId((int)$session->get('user_id'));
+            $user->setUsername($session->get('username'));
+            $user->setEmail($session->get('user_email'));
+            $user->setRoles($session->get('Roles'));
+            $user = $em->getRepository(User::class)->find($session->get('user_id'));
             $investment->setUser($user);
     
             // Save the new investment
@@ -78,7 +110,7 @@ class InvestmentController extends AbstractController
     
             // Get the ID of the newly created investment
             $id = $investment->getId();
-    
+            
             // Store the necessary data in the session to be used in the 'return_create' controller
             $session->set('investmentData', [
                 'taxRendement'=>$taxRendement,
@@ -87,10 +119,12 @@ class InvestmentController extends AbstractController
                 'dateDeadline'=>$dateDeadline,
                 'status'=>$status,
             ]);
-    
+            $type=implode(',', $investmentTypes);
+            $mail=$api->predictROI($content,$type,(float)$TypeReturn);
+            $data = json_encode($mail, JSON_UNESCAPED_SLASHES);
+            $this->sendMail($data,$user->getEmail());
             // Flash message for successful investment creation
             $this->addFlash('success', 'Investment created successfully!');
-    
             // Redirect to the return creation page with the investment ID
             return $this->redirectToRoute('return_create', ['investmentId' => $id]);
         }
@@ -183,4 +217,27 @@ class InvestmentController extends AbstractController
         
             return $this->redirectToRoute('investment_index_admin');
         }
+        #[Route('/investment/{id}/like', name: 'investment_like', methods: ['POST'])]
+public function like(int $id, EntityManagerInterface $entityManager, InvestmentRepository $investmentRepository, SessionInterface $session): Response
+{
+    $user_id=$session->get('user_id');
+    $user =  $entityManager->getRepository(User::class)->find($user_id);
+    if (!$user) {
+        return $this->json(['error' => 'Unauthorized'], 403);
+    }
+    $investment = $investmentRepository->find($id);
+    if ($investment->isLikedByUser($user)) {
+        $investment->removeLike($user);
+        $liked = false;
+    } else {
+        $investment->addLike($user);
+        $liked = true;
+    }
+
+    $entityManager->persist($investment);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('investment_index_afficher');
+}
+
 }

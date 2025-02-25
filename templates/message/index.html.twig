@@ -1,0 +1,315 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home - Purple Social{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Reset CSS */
+         body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Conteneur principal */
+        .app-container {
+            display: flex;
+            height: calc(93vh - 60px); /* Ajuste selon la hauteur de la navbar */
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            
+        }
+
+        /* Sidebar des contacts */
+        .contacts-container {
+            width: 250px;
+            background-color: #fff;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            
+  border-right: 2px solid #999999;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Liste des contacts */
+        .contact-list {
+            padding: 10px;
+            flex: 1;
+        }
+
+        /* Style d'un contact */
+        .contact {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .contact:hover {
+            background-color: #f9f9f9;
+        }
+.contact-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    background-color: #ccc;
+    overflow: hidden;
+}
+        /* Photo de profil */
+        .contact-photo img {
+               width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        /* Détails du contact */
+        .contact-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-name {
+            font-weight: bold;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-last-message {
+            color: #666;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Zone de chat principale */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Essential pour le défilement interne */
+        }
+
+        /* Zone des messages avec défilement */
+        .chat-messages {
+            flex: 1 1 auto;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Style des messages */
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        /* Message envoyé */
+        .message.sent {
+            background-color: #53348D;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        /* Message reçu */
+        .message.received {
+            background-color: #e9ecef;
+            color: #000;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        /* Zone de saisie fixe */
+        .chat-input {
+            flex-shrink: 0;
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+              border-right: 2px solid #999999;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #53348D;
+        }
+
+        .chat-input button {
+            padding: 12px 25px;
+            background-color: #53348D;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #53348D;
+        }
+
+        /* Améliorations du défilement */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let selectedChatId = null; // Stocke l'ID de la conversation active
+            const chatMessages = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const userId = 2; // Remplacez par l'ID de l'utilisateur connecté
+
+            // Fonction pour charger les messages d'une conversation
+            function loadMessages(chatId) {
+                selectedChatId = chatId; // Met à jour l'ID de la conversation active
+
+                fetch(`/message/chat/${chatId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Erreur lors du chargement des messages");
+                        return response.json();
+                    })
+                    .then(messages => {
+                        chatMessages.innerHTML = ''; // Vide les messages actuels
+                        messages.forEach(msg => {
+                            const div = document.createElement('div');
+                            div.className = `message ${msg.sender === userId ? 'sent' : 'received'}`;
+                            div.textContent = msg.content;
+                            chatMessages.appendChild(div);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight; // Défilement vers le bas
+                    })
+                    .catch(error => console.error(error));
+            }
+
+            // Clic sur un contact pour charger la conversation
+            document.querySelectorAll('.contact').forEach(contact => {
+                contact.addEventListener('click', function() {
+                    const chatId = this.getAttribute('data-chat-id');
+                    if (chatId) {
+                        loadMessages(chatId);
+                    }
+                });
+            });
+
+            // Fonction pour envoyer un message
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message || !selectedChatId) return;
+
+                fetch('/message/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat: selectedChatId, sender: userId, content: message })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erreur lors de l'envoi du message");
+                    return response.json();
+                })
+                .then(msg => {
+                    const div = document.createElement('div');
+                    div.className = 'message sent';
+                    div.textContent = msg.content;
+                    chatMessages.appendChild(div);
+                    messageInput.value = '';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => console.error(error));
+            }
+
+            // Ajout des événements pour envoyer un message
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    {% include 'components/navbar.html.twig' %}
+    <div class="app-container">
+        <!-- Sidebar des contacts -->
+        <div class="contacts-container">
+            {% for conversation in conversations %}
+                <div class="contact" data-chat-id="{{ conversation.id }}">
+                    <div class="contact-photo">
+                        {% if conversation.getUser1().getProfileImage() %}
+                            <img src="{{ conversation.getUser1().getProfileImage() }}" alt="Photo de {{ conversation.getUser1().getUsername() }}">
+                        {% else %}
+                            <img src="/images/default-avatar.png" alt="Photo par défaut">
+                        {% endif %}
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-name">{{ conversation.getUser1().getUsername() }}</div>
+                        <div class="contact-last-message">
+                            {{ conversation.lastMessage.content|default('Aucun message') }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Zone de chat -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Écrivez un message..." autocomplete="off">
+                <button id="send-button">Envoyer</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
