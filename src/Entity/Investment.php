@@ -21,7 +21,8 @@ class Investment
 
     #[ORM\Column(type: 'json')]
     private array $investmentTypes = [];
-
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'investments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -33,8 +34,12 @@ class Investment
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable(); 
     }
-
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
     public function getId(): ?int
     {
         return $this->id;

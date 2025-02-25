@@ -79,11 +79,11 @@
                     {% for investment in investments %}
                             <div class="investment-box">
                                 <div class="profile-section">
-                                    <img src="{{ asset('images/avatar.jpg') }}" alt="Profile" class="profile-img">
+                                    <img src="{{ asset('uploads/profile_images/' ~ investment.user.getProfileImage()) }}" alt="Profile" class="profile-img">
                                     <div class="profile-info">
                                         <h4>{{ investment.user.username }}</h4>
                                     </div>
-                                    <div class="date-time">10/02/2025 - 14:30</div>
+                                    <div class="date-time">{{investment.getCreatedAt()|date('Y-m-d H:i:s')}}</div>
                                     <div class="options-menu">
                                         <i class="fas fa-ellipsis-v" onclick="toggleOptionsMenu(event)"></i>
                                         <div class="options-dropdown">

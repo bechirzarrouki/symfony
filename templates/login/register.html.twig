@@ -153,12 +153,12 @@
                 <span class="upload-text">Upload an</span>
                 <span class="upload-text">image</span>
                 <div class="camera-icon"></div>
-                <input type="file" id="profile-picture" name="profile_picture" accept="image/*" style="display:none;">
             </div>
         </div>
 
         <form id="signup-form" action="{{ path('app_register') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
             <h1>Sign Up</h1>
+                <input type="file" id="profile-picture" name="profile_picture" accept="image/*" style="display:none;">
 
             <div class="form-grid">
                 <div class="form-group">

@@ -123,10 +123,6 @@ public function show(User $user): Response
             $this->addFlash('error', 'User not found.');
             return $this->redirectToRoute('app_userlist');
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> f12e0d6bc430152a5ad9d5c1fc0e3fefe2ac30ed
         $user->setUsername($request->request->get('username'));
         $user->setEmail($request->request->get('email'));
         $user->setNumber($request->request->get('number'));
@@ -199,15 +195,14 @@ public function search(Request $request, UserRepository $userRepository): Respon
         return $this->redirectToRoute('app_userlist');
     }
     #[Route('/login', name: 'app_login')]
-public function login(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
-{
-    if ($request->isMethod('POST')) {
-        $username = $request->request->get('username');
-        $password = $request->request->get('password');
+    public function login(Request $request, EntityManagerInterface $em,UserPasswordHasherInterface  $passwordHasher, SessionInterface $session): Response
+    {
+        if ($request->isMethod('POST')) {
+            $username = $request->request->get('username');
+            $password = $request->request->get('password');
 
-        $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+            $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
 
-<<<<<<< HEAD
             if (!$user) {
                 $this->addFlash('error', 'User not found.');
                 return $this->redirectToRoute('app_login');
@@ -230,41 +225,10 @@ public function login(Request $request, EntityManagerInterface $em, UserPassword
                 $this->addFlash('error', 'Invalid password.');
                 return $this->redirectToRoute('app_login');
             }
-=======
-        if (!$user) {
-            $this->addFlash('error', 'User not found.');
-            return $this->redirectToRoute('app_login');
->>>>>>> f12e0d6bc430152a5ad9d5c1fc0e3fefe2ac30ed
         }
 
-        if ($user->isBanned()) {
-            $this->addFlash('error', 'This user is banned.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        if ($passwordHasher->isPasswordValid($user, $password)) {
-            // Store user session
-            $session->set('user', [
-                'id' => $user->getId(),
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'firstname' => $user->getFirstname(),
-                'lastname' => $user->getLastname(),
-                'number' => $user->getNumber(),
-                'profileImage' => $user->getProfileImage(),
-                'roles' => $user->getRoles(),
-            ]);
-
-            $this->addFlash('success', 'Login successful!');
-            return $this->redirectToRoute('app_profile');
-        } else {
-            $this->addFlash('error', 'Invalid password.');
-            return $this->redirectToRoute('app_login');
-        }
+        return $this->render('login/login.html.twig');
     }
-
-    return $this->render('login/login.html.twig');
-}
 
 #[Route('/profile', name: 'app_profile')]
 public function profile(SessionInterface $session): Response

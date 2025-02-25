@@ -56,10 +56,12 @@ class InvestmentController extends AbstractController
     }
     // List all investments
     #[Route('/', name: 'investment_index', methods: ['GET'])]
-    public function index(InvestmentRepository $investmentRepository): Response
+    public function index(InvestmentRepository $investmentRepository,SessionInterface $session): Response
     {
+        $id=$session->get('user_id');
+        $investments = $investmentRepository->findByUserId($id);
         return $this->render('investisement/index.html.twig', [
-            'investments' => $investmentRepository->findAll(),
+            'investments' =>  $investments,
         ]);
     }
     #[Route('/investisementadmin', name: 'investment_index_admin', methods: ['GET'])]
@@ -69,6 +71,20 @@ class InvestmentController extends AbstractController
             'investments' => $investmentRepository->findAll(),
         ]);
     }
+    #[Route('/search/{id}', name: 'search', methods: ['GET'])]
+public function search(int $id, InvestmentRepository $investmentRepository): Response
+{
+    $investments = $investmentRepository->findByUserId($id);
+
+    if (!$investments) {
+        throw $this->createNotFoundException('Investment not found');
+    }
+
+    return $this->render('investisement/recherche.html.twig', [
+        'investments' => $investments,
+    ]);
+}
+
     #[Route('/investisementafficher', name: 'investment_index_afficher', methods: ['GET'])]
     public function indexaffichage(InvestmentRepository $investmentRepository): Response
     {

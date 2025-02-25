@@ -24,7 +24,13 @@ class ProjectController extends AbstractController
             'projects' => $projectRepository->findAll(),
         ]);
     }
-
+    #[Route('/admin', name: 'project_index_admin', methods: ['GET'])]
+    public function admin(ProjectRepository $projectRepository): Response
+    {
+        return $this->render('project/admin.html.twig', [
+            'projects' => $projectRepository->findAll(),
+        ]);
+    }
     // Create a new project
     #[Route('/new', name: 'project_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $em,RequirementController $rc): Response

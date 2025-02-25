@@ -31,4 +31,13 @@ class InvestmentRepository extends ServiceEntityRepository
             $this->entityManager->flush();
         }
     }
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('i')
+            ->innerJoin('i.user', 'u') // Assuming 'author' is the relation in the Investment entity
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 }

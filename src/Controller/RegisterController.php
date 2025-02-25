@@ -25,7 +25,6 @@ class RegisterController extends AbstractController
             $roles = $request->request->all('roles') ?: ['ROLE_USER'];
             $username = $request->request->get('username');
             $phone = $request->request->get('phone'); // Get the phone number from the request
-
             // Validate required fields
             if (empty($email) || empty($password)) {
                 $this->addFlash('error', 'Email and password are required.');
@@ -48,10 +47,9 @@ class RegisterController extends AbstractController
             // Hash the password
             $hashedPassword = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashedPassword);
-            $user->setProfileImage("test");
 
             // Check for profile image
-            $profileImage = $request->files->get('profile_image');
+            $profileImage = $request->files->get('profile_picture');
             if ($profileImage) {
                 $originalFilename = pathinfo($profileImage->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = uniqid() . '.' . $profileImage->guessExtension();

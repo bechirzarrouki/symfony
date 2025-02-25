@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/home.html.twig' %}
 
 {% block title %}Home - InoovMatch{% endblock %}
 {% set user_id = app.session.get('user_id') %}
@@ -87,7 +87,7 @@ uploadForm.addEventListener("submit", async function (event) {
         error.style.display = "none";
 
         try {
-            const response = await fetch("http://127.0.0.1:5001/detect", {
+            const response = await fetch("http://127.0.0.1:5000/detect", {
                 method: "POST",
                 body: formData
             });
@@ -100,7 +100,7 @@ uploadForm.addEventListener("submit", async function (event) {
 
             // Always show image if URL exists
             if (result.image_url) {
-                const imageUrl = `http://127.0.0.1:5001${result.image_url}`;
+                const imageUrl = `http://127.0.0.1:5000${result.image_url}`;
                 resultImage.src = imageUrl;
                 resultImage.style.display = "block";
                 resultImage.style.width = "300px";
@@ -127,13 +127,11 @@ uploadForm.addEventListener("submit", async function (event) {
 });
 </script>
 <div class="app-container">
-    {% include 'components/navbar.html.twig' %}
-    {% include 'components/sidebar.html.twig' %}
     <main class="main-content">
         <!-- Create Post Box -->
         <div class="create-post">
             <h2>Create Your Post</h2>
-<form id="uploadForm" method="post" action="{{ path('post_new') }}" enctype="multipart/form-data">
+<form id="uploadForm" method="post" action="{{ path('admin_post_new') }}" enctype="multipart/form-data">
     <div class="post-input-wrapper">
         <input type="text" name="content" placeholder="What's on your mind?" required>
         <button type="submit" class="btn-create">Create</button>
@@ -168,14 +166,12 @@ uploadForm.addEventListener("submit", async function (event) {
                            <div class="date-time">{{post.getCreatedAt()|date('Y-m-d H:i:s')}}</div>
                         </div>
                     </div>
-                    {% if user_id == post.author.id %}
                     <div class="post-controls">
                         <a  onclick="editPost({{ post.id }})"> <i class="fas fa-edit"></i></a>
-                        <form method="post" action="{{ path('post_delete', { id: post.id }) }}" style="display:inline;">
+                        <form method="post" action="{{ path('admin_post_delete', { id: post.id }) }}" style="display:inline;">
                             <button type="submit"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </div>
-                    {% endif %}
                 </div>
                 <div class="post-content">
                     <p class="post-text"></p>
@@ -183,7 +179,7 @@ uploadForm.addEventListener("submit", async function (event) {
                                     {{ post.content }}
                     </span>
                     <div class="post-edit-form" id="post-edit-form-{{ post.id }}" style="display:none;">
-                                <form method="post" action="{{ path('post_edit', { id: post.id }) }}">
+                                <form method="post" action="{{ path('admin_post_edit', { id: post.id }) }}">
                                     <input type="text" name="post_content" value="{{ post.content }}" required>
                                     <button type="submit">Save</button>
                                     <button type="button" onclick="cancelPostEdit({{ post.id }})">Cancel</button>
@@ -193,14 +189,7 @@ uploadForm.addEventListener("submit", async function (event) {
                     <img src="{{ asset('/uploads/posts/' ~ post.image) }}" alt="Post image" class="post-image" style="width:300px;height:300px;">
                     {% endif %}
                     <div class="post-stats">
-                        <div class="like-section">
-                        <form method="POST" action="{{ path('post_like', {'id': post.id}) }}" class="like-form">
-                            <button type="submit" class="like-button {% if post.isLikedByUser(app.user) %}liked{% endif %}">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">{{ post.likes|length }}</span>
-                            </button>
-                        </form>
-                    </div>
+                        <span>{{ post.likes }} likes</span>
                     </div>
                     
                     <!-- Display Comments -->
@@ -213,22 +202,20 @@ uploadForm.addEventListener("submit", async function (event) {
                 {{ comment.content }}
             </span>
         </div>
-         {% if user_id == comment.author.id %}
         <div class="comment-actions">
             <button class="edit-comment-btn" onclick="editComment({{ comment.id }})" style="background:none; border:none; cursor:pointer;">
                 <i class="fas fa-edit"></i>
             </button>
-            <form method="post" action="{{ path('comment_delete', { id: comment.id }) }}" style="display:inline;">
+            <form method="post" action="{{ path('admin_comment_delete', { id: comment.id }) }}" style="display:inline;">
                 <button type="submit" class="delete-comment" style="background:none; border:none; padding:0; cursor:pointer;">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </form>
         </div>
-        {% endif %}
 
                             <!-- Edit Form (Hidden by default) -->
                             <div class="comment-edit-form" id="comment-edit-form-{{ comment.id }}" style="display:none;">
-                                <form method="post" action="{{ path('comment_edit', { id: comment.id }) }}">
+                                <form method="post" action="{{ path('admin_comment_edit', { id: comment.id }) }}">
                                     <input type="text" name="comment_content" value="{{ comment.content }}" required>
                                     <button type="submit">Save</button>
                                     <button type="button" onclick="cancelEdit({{ comment.id }})">Cancel</button>
@@ -240,7 +227,7 @@ uploadForm.addEventListener("submit", async function (event) {
                     
                     <!-- Comment Box -->
                     <div class="comment-box">
-                        <form method="post" action="{{ path('comment_new', { postId: post.id }) }}">
+                        <form method="post" action="{{ path('admin_comment_new', { postId: post.id }) }}">
                             <input type="text" name="comment_content" placeholder="Post a comment..." class="comment-input" required>
                             <button type="submit" class="btn-post">Post</button>
                         </form>

@@ -43,7 +43,6 @@ class PostController extends AbstractController
     
             $post = new Post();
             $post->setContent($content);
-            $post->setLikes(0);
             
             // Retrieve user from session
             $id = $session->get('user_id');
@@ -142,5 +141,26 @@ public function delete(Request $request, int $id, PostRepository $postRepository
     
     return $this->redirectToRoute('post_index');
 }
+#[Route('/post/{id}/like', name: 'post_like', methods: ['POST'])]
+public function like(int $id, EntityManagerInterface $entityManager, PostRepository $investmentRepository, SessionInterface $session): Response
+{
+    $user_id=$session->get('user_id');
+    $user =  $entityManager->getRepository(User::class)->find($user_id);
+    if (!$user) {
+        return $this->json(['error' => 'Unauthorized'], 403);
+    }
+    $investment = $investmentRepository->find($id);
+    if ($investment->isLikedByUser($user)) {
+        $investment->removeLike($user);
+        $liked = false;
+    } else {
+        $investment->addLike($user);
+        $liked = true;
+    }
 
+    $entityManager->persist($investment);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('post_index');
+}
 }

@@ -17,9 +17,6 @@
 
             <div class="nav-right">
                 <div class="profile-circle">
-                    <i class="icon fas fa-bell" style="color: #53348D;"></i>
-                </div>
-                <div class="profile-circle">
                     <a href="/chat/message">
                         <i class="icon fas fa-comment" style="color: #53348D;"></i>
                     </a>
@@ -68,12 +65,11 @@
                     const userElement = document.createElement("div");
                     userElement.classList.add("search-result-item");
                     userElement.innerHTML = `
-                        <img src="${user.avatar || 'https://via.placeholder.com/40'}" alt="${user.username}" class="search-avatar" />
+                    <a href="search/${user.id}">
+                        <img src="uploads/profile_images/${user.image}" alt="${user.username}" class="search-avatar" />
                         <span>${user.username}</span>
+                    </a>
                     `;
-                    userElement.addEventListener("click", function () {
-                        window.location.href = `/profile/${user.id}`; // Rediriger vers le profil de l'utilisateur
-                    });
                     searchResults.appendChild(userElement);
                 });
             })

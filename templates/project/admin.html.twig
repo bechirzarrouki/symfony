@@ -1,4 +1,4 @@
-    {% extends 'base.html.twig' %}
+    {% extends 'back/home.html.twig' %}
 
     {% block title %}Home - Purple Social
     {% endblock %}
@@ -15,65 +15,10 @@
     {% endblock %}
     {% set roles = app.session.get('Roles') %}
     {% block body %}
-        {% include 'components/navbar.html.twig' %}
         <div class="main-wrapper">
-            {% include 'components/sidebar.html.twig' %}
 
             <div class="post-container">
-                <div class="create-post">
-                    <form action="/project/new" method="post" id="investmentForm" onsubmit="validateForm(event, 'investmentForm')">
-                        <h2>Create Your Project</h2>
-                <div class="post-input-wrapper">
-
-
-					<input type="text" name="title" class="form-control" placeholder="Project title  ?">
-
-
-					<input type="text" name="description" class="form-control" placeholder="Description of the project ?">
-					<input type="number" name="budget" class="form-control" placeholder="the budget in €">
-
-					<button type="button" class="investment-type" onclick="openModal('typeModal')">choose a status</button>
-					<div class="post-input-wrapper p-3"></div>
-
-
-					<!-- Modal de sélection des types -->
-					<div id="typeModal" class="modal">
-						<div class="modal-content">
-							<span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
-							<h2>select  type</h2>
-							<div id="type-list">
-								<span class="type-option" data-value="Immobilier">En cours de réalisation</span>
-								<span class="type-option" data-value="Actions">Terminé</span>
-								<span class="type-option" data-value="Obligations">Annulé</span>
-								<span class="type-option" data-value="Cryptomonnaies">En attente de validation</span>
-								<span class="type-option" data-value="Cryptomonnaies">Validé</span>
-							</div>
-							<button type="button" class="submit-btn" onclick="closeModal('typeModal')">Valider</button>
-						</div>
-					</div>
-				</div>
-				<div class="post-actions">
-					<button type="button" class="action-btn add-btn" onclick="openModal('retourModal')">
-						<i class="fas fa-plus"></i>
-						Add a requirement
-					</button>
-					<button class="publish-btn">
-						<i class="fas fa-paper-plane"></i>
-						add the project
-					</button>
-				</div>
                 
-<div id="retourModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-            <input id="description" placeholder="Description" name="des" class="input-style" type="text" >
-            <input id="priority" placeholder="Priority" name="pri"class="input-style" type="text">
-            <button type="button" class="submit-btn">Send</button>
-    </div>
-    
-</div>
-                </form>
-				</div>
                 {% for investment in projects %}
     <div class="investment-box">
         <div class="profile-section">
@@ -138,46 +83,18 @@
         
         {% endfor %}
         <script>
-        function validateForm(event, formId) {
-    event.preventDefault(); // Empêche l'envoi du formulaire si les validations échouent
-
-    let form = document.getElementById(formId);
-    let inputs = form.querySelectorAll("input");
-    let isValid = true;
-
-    // Supprimer les messages d'erreur précédents
-    form.querySelectorAll(".error-message").forEach(error => error.remove());
-
-    inputs.forEach(input => {
-        // Vérifier si le champ est vide
-        if (input.value.trim() === "") {
-            alert(Le champ "${input.placeholder}" ne peut pas être vide.);
-            isValid = false;
-        } 
-        // Vérifier si le budget est un nombre valide
-        else if (input.id === "budget" && isNaN(input.value)) {
-            alert("Le budget doit être un nombre valide.");
-            isValid = false;
-        }
-    });
-
-    // Soumettre le formulaire si toutes les validations passent
-    if (isValid) {
-        form.submit();
-    }
-}
         // Add these functions to your existing script
     function openEditReturnModal(returnId) {
-        document.getElementById(editReturnModal${returnId}).style.display = "flex";
+        document.getElementById(`editReturnModal${returnId}`).style.display = "flex";
     }
 
     function closeEditReturnModal(returnId) {
-        document.getElementById(editReturnModal${returnId}).style.display = "none";
+        document.getElementById(`editReturnModal${returnId}`).style.display = "none";
     }
 
     // Correct the typo in delete return function name
     function closeDeleteReturn(returnId) {  // Renamed from closeDeletereturn
-        document.getElementById(deleteReturn${returnId}).style.display = "none";
+        document.getElementById(`deleteReturn${returnId}`).style.display = "none";
     }
         function toggleOptionsMenu(event) {
         event.stopPropagation(); // Empêche la fermeture immédiate du menu
@@ -254,7 +171,7 @@
 
                     // Fetch returns only if they are not already loaded
                     if (returnsContainer && returnsContainer.innerHTML.trim() === "") {
-                        fetch(/api/project/${investmentId}/requirements)
+                        fetch(`/api/project/${investmentId}/requirements`)
                             .then(response => response.json())
                             .then(data => {
                                 returnsContainer.innerHTML = ""; // Clear previous content
@@ -316,22 +233,6 @@
             });
         });
         });
-        function sortProjects(order) {
-    let projectsContainer = document.querySelector(".post-container");
-    let projects = Array.from(document.querySelectorAll(".investment-box"));
-
-    projects.sort((a, b) => {
-        let budgetA = parseFloat(a.querySelector("p strong").nextSibling.nodeValue.trim().replace("€", ""));
-        let budgetB = parseFloat(b.querySelector("p strong").nextSibling.nodeValue.trim().replace("€", ""));
-        
-        return order === "asc" ? budgetA - budgetB : budgetB - budgetA;
-    });
-
-    projects.forEach(project => projectsContainer.appendChild(project));
-}
-
-        
-       
 
         </script>
 
@@ -447,36 +348,4 @@
             .submit-btn:hover {
                 background-color: #432A70;
             }
-            .sort-btn {
-    padding: 10px 15px;
-    background-color: #53348D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.sort-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.sort-btn {
-    background-color: #53348D;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.sort-btn:hover {
-    background-color: #432A70;
-}
-
-
-            
         </style>{% endblock %}

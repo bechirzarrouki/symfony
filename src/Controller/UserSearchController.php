@@ -32,6 +32,7 @@ class UserSearchController extends AbstractController
                     return [
                         'id' => $user->getId(),
                         'username' => $user->getUsername(),
+                        'image'=>$user->getProfileImage(),
                     ];
                 }, $users);
 

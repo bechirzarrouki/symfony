@@ -16,9 +16,6 @@ class Post
     #[ORM\Column(type: 'text')]
     private ?string $content = null;
     
-    #[ORM\Column(type: 'integer')]
-    private ?int $likes = 0;
-    
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
@@ -29,16 +26,25 @@ class Post
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $image = null;
 
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'post_likes')]
+    private Collection $likes;
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable(); // Automatically set the creation date
     }
-
     public function getId(): ?int
     {
         return $this->id;
     }
-
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
     public function getContent(): ?string
     {
         return $this->content;
@@ -47,17 +53,6 @@ class Post
     public function setContent(string $content): self
     {
         $this->content = $content;
-        return $this;
-    }
-
-    public function getLikes(): ?int
-    {
-        return $this->likes;
-    }
-
-    public function setLikes(int $likes): self
-    {
-        $this->likes = $likes;
         return $this;
     }
 
@@ -109,5 +104,32 @@ class Post
     {
         $this->image = $image;
         return $this;
+    }
+    
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(User $user): self
+    {
+        if (!$this->likes->contains($user)) {
+            $this->likes->add($user);
+        }
+        return $this;
+    }
+
+    public function removeLike(User $user): self
+    {
+        $this->likes->removeElement($user);
+        return $this;
+    }
+
+    public function isLikedByUser(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        return $this->likes->contains($user);
     }
 }
