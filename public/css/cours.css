@@ -10,7 +10,7 @@
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 250px; /* Matches sidebar width */
+    margin-left: 50px; /* Matches sidebar width */
 }
 .main {
     flex-grow: 1;
