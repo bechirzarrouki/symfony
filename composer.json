@@ -14,16 +14,11 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "*",
-<<<<<<< HEAD
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "*",
         "smalot/pdfparser": "*",
-=======
         "google/apiclient": "*",
         "knpuniversity/oauth2-client-bundle": "*",
-        "phpdocumentor/reflection-docblock": "^5.6",
-        "phpstan/phpdoc-parser": "*",
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
         "symfony/asset": "^6.1",
         "symfony/console": "^6.1",
         "symfony/doctrine-messenger": "6.1.*",
@@ -32,16 +27,10 @@
         "symfony/flex": "^2",
         "symfony/form": "^6.1",
         "symfony/framework-bundle": "^6.1",
-<<<<<<< HEAD
         "symfony/http-client": "6.1.*",
         "symfony/intl": "^6.1",
         "symfony/mailer": "^6.1",
-=======
         "symfony/google-mailer": "6.1.*",
-        "symfony/http-client": "6.1.*",
-        "symfony/intl": "^6.1",
-        "symfony/mailer": "6.1.*",
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
         "symfony/mime": "^6.1",
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "^6.1",

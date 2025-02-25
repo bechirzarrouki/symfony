@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /*document.addEventListener('DOMContentLoaded', function () {
-=======
-document.addEventListener('DOMContentLoaded', function () {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
     // Modal Elements
     const addModal = document.getElementById("addCourseModal");
     const editModal = document.getElementById("editCourseModal");
@@ -166,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
             errorSpan.textContent = "";
         }
     }
-<<<<<<< HEAD
 });*/
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -365,6 +360,4 @@ document.addEventListener('DOMContentLoaded', function () {
             errorSpan.textContent = "";
         }
     }
-=======
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
 });

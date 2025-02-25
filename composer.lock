@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "c91a239d22583abf6a8edbd0be5004a7",
-=======
-    "content-hash": "4feb9492345b859503666ea933dced9d",
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
+    "content-hash": "d6a7c0136aaf9767257fd54c738bb078",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1368,8 +1364,6 @@
             "time": "2024-12-27T00:36:43+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "firebase/php-jwt",
             "version": "v6.11.0",
             "source": {
@@ -1503,16 +1497,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.395.0",
+            "version": "v0.396.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "e023429c6dc53e9e6e3b751f3957fd3118ed1568"
+                "reference": "ceb2e432e4326c6775d24f62d554395a1a9ad3dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/e023429c6dc53e9e6e3b751f3957fd3118ed1568",
-                "reference": "e023429c6dc53e9e6e3b751f3957fd3118ed1568",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/ceb2e432e4326c6775d24f62d554395a1a9ad3dd",
+                "reference": "ceb2e432e4326c6775d24f62d554395a1a9ad3dd",
                 "shasum": ""
             },
             "require": {
@@ -1541,9 +1535,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.395.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.396.0"
             },
-            "time": "2025-02-17T01:08:24+00:00"
+            "time": "2025-02-24T01:10:27+00:00"
         },
         {
             "name": "google/auth",
@@ -1932,7 +1926,6 @@
             "time": "2024-07-18T11:15:46+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "jms/metadata",
             "version": "2.8.0",
             "source": {
@@ -1997,8 +1990,6 @@
             "time": "2023-02-15T13:44:18+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "knpuniversity/oauth2-client-bundle",
             "version": "v2.18.3",
             "source": {
@@ -2123,7 +2114,6 @@
             "time": "2024-12-11T05:05:52+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "monolog/monolog",
             "version": "3.8.1",
             "source": {
@@ -2227,8 +2217,6 @@
             "time": "2024-12-05T17:15:07+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "paragonie/constant_time_encoding",
             "version": "v3.0.0",
             "source": {
@@ -2346,7 +2334,6 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "phpdocumentor/reflection-common",
             "version": "2.2.0",
             "source": {
@@ -2522,8 +2509,6 @@
             "time": "2024-11-09T15:12:26+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "phpseclib/phpseclib",
             "version": "3.0.43",
             "source": {
@@ -2634,18 +2619,17 @@
             "time": "2024-12-14T21:12:59+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "phpstan/phpdoc-parser",
-            "version": "2.0.1",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "72e51f7c32c5aef7c8b462195b8c599b11199893"
+                "reference": "9b30d6fd026b2c132b3985ce6b23bec09ab3aa68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/72e51f7c32c5aef7c8b462195b8c599b11199893",
-                "reference": "72e51f7c32c5aef7c8b462195b8c599b11199893",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/9b30d6fd026b2c132b3985ce6b23bec09ab3aa68",
+                "reference": "9b30d6fd026b2c132b3985ce6b23bec09ab3aa68",
                 "shasum": ""
             },
             "require": {
@@ -2677,9 +2661,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.0.1"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.1.0"
             },
-            "time": "2025-02-13T12:25:43+00:00"
+            "time": "2025-02-19T13:28:12+00:00"
         },
         {
             "name": "psr/cache",
@@ -2834,8 +2818,6 @@
             "time": "2019-01-08T18:20:26+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "psr/http-client",
             "version": "1.0.3",
             "source": {
@@ -2996,7 +2978,6 @@
             "time": "2023-04-04T09:54:51+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "psr/link",
             "version": "2.0.1",
             "source": {
@@ -3103,7 +3084,50 @@
             "time": "2024-09-11T13:17:53+00:00"
         },
         {
-<<<<<<< HEAD
+            "name": "ralouphie/getallheaders",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5 || ^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
+            "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
             "name": "smalot/pdfparser",
             "version": "v2.11.0",
             "source": {
@@ -3153,50 +3177,6 @@
                 "source": "https://github.com/smalot/pdfparser/tree/v2.11.0"
             },
             "time": "2024-08-16T06:48:03+00:00"
-=======
-            "name": "ralouphie/getallheaders",
-            "version": "3.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ralouphie/getallheaders.git",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^2.1",
-                "phpunit/phpunit": "^5 || ^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/getallheaders.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                    "email": "ralph.khattar@gmail.com"
-                }
-            ],
-            "description": "A polyfill for getallheaders.",
-            "support": {
-                "issues": "https://github.com/ralouphie/getallheaders/issues",
-                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
-            },
-            "time": "2019-03-08T08:55:37+00:00"
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
         },
         {
             "name": "symfony/asset",
@@ -4771,8 +4751,6 @@
             "time": "2023-01-11T11:51:43+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "symfony/google-mailer",
             "version": "v6.1.11",
             "source": {
@@ -4835,7 +4813,6 @@
             "time": "2023-01-01T08:36:55+00:00"
         },
         {
->>>>>>> f782c88b59be5afeb15030be249e2135611a9db9
             "name": "symfony/http-client",
             "version": "v6.1.12",
             "source": {
