@@ -29,6 +29,13 @@ final class HomeController extends AbstractController
             'controller_name' => 'investisementController',
         ]);
     }
+    #[Route('/details', name: 'app_details')]
+    public function details(): Response
+    {
+        return $this->render('investisement/details.html.twig', [
+            'controller_name' => 'detailsController',
+        ]);
+    }
     #[Route('/message', name: 'app_message')]
     public function message(): Response
     {
@@ -43,6 +50,7 @@ final class HomeController extends AbstractController
         return $this->render('investisement/inevstafficher.html.twig', [
             'controller_name' => 'messageController',
         ]);
+
         
     }
     #[Route('/profile', name: 'app_profile')]

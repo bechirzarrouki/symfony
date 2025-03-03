@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="{{ asset('css/investisementA.css') }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
-{% set userid = app.session.get('user_id') %}
+{% set user = app.session.get('user') %}
 {% block body %}
 	{% include 'components/navbar1.html.twig' %}
 	{% include 'components/sidebar.html.twig' %}
@@ -19,8 +19,43 @@
 function closeMessageModal(id) {
     document.getElementById("messageModal" + id).style.display = "none";
 }
+document.addEventListener('DOMContentLoaded', function () {
+    function sortInvestments(order) {
+        let container = document.querySelector('.post-container');
+        let investments = Array.from(container.getElementsByClassName('main-wrapper'));
+
+        investments.sort((a, b) => {
+            if (order === 'asc' || order === 'desc') {
+                let dateA = new Date(a.querySelector('.date-time').textContent.trim());
+                let dateB = new Date(b.querySelector('.date-time').textContent.trim());
+                return order === 'asc' ? dateA - dateB : dateB - dateA;
+            } else if (order === 'most_liked' || order === 'least_liked') {
+                let likesA = parseInt(a.querySelector('.like-count').textContent.trim(), 10);
+                let likesB = parseInt(b.querySelector('.like-count').textContent.trim(), 10);
+                return order === 'most_liked' ? likesB - likesA : likesA - likesB;
+            }
+        });
+
+        investments.forEach(investment => container.appendChild(investment));
+    }
+
+    window.sortInvestments = sortInvestments;
+});
     </script>
+   
 	<div class="post-container">
+    
+     <div class="test">
+       <div class="sort-container">
+       
+        <select id="sort-select" onchange="sortInvestments(this.value)">
+            <option value="desc">Récent → Ancien</option>
+            <option value="asc">Ancien → Récent</option>
+            <option value="most_liked">Plus de likes → Moins de likes</option>
+            <option value="least_liked">Moins de likes → Plus de likes</option>
+        </select>
+        </div>
+    </div>
 		{% for investment in investments %}
 			<div class="main-wrapper">
 				<div class="investment-box">
@@ -31,7 +66,37 @@ function closeMessageModal(id) {
 						</div>
 						<!-- Message icon -->
 						<div class="message-icon-container" data-investment-id="{{ investment.id }}">
-                            <i class="fas fa-comment message-icon" onclick="openMessageModal({{ investment.id }})"></i>
+                           <button class="button" onclick="openMessageModal({{ investment.id }})">
+        <div class="outline"></div>
+        <div class="state state--default">
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="1.2em" width="1.2em">
+                    <g style="filter: url(#shadow)">
+                        <path fill="currentColor" d="M14.2199 21.63C13.0399 21.63 11.3699 20.8 10.0499 16.83L9.32988 14.67L7.16988 13.95C3.20988 12.63 2.37988 10.96 2.37988 9.78001C2.37988 8.61001 3.20988 6.93001 7.16988 5.60001L15.6599 2.77001C17.7799 2.06001 19.5499 2.27001 20.6399 3.35001C21.7299 4.43001 21.9399 6.21001 21.2299 8.33001L18.3999 16.82C17.0699 20.8 15.3999 21.63 14.2199 21.63ZM7.63988 7.03001C4.85988 7.96001 3.86988 9.06001 3.86988 9.78001C3.86988 10.5 4.85988 11.6 7.63988 12.52L10.1599 13.36C10.3799 13.43 10.5599 13.61 10.6299 13.83L11.4699 16.35C12.3899 19.13 13.4999 20.12 14.2199 20.12C14.9399 20.12 16.0399 19.13 16.9699 16.35L19.7999 7.86001C20.3099 6.32001 20.2199 5.06001 19.5699 4.41001C18.9199 3.76001 17.6599 3.68001 16.1299 4.19001L7.63988 7.03001Z"></path>
+                    </g>
+                    <defs>
+                        <filter id="shadow">
+                            <feDropShadow flood-opacity="0.6" stdDeviation="0.8" dy="1" dx="0"></feDropShadow>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+            <p>
+                <span style="--i:0">S</span>
+                <span style="--i:1">e</span>
+                <span style="--i:2">n</span>
+                <span style="--i:3">d</span>
+                <span style="--i:4"> </span>
+                <span style="--i:5">M</span>
+                <span style="--i:6">e</span>
+                <span style="--i:7">s</span>
+                <span style="--i:8">s</span>
+                <span style="--i:9">a</span>
+                <span style="--i:10">g</span>
+                <span style="--i:11">e</span>
+            </p>
+        </div>
+    </button>
                         </div>
 
 						<div class="date-time">{{investment.getCreatedAt()|date('Y-m-d H:i:s')}}</div>
@@ -115,6 +180,24 @@ function closeMessageModal(id) {
 
 
 	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Sélectionner toutes les boîtes d'investissement
+    const investmentBoxes = document.querySelectorAll('.investment-box');
+    
+    // Compter le nombre de boîtes d'investissement
+    const investmentCount = investmentBoxes.length;
+
+    // Afficher ce nombre dans un élément avec la classe 'test'
+    const testDiv = document.querySelector('.test');
+
+    if (testDiv) {
+        const countElement = document.createElement('div');
+        countElement.classList.add('publication-count');
+        countElement.innerHTML = `<p>Nombre de publications : ${investmentCount}</p>`;
+        testDiv.appendChild(countElement);
+    }
+});
+
 	document.addEventListener('DOMContentLoaded', function () {
     // Toggle investment details
     const investmentContents = document.querySelectorAll('.investment-content');
@@ -220,4 +303,7 @@ function closeMessageModal(id) {
 });
 
 	</script>
+    <style>
+   
+    </style>
 {% endblock %}

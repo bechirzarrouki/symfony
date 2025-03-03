@@ -64,6 +64,14 @@ class InvestmentController extends AbstractController
             'investments' =>  $investments,
         ]);
     }
+    #[Route('/static', name: 'investment_statistic', methods: ['GET'])]
+    public function statistic(InvestmentRepository $investmentRepository,SessionInterface $session): Response
+    {
+        $investments = $investmentRepository->findAll();
+        return $this->render('static/static.html.twig', [
+            'investments' =>  $investments,
+        ]);
+    }
     #[Route('/investisementadmin', name: 'investment_index_admin', methods: ['GET'])]
     public function indexadmin(InvestmentRepository $investmentRepository): Response
     {

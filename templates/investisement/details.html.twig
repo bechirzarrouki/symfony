@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Investissement{% endblock %}
+
+{% block body %}
+    <h1>{{ investment.user.username }}</h1>
+    <p>Date: {{ investment.getCreatedAt()|date('Y-m-d H:i:s') }}</p>
+    <p>Contenu: {{ investment.content }}</p>
+    <h4>Rendements</h4>
+    <div>
+        {% for returnItem in investment.returns %}
+            <p><strong>Description:</strong> {{ returnItem.description }}</p>
+            <p><strong>Type:</strong> {{ returnItem.typeReturn }}</p>
+            <p><strong>Tax Rendement:</strong> {{ returnItem.taxRendement }}</p>
+            <p><strong>Date Deadline:</strong> {{ returnItem.dateDeadline }}</p>
+            <p><strong>Status:</strong> {{ returnItem.status }}</p>
+            <hr>
+        {% endfor %}
+    </div>
+    <a href="{{ path('homepage') }}">Retour</a>
+{% endblock %}

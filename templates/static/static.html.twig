@@ -1,0 +1,146 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Conteneur des graphiques */
+        .graphs-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Style des graphiques */
+        .graph-container {
+            width: 45%;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        @media (max-width: 768px) {
+            .graph-container {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Style de la liste déroulante */
+        .dropdown-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% include 'components/navbar1.html.twig' %}
+
+    <!-- Liste déroulante -->
+    <div class="dropdown-container">
+        <label for="selectOption">Sélectionnez une option :</label>
+        <select id="selectOption" onchange="updateRandomValues()">
+        {% for investment in investments %}
+            <option value="option1">{{investment.content}}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <!-- Conteneur pour afficher les deux graphiques -->
+    <div class="graphs-container">
+        <!-- Graphique en barres -->
+        <div class="graph-container">
+            <h3>Graphique en Barres</h3>
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- Graphique en aire -->
+        <div class="graph-container">
+            <h3>Graphique en Aire</h3>
+            <canvas id="areaChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = ['year1', 'year2', 'year3', 'year4', 'year5'];
+
+        // Fonction pour générer des valeurs aléatoires
+        function generateRandomValues() {
+            return labels.map(() => Math.floor(Math.random() * 50) + 1); // Valeurs entre 1 et 50
+        }
+
+        let dataValues = generateRandomValues();
+
+        // Création du graphique en barres
+        const barChart = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de Votes',
+                    data: dataValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Création du graphique en aire
+        const areaChart = new Chart(document.getElementById('areaChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Tendance des Votes',
+                    data: dataValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Fonction pour mettre à jour les graphiques avec de nouvelles valeurs aléatoires
+        function updateRandomValues() {
+            dataValues = generateRandomValues(); // Générer de nouvelles valeurs
+
+            // Mise à jour du graphique en barres
+            barChart.data.datasets[0].data = dataValues;
+            barChart.update();
+
+            // Mise à jour du graphique en aire
+            areaChart.data.datasets[0].data = dataValues;
+            areaChart.update();
+        }
+    </script>
+{% endblock %}
