@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -18,7 +19,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/post')]
 class PostController extends AbstractController
 {
-    // List all posts
+    #[Route('/search/{id}', name: 'search', methods: ['GET'])]
+    public function search(int $id, PostRepository $investmentRepository,UserRepository $userRepository): Response
+    {
+        $posts = $investmentRepository->findByUserId($id);
+        $users = $userRepository->findAll();
+        if (!$posts) {
+            throw $this->createNotFoundException('Post not found');
+        }
+
+        return $this->render('menu/recherche.html.twig', [
+            'posts' => $posts,
+            'users' => $users,
+        ]);
+    }
     #[Route('/menu', name: 'post_index', methods: ['GET'])]
     public function index(EntityManagerInterface $em): Response
     {

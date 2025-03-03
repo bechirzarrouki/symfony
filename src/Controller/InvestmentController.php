@@ -9,6 +9,7 @@ use Symfony\Component\Mime\Email;
 use App\Entity\Investment;
 use App\Entity\User;
 use App\Repository\InvestmentRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,16 +81,17 @@ class InvestmentController extends AbstractController
         ]);
     }
     #[Route('/search/{id}', name: 'search', methods: ['GET'])]
-public function search(int $id, InvestmentRepository $investmentRepository): Response
+public function search(int $id, InvestmentRepository $investmentRepository,UserRepository $userRepository): Response
 {
     $investments = $investmentRepository->findByUserId($id);
-
+    $users = $userRepository->findAll();
     if (!$investments) {
         throw $this->createNotFoundException('Investment not found');
     }
 
     return $this->render('investisement/recherche.html.twig', [
         'investments' => $investments,
+        'users'=> $users,
     ]);
 }
 
