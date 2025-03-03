@@ -1,0 +1,215 @@
+{% extends 'back/home.html.twig' %}
+
+{% block title %}
+	{{ cours.nomCours }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/cours.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const viewPdfBtn = document.getElementById('view-pdf-btn');
+const pdfModal = document.getElementById('pdf-modal');
+const closeModal = document.getElementById('close-modal');
+const pdfIframe = document.getElementById('pdf-iframe');
+
+// When the "View Course PDF" button is clicked
+viewPdfBtn.addEventListener('click', function () { // Set the PDF URL to the iframe's src
+pdfIframe.src = '{{ asset('courspdf/' ~ cours.filename) }}';
+// Replace with your dynamic path if needed
+
+// Show the modal
+pdfModal.style.display = 'block';
+});
+
+// When the "X" is clicked to close the modal
+closeModal.addEventListener('click', function () { // Hide the modal
+pdfModal.style.display = 'none';
+// Stop the PDF from loading when closed
+pdfIframe.src = '';
+});
+
+// When clicked anywhere outside the modal, close it
+window.addEventListener('click', function (event) {
+if (event.target === pdfModal) {
+pdfModal.style.display = 'none';
+pdfIframe.src = ''; // Stop the PDF from loading
+}
+});
+});
+	</script>
+	<script src="{{ asset('js/quiz.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="app-container">
+
+
+		<main
+			class="main-contenu">
+			<!-- Course Details Section -->
+			<div
+				class="cours-details-container">
+				<!-- Left Section: Course Details -->
+				<div class="cours-details">
+					<h1>{{ cours.nomCours }}</h1>
+					<p>
+						<strong>Description:</strong>
+						{{ cours.description }}</p>
+					<p>
+						<strong>📅 Last Modified:</strong>
+						{{ cours.date|date('d-m-Y') }}</p>
+					<p>
+						<strong>⏳ Duration:</strong>
+						{{ cours.duree }}</p>
+
+				</div>
+
+				<!-- Right Section: Course Image -->
+				<div class="cours-image">
+					<img src="{{ cours.image ? asset('coursimg/' ~ cours.image) : asset('images/course01.jpg') }}" alt="{{ cours.nomCours }}">
+				</div>
+			</div>
+
+
+			<!-- What You Will Learn Section -->
+			<div class="learning-box">
+				<h2>📚 What You Will Learn</h2>
+				<ul>
+					{% for objective in cours.objectifs|split('.') %}
+						{% if objective|trim is not empty %}
+							<li>✅
+								{{ objective|trim }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+
+			</div>
+
+
+			<!-- Course PDF Section -->
+			<div class="pdf-section">
+				<h2>📜 course content
+				</h2>
+
+				<p>📄
+					<a href="#" id="view-pdf-btn" class="text-link">View Course PDF</a>
+				</p>
+
+				<div id="pdf-modal" class="pdf-modal">
+					<div class="pdf-modal-content">
+						<span id="close-modal" class="close-modal">&times;</span>
+						<iframe id="pdf-iframe" src="" frameborder="0"></iframe>
+					</div>
+				</div>
+
+
+			</div>
+			<div class="learning-box">
+				<h2>📜 Quiz Content</h2>
+				<p>📝
+					<a href="javascript:void(0);" id="openQuizPopup">Add Quiz</a>
+				</p>
+
+				<p>
+					<a href="{{ path('app_quiz') }}">View Quiz</a>
+				</p>
+
+				📝
+				{% for quiz in quizzes %}
+					<p>
+						<a href="{{ path('app_deletequiz', {'id': quiz.id}) }}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this course?');">Delete Quiz</a>
+
+					</p>
+					<p>
+						<a href="{{ path('app_editquiz', {'id': quiz.id}) }}" class="btn-modify" data-id="{{ quiz.id }}" data-title="{{ quiz.title }}" data-course="{{ quiz.IdCours.nomCours }}" data-questions="{{ quiz.questions | json_encode }}">update quiz</a>
+					</p>
+				</div>
+
+			</main>
+		</div>
+
+		<!-- Modal (Popup Form) for Editing a Quiz -->
+		<div id="editQuizModal" class="modal" style="display: none;">
+			<div class="modal-contenu">
+				<span class="close-btn-quiz">&times;</span>
+				<h2>Edit Quiz</h2>
+				<form id="quizForm" method="POST" action="{{ path('app_editquiz', {'id': quiz.id}) }}">
+					<input type="hidden" name="IdCours" value="{{ quiz.IdCours.id }}">
+
+					<input type="text" id="title" name="title" value="{{ quiz.title }}" required>
+
+					<span class="error-message"></span>
+
+					<!-- Questions Container -->
+					<div id="questionsContainer">
+						<h3>Questions</h3>
+						{% for question in quiz.questions %}
+							<div class="question">
+								<label for="question{{ loop.index }}Text">Question
+									{{ loop.index }}:</label>
+								<input type="text" id="question{{ loop.index }}Text" name="questions[{{ loop.index0 }}][question]" value="{{ question.question }}" class="input-style" required><br>
+
+								<label for="answers{{ loop.index }}">Answers (separate with |):</label>
+								<input type="text" id="answers{{ loop.index }}" name="questions[{{ loop.index0 }}][answers]" value="{{ question.answers|join(' | ') }}" class="input-style" placeholder="Answer 1, Answer 2, ..." required><br>
+
+								<label for="correct{{ loop.index }}">Correct Answer:</label>
+								<input type="text" id="correct{{ loop.index }}" name="questions[{{ loop.index0 }}][correct]" value="{{ question.correct }}" class="input-style" required><br>
+							</div>
+						{% endfor %}
+					</div>
+
+					<button type="button" id="addQuestionButton" class="submit-btn">Add Another Question</button>
+
+					<button type="submit" class="submit-btn">Save Quiz</button>
+				</form>
+			</div>
+		</div>
+
+
+	{% endfor %}
+	<!-- Modal (Popup Form) for Adding a Quiz -->
+	<div id="quizModal" class="modal" style="display: none;">
+
+		<div class="modal-contenu">
+			<span class="close-btn-quiz">&times;</span>
+			<h2>Add a Quiz</h2>
+			<form id="quizForm" method="POST" action="{{ path('app_addquiz') }}">
+				<input type="hidden" name="IdCours" value="{{ cours.id }}">
+				<input type="text" id="title" name="title" placeholder="Quiz Title" class="input-style" required>
+				<span class="error-message"></span>
+
+
+				<!-- Questions Container -->
+				<div id="questionsContainer">
+					<h3>Questions</h3>
+					<div class="question">
+						<label for="question1Text">Question 1:</label>
+						<input type="text" id="question1Text" name="questions[0][question]" class="input-style" required><br>
+
+						<label for="answers1">Answers</label>
+
+						<input type="text" id="answers1" placeholder="Enter answers separated by |" name="questions[0][answers]" class="input-style" placeholder="Answer 1, Answer 2, ..." required><br>
+
+						<label for="correct1">Correct Answer:</label>
+						<input type="text" id="correct1" name="questions[0][correct]" class="input-style" required><br>
+					</div>
+				</div>
+
+				<button type="button" id="addQuestionButton" class="submit-btn">Add Another Question</button>
+
+
+				<button type="submit" class="submit-btn">Save Quiz</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
