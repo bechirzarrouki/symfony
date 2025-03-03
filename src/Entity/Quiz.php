@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 #[ORM\Entity]
 class Quiz
@@ -18,9 +21,6 @@ class Quiz
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Cours $IdCours = null;
-    /* #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;*/
 
     /**
      * Stores the questions, answers, correct answer, and user answer.
@@ -36,17 +36,34 @@ class Quiz
     #[ORM\Column(type: 'integer')]
     private int $score = 0; // Stores the user's score.
 
-    // Getters and Setters for all the properties
-    /*public function getUser(): ?User
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: "quizzesTaken")]
+    #[ORM\JoinTable(name: 'quiz_user')]
+    private Collection $participants;
+
+    public function __construct()
     {
-        return $this->user;
+        $this->participants = new ArrayCollection();
     }
 
-    public function setUser(?User $user): self
+    public function getParticipants(): Collection
     {
-        $this->user = $user;
+        return $this->participants;
+    }
+
+    public function addParticipant(User $user): self
+    {
+        if (!$this->participants->contains($user)) {
+            $this->participants->add($user);
+        }
         return $this;
-    }*/
+    }
+
+    public function hasParticipant(User $user): bool
+    {
+        return $this->participants->contains($user);
+    }
+
+    // Getters and Setters
     public function getId(): ?int
     {
         return $this->id;
@@ -71,9 +88,9 @@ class Quiz
     public function setIdCours(?Cours $IdCours): static
     {
         $this->IdCours = $IdCours;
-
         return $this;
     }
+
     public function getQuestions(): array
     {
         return $this->questions;
@@ -128,12 +145,9 @@ class Quiz
         }
         return $this;
     }
-    // In App\Entity\Quiz
 
     public function getCorrectAnswers(): array
     {
-        return array_map(function ($question) {
-            return $question['correct'];  // Returns the correct answer for each question
-        }, $this->questions);
+        return array_map(fn($question) => $question['correct'], $this->questions);
     }
 }

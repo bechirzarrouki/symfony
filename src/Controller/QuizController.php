@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Quiz;
 use App\Entity\Cours;
+use App\Entity\User;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,7 +95,7 @@ class QuizController extends AbstractController
     }
 
 
-    #[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
+    /*#[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
     public function takeQuiz(Request $request, QuizRepository $quizRepository, ManagerRegistry $manager, int $id, CertificateGenerator $certificateGenerator): Response
     {
         $em = $manager->getManager();
@@ -130,21 +132,7 @@ class QuizController extends AbstractController
                 $fullScore = true;
             }
             // If full score and the user requests the certificate
-            /*  if ($fullScore && $request->query->get('generate_certificate')) {
-                // Prepare data for certificate
-                $websiteName = 'InnovMatch'; // Replace with your actual website name
-                $courseTitle = $quiz->getTitle();
-                $courseDetails = 'Course details go here. Add any relevant information about the course.';
 
-                // Define path to save the certificate in the public/certif folder
-                $outputPath = $this->getParameter('kernel.project_dir') . '/public/certif/certificate_' . $quiz->getId() . '.pdf';
-
-                // Generate the certificate PDF
-                $certificateGenerator->generateCertificate($websiteName, $courseTitle, $courseDetails, $outputPath);
-
-                // Return the generated certificate as a downloadable file
-                return $this->file($outputPath);
-            }*/
         }
 
         return $this->render('cours/quiz.html.twig', [
@@ -153,6 +141,60 @@ class QuizController extends AbstractController
             'userAnswers' => $userAnswers,
             'fullScore' => $fullScore,
 
+            'cours' => $quiz->getIdCours()
+        ]);
+    }
+    */
+    #[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
+    public function takeQuiz(
+        Request $request,
+        QuizRepository $quizRepository,
+        ManagerRegistry $manager,
+        int $id
+    ): Response {
+        $em = $manager->getManager();
+        $quiz = $quizRepository->find($id);
+        $user = $this->getUser(); // Get the logged-in user
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        if (!$user instanceof User) {
+            return $this->redirectToRoute('app_login'); // Redirect if not authenticated
+        }
+        $score = null;
+        $userAnswers = [];
+        $fullScore = false;
+
+        if ($request->isMethod('POST')) {
+            $userAnswers = $request->get('answers', []);
+            $questions = $quiz->getQuestions();
+            $score = 0;
+
+            foreach ($questions as $index => $question) {
+                if (isset($userAnswers[$index]) && $userAnswers[$index] === $question->getCorrectAnswer()) {
+                    $score++;
+                }
+            }
+
+            // Save user's score & track participation
+            $quiz->setScore($score);
+            $quiz->addParticipant($user);
+            $em->flush();
+
+            $this->addFlash('success', "Quiz submitted! Your score: $score / " . count($questions));
+
+            if ($score === count($questions)) {
+                $fullScore = true;
+            }
+        }
+
+        return $this->render('cours/quiz.html.twig', [
+            'quiz' => $quiz,
+            'score' => $score,
+            'userAnswers' => $userAnswers,
+            'fullScore' => $fullScore,
             'cours' => $quiz->getIdCours()
         ]);
     }
