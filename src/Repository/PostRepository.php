@@ -42,4 +42,15 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    // Get posts by user ID
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.author = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
