@@ -3,7 +3,7 @@
 {% block title %}
 	{{ cours.nomCours }}
 {% endblock %}
-
+{% set user_id = app.session.get('user_id') %}
 {% block stylesheets %}
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('css/cours.css') }}">
@@ -124,7 +124,7 @@ pdfIframe.src = ''; // Stop the PDF from loading
 
 							<li>
 
-								<a href="{{ path('app_takequiz', { id: quiz.id }) }}">Take the Quiz:
+								<a href="{{ path('app_takequiz', { id: quiz.id,id_user:user_id }) }}">Take the Quiz:
 									{{ quiz.title }}</a>
 							</li>
 						{% endfor %}

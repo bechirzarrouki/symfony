@@ -131,7 +131,7 @@ pdfIframe.src = ''; // Stop the PDF from loading
 
 					</p>
 					<p>
-						<a href="{{ path('app_editquiz', {'id': quiz.id}) }}" class="btn-modify" data-id="{{ quiz.id }}" data-title="{{ quiz.title }}" data-course="{{ quiz.IdCours.nomCours }}" data-questions="{{ quiz.questions | json_encode }}">update quiz</a>
+						<a class="btn-modify" data-id="{{ quiz.id }}" data-title="{{ quiz.title }}" data-course="{{ quiz.IdCours.nomCours }}" data-questions="{{ quiz.questions | json_encode }}">update quiz</a>
 					</p>
 				</div>
 

@@ -145,22 +145,27 @@ class QuizController extends AbstractController
         ]);
     }
     */
-    #[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
+    #[Route('/takequiz/{id}/{id_user}', name: 'app_takequiz', methods: ['GET', 'POST'])]
     public function takeQuiz(
         Request $request,
         QuizRepository $quizRepository,
         ManagerRegistry $manager,
-        int $id
+        EntityManagerInterface $entityManager,
+        int $id,
+        int $id_user,
     ): Response {
+        
         $em = $manager->getManager();
         $quiz = $quizRepository->find($id);
-        $user = $this->getUser(); // Get the logged-in user
-
+        $user =  $entityManager->getRepository(User::class)->find($id_user);
+        if($quiz->hasParticipant($user)){
+            return $this->redirectToRoute('app_showcours');
+        }
         if (!$quiz) {
             throw $this->createNotFoundException('Quiz not found');
         }
 
-        if (!$user instanceof User) {
+        if (!$user) {
             return $this->redirectToRoute('app_login'); // Redirect if not authenticated
         }
         $score = null;
@@ -168,12 +173,12 @@ class QuizController extends AbstractController
         $fullScore = false;
 
         if ($request->isMethod('POST')) {
-            $userAnswers = $request->get('answers', []);
+            $userAnswers = $request->get('answers');
             $questions = $quiz->getQuestions();
             $score = 0;
 
             foreach ($questions as $index => $question) {
-                if (isset($userAnswers[$index]) && $userAnswers[$index] === $question->getCorrectAnswer()) {
+                if (isset($userAnswers[$index]) && $userAnswers[$index] === $question['correct']) {
                     $score++;
                 }
             }
