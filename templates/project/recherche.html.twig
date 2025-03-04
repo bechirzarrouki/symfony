@@ -10,96 +10,15 @@
         
     {% endblock %}
     {% block javascripts %}
-           <script src="{{ asset('js/investisement.js') }}"></script>
+        <script src="{{ asset('js/investisement.js') }}"></script>
 
- <script>
-   document.getElementById('translate-btn').addEventListener('click', function() {
-        fetch('/switch-language/en')
-            .then(response => response.json())
-            .then(data => {
-                // Mettre à jour la description après traduction
-                document.getElementById('investment-description').textContent = data.translatedDescription;
-            });
-    }); 
-        // Add these functions to your existing script
-        function sortProjects(order) {
-    let projectsContainer = document.querySelector(".post-container");
-    let projects = Array.from(document.querySelectorAll(".investment-box"));
-
-    projects.sort((a, b) => {
-        let budgetA = parseFloat(a.querySelector("p strong").nextSibling.nodeValue.trim().replace("€", ""));
-        let budgetB = parseFloat(b.querySelector("p strong").nextSibling.nodeValue.trim().replace("€", ""));
-        
-        return order === "asc" ? budgetA - budgetB : budgetB - budgetA;
-    });
-
-    projects.forEach(project => projectsContainer.appendChild(project));
-}
-
-        
-       </script>
     {% endblock %}
     {% set roles = app.session.get('Roles') %}
     {% block body %}
         {% include 'components/navbar2.html.twig' %}
         <div class="main-wrapper">
             {% include 'components/sidebar.html.twig' %}
-
             <div class="post-container">
-                <div class="create-post">
-                  <form action="/project/new" method="post" id="investmentForm" onsubmit="validateForm(event, 'investmentForm')">
-    <h2>Create Your Project</h2>
-    <div class="post-input-wrapper">
-        <input type="text" name="title" class="form-control" placeholder="Project title ?" id="title">
-        <input type="text" name="description" class="form-control" placeholder="Description of the project ?" id="description">
-        <input type="number" name="budget" class="form-control" placeholder="the budget in €" id="budget">
-
-        <button type="button" class="investment-type" onclick="openModal('typeModal')">choose a status</button>
-        <div class="post-input-wrapper p-3"></div>
-
-        <!-- Modal de sélection des types -->
-        <div id="typeModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal('typeModal')">&times;</span>
-                <h2>select type</h2>
-                <div id="type-list">
-                    <span class="type-option" data-value="Immobilier">En cours de réalisation</span>
-                    <span class="type-option" data-value="Actions">Terminé</span>
-                    <span class="type-option" data-value="Obligations">Annulé</span>
-                    <span class="type-option" data-value="Cryptomonnaies">En attente de validation</span>
-                    <span class="type-option" data-value="Cryptomonnaies">Validé</span>
-                </div>
-                <button type="button" class="submit-btn" onclick="closeModal('typeModal')">Valider</button>
-            </div>
-        </div>
-    </div>
-    <div class="post-actions">
-        <button type="button" class="action-btn add-btn" onclick="openModal('retourModal')">
-            <i class="fas fa-plus"></i>
-            Add a requirement
-        </button>
-        <button class="publish-btn">
-            <i class="fas fa-paper-plane"></i>
-            add the project
-        </button>
-    </div>
-
-    <div id="retourModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('retourModal')">&times;</span>
-            <input id="des" placeholder="Description" name="des" class="input-style" type="text">
-            <input id="pri" placeholder="Priority" name="pri" class="input-style" type="text">
-            <button type="button" class="submit-btn">Send</button>
-        </div>
-    </div>
-</form>
-				</div>
-                <div class="sort-container">
-    <a href="{{ path('project_index', {'sort': 'asc'}) }}" class="sort-btn">Sort by Budget (Asc)</a>
-    <a href="{{ path('project_index', {'sort': 'desc'}) }}" class="sort-btn">Sort by Budget (Desc)</a>
-</div>
-
-              <div class="post-container">
                 
                 {% for investment in projects %}
     <div class="investment-box">
@@ -359,7 +278,7 @@
         align-items: center;
         gap: 20px;
         max-width: 40rem;
-        margin: 20px auto; /* Marge normale */
+        margin: 150px auto; /* Marge normale */
         padding: 20px;
         height: auto; /* Supprimer la hauteur fixe */
         overflow-y: visible; /* Supprimer le défilement interne */

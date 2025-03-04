@@ -2,18 +2,13 @@
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
-
 {% set user = app.session.get('user') %}
-
-
-
 <div class="navbar-container">
     <nav class="navbar">
         <div class="navbar-content">
             <a href="#" class="logo">
                 <span class="logo-text">InnovMatch</span>
             </a>
-
             <div class="nav-search">
                 <input type="text" id="search-user" placeholder="Rechercher un utilisateur..." class="search-input" />
                 <div id="search-results" class="search-results"></div>
@@ -26,7 +21,6 @@
                     </a>
                 </div>
             </div>
-
             <div class="profile-circle">
                     <img src="{{ asset('uploads/profile_images/' ~ user.getProfileImage()) }}" alt="Profil" class="profile-image" />
             </div>
@@ -40,9 +34,11 @@
         const searchResults = document.getElementById("search-results");
 
         searchInput.addEventListener("input", function () {
-            const query = searchInput.value.trim().toUpperCase(); // Convertir en majuscule pour la recherche
-            console.log(query);
-            if (query.length < 1) { // Si rien n'est tapé, cacher les résultats
+            fetchSearchResults(searchInput.value.trim().toUpperCase());
+        });
+
+        function fetchSearchResults(query) {
+            if (query.length < 1) {
                 searchResults.innerHTML = "";
                 searchResults.style.display = "none";
                 return;
@@ -51,12 +47,11 @@
             fetch(`/search-user`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query })  // Envoyer la lettre en tant que 'query'
+                body: JSON.stringify({ query: query })
             })
-            .then(response => response.json())  // Récupérer la réponse JSON
+            .then(response => response.json())
             .then(data => {
-                console.log(data);  // Afficher les données dans la console
-                searchResults.innerHTML = ""; // Effacer les anciens résultats
+                searchResults.innerHTML = "";
                 searchResults.style.display = "block";
 
                 if (data.length === 0) {
@@ -64,23 +59,21 @@
                     return;
                 }
 
-                // Afficher les utilisateurs trouvés
                 data.forEach(user => {
                     const userElement = document.createElement("div");
                     userElement.classList.add("search-result-item");
                     userElement.innerHTML = `
-                    <a href="search/${user.id}">
-                        <img src="uploads/profile_images/${user.getProfileImage}" alt="${user.username}" class="search-avatar" />
-                        <span>${user.username}</span>
-                    </a>
+                        <a href="search/${user.id}">
+                            <img src="uploads/profile_images/${user.image}" alt="${user.username}" class="search-avatar" />
+                            <span>${user.username}</span>
+                        </a>
                     `;
                     searchResults.appendChild(userElement);
                 });
             })
             .catch(error => console.error("Erreur de recherche:", error));
-        });
+        }
 
-        // Cacher les résultats quand on clique ailleurs
         document.addEventListener("click", function (event) {
             if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
                 searchResults.style.display = "none";
@@ -90,13 +83,12 @@
 </script>
 
 <style>
-    /* Style pour les résultats de recherche */
     .search-results {
         position: absolute;
         background: white;
-        width: 36%; /* Largeur plus généreuse pour un meilleur affichage */
+        width: 36%;
         border: 1px solid #53348D;
-        border-radius: 1.5rem; /* Coins arrondis plus doux */
+        border-radius: 1.5rem;
         max-height: 250px;
         overflow-y: auto;
         z-index: 1000;
@@ -118,7 +110,7 @@
 
     .search-result-item:hover {
         background: #f5f5f5;
-        padding-left: 20px; /* Effet de décalage sur le survol */
+        padding-left: 20px;
     }
 
     .search-avatar {
@@ -126,20 +118,14 @@
         height: 40px;
         border-radius: 50%;
         margin-right: 12px;
-        object-fit: cover; /* Assure que l'image est bien centrée */
+        object-fit: cover;
     }
 
-    .search-result-item span {
-        color: #444;
-        font-weight: 500; /* Rendre le texte plus net */
-    }
-
-    /* Style pour l'input de recherche */
     .search-input {
-        width: 60%; /* Assurez-vous que la largeur soit la même que celle des résultats */
+        width: 60%;
         padding: 1rem 1.5rem;
         border: 2px solid #53348D;
-        border-radius: 2.5rem; /* Bordure arrondie plus marquée */
+        border-radius: 2.5rem;
         outline: none;
         background-color: #f9f9f9;
         font-size: 16px;
@@ -148,14 +134,12 @@
         transition: all 0.3s ease;
     }
 
-    /* Effet de focus sur l'input */
     .search-input:focus {
-        border-color: #6a4cde; /* Couleur de bordure change lors du focus */
+        border-color: #6a4cde;
         background-color: #fff;
         box-shadow: 0 0 10px rgba(83, 52, 141, 0.3);
     }
 
-    /* Option de place-holder plus esthétiquement moderne */
     .search-input::placeholder {
         color: #bbb;
         font-style: italic;

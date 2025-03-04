@@ -52,4 +52,14 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('project')
+            ->andWhere('project.owner = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('project.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+    
 }

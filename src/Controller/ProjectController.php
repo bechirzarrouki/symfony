@@ -12,18 +12,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface as TranslationTranslatorInterface;
 
 #[Route('/project')]
 class ProjectController extends AbstractController
 {
     // List all projects
-    #[Route('/', name: 'project_index', methods: ['GET'])]
-    public function index(ProjectRepository $projectRepository): Response
-    {
-        return $this->render('project/index.html.twig', [
-            'projects' => $projectRepository->findAll(),
-        ]);
+  // List all projects with sorting by budget
+#[Route('/', name: 'project_index', methods: ['GET'])]
+public function index(ProjectRepository $projectRepository, Request $request): Response
+{
+    // Récupérer l'option de tri du budget
+    $sort = $request->query->get('sort', 'asc'); // Par défaut, on trie par ordre croissant
+
+    // Vérifier si l'option est valide (ascendant ou descendant)
+    if ($sort !== 'asc' && $sort !== 'desc') {
+        $sort = 'asc'; // Par défaut, si l'option est invalide, on trie en ordre croissant
     }
+
+    // Récupérer les projets triés
+    $projects = $projectRepository->findBy([], ['budget' => $sort]);
+
+    return $this->render('project/index.html.twig', [
+        'projects' => $projects,
+        'sort' => $sort,
+    ]);
+}
+
     #[Route('/admin', name: 'project_index_admin', methods: ['GET'])]
     public function admin(ProjectRepository $projectRepository): Response
     {
@@ -147,5 +163,41 @@ class ProjectController extends AbstractController
         }
     
         return $this->redirectToRoute('project_index');
+    }
+  // Dans votre contrôleur (par exemple, ProjectController)
+
+  #[Route('/switch-language/{lang}', name: 'switch_language', methods: ['GET'])]
+  public function switchLanguage($lang, Request $request, TranslationTranslatorInterface $translator): Response
+  {
+      // Vérification si la langue est valide
+      if (!in_array($lang, ['en', 'fr'])) {
+          // Si la langue est invalide, on redirige vers la langue par défaut (ex : en)
+          $lang = 'en';
+      }
+  
+      // Changer la langue en fonction de la sélection de l'utilisateur
+      $request->getSession()->set('_locale', $lang);
+  
+      // Exemple de traduction d'une description spécifique
+      $translatedDescription = $translator->trans('investment.description');
+  
+      // Retourne la description traduite sous forme de réponse JSON
+      return new Response(
+          json_encode(['translatedDescription' => $translatedDescription]),
+          Response::HTTP_OK,
+          ['Content-Type' => 'application/json']
+      );
+  }
+    #[Route('/search/{id}', name: 'search', methods: ['GET'])]
+    public function search(int $id, ProjectRepository $investmentRepository): Response
+    {
+        $posts = $investmentRepository->findByUserId($id);
+        if (!$posts) {
+            throw $this->createNotFoundException('Post not found');
+        }
+
+        return $this->render('project/recherche.html.twig', [
+            'projects' => $posts,
+        ]);
     }
 }
