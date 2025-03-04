@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CoursRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
+
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
 class Cours
@@ -28,7 +30,19 @@ class Cours
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Filename = null;
 
+    // New fields
 
+    #[ORM\Column(type: 'text')]
+    private ?string $objectifs = null;
+
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    // Getters and setters
 
     public function getId(): ?int
     {
@@ -43,7 +57,6 @@ class Cours
     public function setNomCours(string $NomCours): static
     {
         $this->NomCours = $NomCours;
-
         return $this;
     }
 
@@ -55,7 +68,6 @@ class Cours
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -67,7 +79,6 @@ class Cours
     public function setDuree(string $duree): static
     {
         $this->duree = $duree;
-
         return $this;
     }
 
@@ -79,7 +90,6 @@ class Cours
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -91,7 +101,41 @@ class Cours
     public function setFilename(?string $Filename): static
     {
         $this->Filename = $Filename;
+        return $this;
+    }
 
+    public function getObjectifs(): ?string
+    {
+        return $this->objectifs;
+    }
+
+    public function setObjectifs(string $objectifs): static
+    {
+        $this->objectifs = $objectifs;
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
         return $this;
     }
 }

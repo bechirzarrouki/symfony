@@ -1,10 +1,14 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Quiz;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -17,7 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
-    #[ORM\Column(length: 255, unique: true)] 
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -27,16 +31,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $number = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    public ?string $profileImage = null; 
+    public ?string $profileImage = null;
 
     #[ORM\Column(type: "json")]
     private array $roles = ['ROLE_USER']; // Always initialized with ROLE_USER
     #[ORM\Column(type: "boolean", options: ["default" => false])]
     private ?bool $banned = false;
 
+    #[ORM\ManyToMany(targetEntity: Quiz::class, mappedBy: 'participants')]
+    private Collection $quizzesTaken;
+
+    public function __construct()
+    {
+        $this->quizzesTaken = new ArrayCollection();
+    }
+    public function getQuizzesTaken(): Collection
+    {
+        return $this->quizzesTaken;
+    }
+
+    public function addQuizTaken(Quiz $quiz): self
+    {
+        if (!$this->quizzesTaken->contains($quiz)) {
+            $this->quizzesTaken->add($quiz);
+            $quiz->addParticipant($this); // Ensures bidirectional consistency
+        }
+
+        return $this;
+    }
+
+    public function removeQuizTaken(Quiz $quiz): self
+    {
+        if ($this->quizzesTaken->removeElement($quiz)) {
+            $quiz->getParticipants()->removeElement($this);
+        }
+
+        return $this;
+    }
+
     public function setId(int $id): static
     {
-        $this->id=$id;
+        $this->id = $id;
         return $this;
     }
     public function getId(): ?int
@@ -95,14 +130,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($this->roles);
     }
     public function isBanned(): ?bool
-{
-    return $this->banned;
-}
-public function setBanned(bool $banned): static
-{
-    $this->banned = $banned;
-    return $this;
-}
+    {
+        return $this->banned;
+    }
+    public function setBanned(bool $banned): static
+    {
+        $this->banned = $banned;
+        return $this;
+    }
 
     public function setRoles(array $roles): self
     {
@@ -110,9 +145,7 @@ public function setBanned(bool $banned): static
         return $this;
     }
 
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
     public function getUserIdentifier(): string
     {

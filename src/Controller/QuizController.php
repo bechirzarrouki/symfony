@@ -1,175 +1,312 @@
 <?php
 
-/*namespace App\Controller;
+namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Quiz;
+use App\Entity\Cours;
+use App\Entity\User;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\QuizRepository;
 use App\Repository\CoursRepository;
-use App\Entity\Cours;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Smalot\PdfParser\Parser;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Quiz;
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Service\CertificateGenerator;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class QuizController extends AbstractController
 {
-    #[Route('/adminquiz', name: 'app_showquizadmin')]
-    public function showQuiz(QuizRepository $quizRepository, CoursRepository $coursRepository): Response
+
+    #[Route('/quiz', name: 'app_quiz')]
+    public function showQuiz(QuizRepository $rep, CoursRepository $coursRepository): Response
     {
-        $quizzes = $quizRepository->findAll();
+        $quizzes = $rep->findAll();
         $courses = $coursRepository->findAll(); // Get all courses
-
         return $this->render('backoffice/quiz/quizadmin.html.twig', [
-            'tabquiz' => $quizzes,
-            'tabcours' => $courses, // Pass courses to the template
+            'tabquizzes' => $quizzes,
+            'courses'  => $courses, // Pass courses to the template
         ]);
     }
-    /*#[Route('/addformquiz', name: 'app_addformquiz', methods: ['POST'])]
-    public function addFormQuiz(
-        Request $request,
-        SluggerInterface $slugger,
-        #[Autowire('%quiz_pdf_directory%')] string $quizDirectory,
-        ManagerRegistry $manager
-    ): Response {
+
+    #[Route('/deletequiz/{id}', name: 'app_deletequiz', methods: ['GET'])]
+    public function deleteQuiz(QuizRepository $quizRepository, EntityManagerInterface $em, int $id): Response
+    {
+        $quiz = $quizRepository->find($id);
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        $cours = $quiz->getIdCours(); // Get the related course before deletion
+
+        $em->remove($quiz);
+        $em->flush();
+
+        $this->addFlash('success', 'Quiz deleted successfully.');
+
+        // Redirect back to the course view, ensuring 'cours' is passed
+        return $this->redirectToRoute('app_cours_adminview', ['id' => $cours->getId()]);
+    }
+
+    #[Route('/addquiz', name: 'app_addquiz', methods: ['POST'])]
+    public function addQuiz(ManagerRegistry $manager, Request $request, CoursRepository $coursRepository): Response
+    {
         $em = $manager->getManager();
         $quiz = new Quiz();
 
-        // Set quiz details from form inputs
-        $quiz->setQuizName($request->get('quiz_name'));
+        // Set title for the quiz
+        $quiz->setTitle($request->get('title'));
 
-        // Handle correct answers (assuming it's an array from the form)
-        $correctAnswers = $request->get('correct_answers', []);
-        if (!is_array($correctAnswers)) {
-            $correctAnswers = explode(',', $correctAnswers); // Convert from comma-separated string
-        }
-        $quiz->setCorrectAnswers($correctAnswers);
-
-        // Retrieve the associated course
-        $courseId = $request->get('id_cours');
-        $cours = $em->getRepository(Cours::class)->find($courseId);
-        if ($cours) {
-            $quiz->setIdCours($cours);
-        }
-
-        // Handle Quiz PDF upload
-        $quizFile = $request->files->get('quiz_pdf');
-        if ($quizFile) {
-            try {
-                $originalFilename = pathinfo($quizFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $quizFile->guessExtension();
-                $quizFile->move($quizDirectory, $newFilename);
-                $quiz->setQuizPdf($newFilename);
-            } catch (FileException $e) {
-                // Handle file upload error
-            }
-        }
-
-        // Handle Quiz Correction PDF upload
-        $correctionFile = $request->files->get('quiz_correc_pdf');
-        if ($correctionFile) {
-            try {
-                $originalFilename = pathinfo($correctionFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $correctionFile->guessExtension();
-                $correctionFile->move($quizDirectory, $newFilename);
-                $quiz->setQuizCorrecPdf($newFilename);
-            } catch (FileException $e) {
-                // Handle file upload error
-            }
-        }
-
-        // Persist and save the new quiz
-        $em->persist($quiz);
-        $em->flush();
-
-        return $this->redirectToRoute('app_showquizadmin');
-    }
-}*/
-
-
-
-
-/*namespace App\Controller;
-
-use App\Entity\Quiz;
-use App\Entity\Cours;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
-class QuizController extends AbstractController
-{
-    #[Route('/addformquiz', name: 'app_addformquiz', methods: ['POST'])]
-    public function addFormQuiz(
-        Request $request,
-        SluggerInterface $slugger,
-        #[Autowire('%cours_pdf_directory%')] string $coursDirectory,
-        ManagerRegistry $manager,
-        HttpClientInterface $client
-    ): Response {
-        $em = $manager->getManager();
-
-        // Retrieve the course using its ID from the form
-        $courseId = $request->get('id_cours');
-        $cours = $em->getRepository(Cours::class)->find($courseId);
+        // Get the course ID from the form, then fetch the Cours entity
+        $coursId = $request->get('IdCours');
+        $cours = $coursRepository->find($coursId);
         if (!$cours) {
-            throw $this->createNotFoundException("Course not found");
+            $this->addFlash('error', 'Invalid course selected.');
+            return $this->redirectToRoute('app_quiz');
         }
-
-        // Get the course PDF filename from the course entity
-        $coursePdfFilename = $cours->getFilename(); // Assumes your Cours entity has getFilename()
-        if (!$coursePdfFilename) {
-            throw $this->createNotFoundException("Course PDF not found");
-        }
-
-        // Build the full path to the stored course PDF
-        $coursePdfPath = $coursDirectory . '/' . $coursePdfFilename;
-        if (!file_exists($coursePdfPath)) {
-            throw $this->createNotFoundException("Course PDF file does not exist");
-        }
-
-        // Call the external PDFQuiz API to generate a quiz from the course PDF
-        $response = $client->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBf3Pk1lyrSO_Y0dxTld0ap7c4XLtwOpbQ', [
-            'headers' => [
-                'Authorization' => 'Bearer AIzaSyBf3Pk1lyrSO_Y0dxTld0ap7c4XLtwOpbQ', // Replace with your actual API token
-            ],
-            'body' => [
-                'file' => fopen($coursePdfPath, 'r'),
-            ]
-        ]);
-
-        if ($response->getStatusCode() !== 200) {
-            throw $this->createNotFoundException("Quiz generation failed: " . $response->getStatusCode());
-        }
-
-        $apiData = $response->toArray();
-        // Expected API response keys: 'quiz_title', 'quiz_pdf_url', 'correct_answers', optionally 'api_quiz_id'
-
-        // Create a new Quiz entity using the API-generated data
-        $quiz = new Quiz();
-        $quiz->setQuizName($apiData['quiz_title'] ?? 'Generated Quiz')
-            ->setQuizPdfUrl($apiData['quiz_pdf_url'] ?? '')
-            ->setCorrectAnswers($apiData['correct_answers'] ?? []);
         $quiz->setIdCours($cours);
-        if (isset($apiData['api_quiz_id'])) {
-            $quiz->setApiQuizId($apiData['api_quiz_id']);
-        }
 
+        // Get and format questions
+        $questions = [];
+        foreach ($request->get('questions') as $questionData) {
+            // Process the answers to handle commas and split them properly
+            $answersInput = $questionData['answers'];
+            $answersArray = array_map('trim', explode('|', $answersInput));  // Split answers by '|' and trim them
+
+            $questions[] = [
+                'question'   => $questionData['question'],
+                'answers'    => $answersArray,  // Store answers as an array
+                'correct'    => $questionData['correct'],
+                'userAnswer' => null  // Initial state for user's answer
+            ];
+        }
+        $quiz->setQuestions($questions);
+
+        // Persist the quiz object
         $em->persist($quiz);
         $em->flush();
 
-        return $this->redirectToRoute('app_showquizadmin');
+        // Redirect back to the course view after quiz creation
+        return $this->redirectToRoute('app_cours_adminview', ['id' => $cours->getId()]);
     }
-}*/
+
+
+    /*#[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
+    public function takeQuiz(Request $request, QuizRepository $quizRepository, ManagerRegistry $manager, int $id, CertificateGenerator $certificateGenerator): Response
+    {
+        $em = $manager->getManager();
+        $quiz = $quizRepository->find($id);
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        $score = null; // Default null before submission
+        $userAnswers = [];
+        $fullScore = false; // Flag to check if user got a full score
+
+        if ($request->isMethod('POST')) {
+            $userAnswers = $request->get('answers', []);
+            $questions = $quiz->getQuestions();
+            $score = 0;
+
+            // Loop through questions and compare answers
+            foreach ($questions as $index => $question) {
+                if (isset($userAnswers[$index]) && $userAnswers[$index] === $question['correct']) {
+                    $score++; // Increase score if correct
+                }
+            }
+
+            // Save score (optional: if you want to track it)
+            $quiz->setScore($score);
+            $em->flush();
+
+            $this->addFlash('success', "Quiz submitted! Your score: $score / " . count($questions));
+
+            // Check if the user got a full score
+            if ($score === count($questions)) {
+                $fullScore = true;
+            }
+            // If full score and the user requests the certificate
+
+        }
+
+        return $this->render('cours/quiz.html.twig', [
+            'quiz' => $quiz,
+            'score' => $score,
+            'userAnswers' => $userAnswers,
+            'fullScore' => $fullScore,
+
+            'cours' => $quiz->getIdCours()
+        ]);
+    }
+    */
+    #[Route('/takequiz/{id}', name: 'app_takequiz', methods: ['GET', 'POST'])]
+    public function takeQuiz(
+        Request $request,
+        QuizRepository $quizRepository,
+        ManagerRegistry $manager,
+        int $id
+    ): Response {
+        $em = $manager->getManager();
+        $quiz = $quizRepository->find($id);
+        $user = $this->getUser(); // Get the logged-in user
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        if (!$user instanceof User) {
+            return $this->redirectToRoute('app_login'); // Redirect if not authenticated
+        }
+        $score = null;
+        $userAnswers = [];
+        $fullScore = false;
+
+        if ($request->isMethod('POST')) {
+            $userAnswers = $request->get('answers', []);
+            $questions = $quiz->getQuestions();
+            $score = 0;
+
+            foreach ($questions as $index => $question) {
+                if (isset($userAnswers[$index]) && $userAnswers[$index] === $question->getCorrectAnswer()) {
+                    $score++;
+                }
+            }
+
+            // Save user's score & track participation
+            $quiz->setScore($score);
+            $quiz->addParticipant($user);
+            $em->flush();
+
+            $this->addFlash('success', "Quiz submitted! Your score: $score / " . count($questions));
+
+            if ($score === count($questions)) {
+                $fullScore = true;
+            }
+        }
+
+        return $this->render('cours/quiz.html.twig', [
+            'quiz' => $quiz,
+            'score' => $score,
+            'userAnswers' => $userAnswers,
+            'fullScore' => $fullScore,
+            'cours' => $quiz->getIdCours()
+        ]);
+    }
+    #[Route('/editquiz/{id}', name: 'app_editquiz', methods: ['GET', 'POST'])]
+    public function editQuiz($id, ManagerRegistry $manager, Request $request, CoursRepository $coursRepository, QuizRepository $quizRepository): Response
+    {
+        $em = $manager->getManager();
+
+        // Fetch the existing quiz by ID
+        $quiz = $quizRepository->find($id);
+        if (!$quiz) {
+            $this->addFlash('error', 'Quiz not found.');
+            return $this->redirectToRoute('app_quiz');
+        }
+
+        // Ensure $cours is always defined
+        $cours = $quiz->getIdCours(); // Get the existing course
+
+        // Check if a new course ID was provided
+        $coursId = $request->get('IdCours');
+        if ($coursId) {
+            $newCours = $coursRepository->find($coursId);
+            if (!$newCours) {
+                throw new \Exception("Invalid course ID: $coursId");
+            }
+            $quiz->setIdCours($newCours);
+            $cours = $newCours; // Update cours to avoid undefined error
+        }
+
+        // Handle form submission
+        if ($request->isMethod('POST')) {
+            $quiz->setTitle($request->get('title'));
+
+            // Get and format updated questions
+            $questions = [];
+            foreach ($request->get('questions') as $questionData) {
+                $answersInput = $questionData['answers'];
+                $answersArray = array_map('trim', explode('|', $answersInput));
+
+                $questions[] = [
+                    'question'   => $questionData['question'],
+                    'answers'    => $answersArray,
+                    'correct'    => $questionData['correct'],
+                    'userAnswer' => null,
+                ];
+            }
+            $quiz->setQuestions($questions);
+
+            // Save the quiz
+            $em->flush();
+
+            // Redirect back to the course view after quiz update
+            return $this->redirectToRoute('app_cours_adminview', ['id' => $quiz->getIdCours()->getId()]);
+        }
+
+        // If GET request, render the form to edit the quiz
+        /*return $this->render('backoffice/viewadmin.html.twig', [
+            'quiz' => $quiz,
+            'cours' => $cours // ✅ Now $cours is always defined
+        ]);*/
+        return $this->redirectToRoute('app_cours_adminview', ['id' => $quiz->getIdCours()->getId()]);
+    }
+    /* #[Route('/generate-certificate/{id}', name: 'app_generate_certificate', methods: ['GET'])]
+    public function generateCertificate(int $id, QuizRepository $quizRepository, CertificateGenerator $certificateGenerator, ParameterBagInterface $params): Response
+    {
+        $quiz = $quizRepository->find($id);
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        $websiteName = 'InnovMatch';
+        $courseTitle = $quiz->getTitle();
+        $courseDetails = 'Course details go here. Add any relevant information about the course.';
+
+        // Récupérer le dossier des certificats depuis les paramètres
+        $certificateDirectory = $params->get('certificate_directory');
+        $outputPath = $certificateDirectory . '/certificate_' . $quiz->getId() . '.pdf';
+
+        // Générer le certificat
+        $certificateGenerator->generateCertificate($websiteName, $courseTitle, $courseDetails, $outputPath);
+
+        // Retourner le fichier en téléchargement
+        return $this->file($outputPath);
+    }*/
+    #[Route('/generate-certificate/{id}', name: 'app_generate_certificate', methods: ['GET'])]
+    public function generateCertificate(int $id, QuizRepository $quizRepository, CertificateGenerator $certificateGenerator, ParameterBagInterface $params): Response
+    {
+        $quiz = $quizRepository->find($id);
+
+        if (!$quiz) {
+            throw $this->createNotFoundException('Quiz not found');
+        }
+
+        $cours = $quiz->getIdCours(); // Retrieve the associated course
+
+        if (!$cours) {
+            throw $this->createNotFoundException('Associated course not found');
+        }
+
+        $websiteName = 'InnovMatch';
+        $courseTitle = $quiz->getTitle();
+        $courseDetails = $cours->getDescription(); // Get the course description
+
+        // Récupérer le dossier des certificats depuis les paramètres
+        $certificateDirectory = $params->get('certificate_directory');
+        $outputPath = $certificateDirectory . '/certificate_' . $quiz->getId() . '.pdf';
+
+        // Générer le certificat
+        $certificateGenerator->generateCertificate($websiteName, $courseTitle, $courseDetails, $outputPath);
+
+        // Retourner le fichier en téléchargement
+        return $this->file($outputPath);
+    }
+}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/home.html.twig' %}
 
 {% block title %}QUIZ
 {% endblock %}
@@ -16,8 +16,7 @@
 
 {% block body %}
 	<div class="app-container">
-		{% include 'components/navbar.html.twig' %}
-		{% include 'components/sidebar.html.twig' %}
+
 
 		<main
 			class="main-content">
@@ -34,83 +33,57 @@
 						</div>
 					</div>
 				</div>
-				<div
-					class="text-center">
-					{# Open the add modal via JS #}
-					<a href="#" class="btn-more">Add Quiz</a>
-				</div>
 			</div>
 
 			<table>
 				<thead>
 					<tr>
 						<th>Id Quiz</th>
-						<th>Name</th>
-						<th>Id Course</th>
-						<th>Quiz PDF</th>
-						<th>Correction PDF</th>
+						<th>Title</th>
+						<th>Course ID</th>
+						<th>Questions & Answers</th>
 						<th>Correct Answers</th>
-						<th>Edit</th>
-						<th>Delete</th>
+
 					</tr>
 				</thead>
 				<tbody>
-					{% for quiz in tabquiz %}
+					{% for quiz in tabquizzes %}
 						<tr>
 							<td>{{ quiz.id }}</td>
-							<td>{{ quiz.quiz_name }}</td>
-							<td>{{ quiz.id_cours.id }}</td>
+							<td>{{ quiz.title }}</td>
+							<td>{{ quiz.IdCours.id }}</td>
 							<td>
-								<a href="{{ asset('quizzes/' ~ quiz.quiz_pdf) }}" target="_blank">View Quiz</a>
+								{% for question in quiz.questions %}
+									<div class="question">
+										<p>
+											<strong>{{ question.question }}</strong>
+										</p>
+										<ul>
+											{% for answer in question.answers %}
+												<li>{{ answer }}</li>
+											{% endfor %}
+										</ul>
+										<p>
+											<strong>Correct Answer:</strong>
+											{{ question.correct }}</p>
+										<p>
+											<strong>Your Answer:</strong>
+											{{ question.userAnswer ? question.userAnswer : 'Not answered yet' }}</p>
+									</div>
+								{% endfor %}
 							</td>
 							<td>
-								<a href="{{ asset('quizzes/' ~ quiz.quiz_correc_pdf) }}" target="_blank">View Correction</a>
+								{% for correctAnswer in quiz.correctAnswers %}
+									{{ correctAnswer }}
+									{% if not loop.last %},
+									{% endif %}
+								{% endfor %}
 							</td>
-							<td>{{ quiz.correct_answers|join(', ') }}</td>
-							<td>
-								<a href="#" class="btn-modify">
-									<i class="fas fa-edit"></i>
-								</a>
-							</td>
-							<td>
-								<a href="#" class="btn-delete" onclick="return confirm('Are you sure you want to delete this quiz?');">
-									<i class="fas fa-trash"></i>
-								</a>
-							</td>
+
 						</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		</main>
-	</div>
-
-	<!-- Modal for Adding Quiz -->
-	<div id="addQuizModal" class="modal">
-		<div class="modal-content">
-			<span class="close-btn-add">&times;</span>
-			<h2>Add Quiz</h2>
-			<form method="POST" action="#" enctype="multipart/form-data">
-				<input type="text" name="quiz_name" placeholder="Quiz Name" class="input-style" required>
-				<span class="error-message"></span>
-
-				<select name="id_cours" class="input-style" required>
-					<option value="">Select a Course</option>
-					{% for course in tabcours %}
-						<option value="{{ course.id }}">{{ course.NomCours }}</option>
-					{% endfor %}
-				</select>
-				<span class="error-message"></span>
-
-				<label>Upload Quiz PDF</label>
-				<input type="file" name="quiz_pdf" accept=".pdf" class="input-style" required>
-				<span class="error-message"></span>
-
-				<label>Upload Correction PDF</label>
-				<input type="file" name="quiz_correc_pdf" accept=".pdf" class="input-style" required>
-				<span class="error-message"></span>
-
-				<button type="submit" class="submit-btn">Add Quiz</button>
-			</form>
-		</div>
 	</div>
 {% endblock %}

@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{{ asset('css/investisementA.css') }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
+{% set userid = app.session.get('user_id') %}
 {% set user = app.session.get('user') %}
 {% block body %}
 	{% include 'components/navbar1.html.twig' %}
@@ -20,6 +21,34 @@ function closeMessageModal(id) {
     document.getElementById("messageModal" + id).style.display = "none";
 }
 document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.like-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        // Get the investment ID and user ID from the button's data attributes
+        const investmentId = this.getAttribute('data-investment-id');
+        const userId = this.getAttribute('data-user-id');
+
+        // Make the POST request to toggle the like
+        fetch(`/investment/toggle/${userId}/${investmentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'added') {
+                // Handle investment being liked (e.g., change button text/icon)
+                console.log('test');
+                this.textContent = '❤️ Unfavorite';
+            } else if (data.status === 'removed') {
+                // Handle investment being unliked (e.g., change button text/icon)
+                this.textContent = '🤍 Favorite';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
     function sortInvestments(order) {
         let container = document.querySelector('.post-container');
         let investments = Array.from(container.getElementsByClassName('main-wrapper'));
@@ -53,6 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <option value="asc">Ancien → Récent</option>
             <option value="most_liked">Plus de likes → Moins de likes</option>
             <option value="least_liked">Moins de likes → Plus de likes</option>
+            {{dump(userid)}}
+            
         </select>
         </div>
     </div>
@@ -98,6 +129,13 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </button>
                         </div>
+                <button class="like-btn" data-investment-id="{{ investment.id }}" data-user-id="{{ userid }}">
+                    {% if investment.isFavoritedByUser(user) %}
+                        ❤️ Unfavorite
+                    {% else %}
+                        🤍 Favorite
+                    {% endif %}
+                </button>
 
 						<div class="date-time">{{investment.getCreatedAt()|date('Y-m-d H:i:s')}}</div>
 					</div>
@@ -153,18 +191,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	<div class="suggested-users-sidebar">
 		<div class="suggested-users-container">
 			<div class="user-list">
-				{% set suggested_users = [
-                    {'username': 'Alice', 'profile_picture': 'images/alice-avatar.jpg'},
-                    {'username': 'Bob', 'profile_picture': 'images/bob-avatar.jpg'},
-                    {'username': 'Charlie', 'profile_picture': 'images/charlie-avatar.jpg'},
-                    {'username': 'Diana', 'profile_picture': null},
-                    {'username': 'Eve', 'profile_picture': 'images/eve-avatar.jpg'}
-                ] %}
-
-				{% for user in suggested_users %}
+								{% for user in users %}
 					<div class="user-item">
-						{% if user.profile_picture %}
-							<img src="{{ asset('uploads/profile_images/' ~ user.profile_picture) }}" alt="Profile" class="suggested-user-img">
+						{% if user.getProfileImage() %}
+							<img src="{{ asset('uploads/profile_images/' ~ user.getProfileImage()) }}" alt="Profile" class="suggested-user-img">
 						{% else %}
 							<img src="{{ asset('images/default-avatar.jpg') }}" alt="Default Profile" class="suggested-user-img">
 						{% endif %}

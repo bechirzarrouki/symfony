@@ -2,94 +2,152 @@
 
 namespace App\Entity;
 
-use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
-#[ORM\Entity(repositoryClass: QuizRepository::class)]
+#[ORM\Entity]
 class Quiz
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $quiz_name = null;
-
-    // Instead of storing local file names, we now store the URL returned by the API
-    #[ORM\Column(length: 255)]
-    private ?string $quiz_pdf_url = null;
-
-
-
-    #[ORM\Column(type: 'json')]
-    private array $correct_answers = [];
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $title = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Cours $id_cours = null;
+    private ?Cours $IdCours = null;
 
-    // Optional: If the API provides an identifier for the generated quiz, you can store it:
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $api_quiz_id = null;
+    /**
+     * Stores the questions, answers, correct answer, and user answer.
+     * Each question is an array with:
+     * - 'question' => 'Question text',
+     * - 'answers' => ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
+     * - 'correct' => 'Correct answer',
+     * - 'userAnswer' => null // Updated when the user answers.
+     */
+    #[ORM\Column(type: 'json')]
+    private array $questions = [];
 
+    #[ORM\Column(type: 'integer')]
+    private int $score = 0; // Stores the user's score.
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: "quizzesTaken")]
+    #[ORM\JoinTable(name: 'quiz_user')]
+    private Collection $participants;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
+
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(User $user): self
+    {
+        if (!$this->participants->contains($user)) {
+            $this->participants->add($user);
+        }
+        return $this;
+    }
+
+    public function hasParticipant(User $user): bool
+    {
+        return $this->participants->contains($user);
+    }
+
+    // Getters and Setters
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getQuizName(): ?string
+    public function getTitle(): ?string
     {
-        return $this->quiz_name;
+        return $this->title;
     }
 
-    public function setQuizName(string $quiz_name): static
+    public function setTitle(string $title): self
     {
-        $this->quiz_name = $quiz_name;
-        return $this;
-    }
-
-    public function getQuizPdfUrl(): ?string
-    {
-        return $this->quiz_pdf_url;
-    }
-
-    public function setQuizPdfUrl(string $quiz_pdf_url): static
-    {
-        $this->quiz_pdf_url = $quiz_pdf_url;
-        return $this;
-    }
-
-    public function getCorrectAnswers(): array
-    {
-        return $this->correct_answers;
-    }
-
-    public function setCorrectAnswers(array $correct_answers): static
-    {
-        $this->correct_answers = $correct_answers;
+        $this->title = $title;
         return $this;
     }
 
     public function getIdCours(): ?Cours
     {
-        return $this->id_cours;
+        return $this->IdCours;
     }
 
-    public function setIdCours(?Cours $id_cours): static
+    public function setIdCours(?Cours $IdCours): static
     {
-        $this->id_cours = $id_cours;
+        $this->IdCours = $IdCours;
         return $this;
     }
 
-    public function getApiQuizId(): ?string
+    public function getQuestions(): array
     {
-        return $this->api_quiz_id;
+        return $this->questions;
     }
 
-    public function setApiQuizId(?string $api_quiz_id): static
+    public function setQuestions(array $questions): self
     {
-        $this->api_quiz_id = $api_quiz_id;
+        $this->questions = $questions;
         return $this;
+    }
+
+    public function getScore(): int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): self
+    {
+        $this->score = $score;
+        return $this;
+    }
+
+    // Add a question with its answers and correct answer
+    public function addQuestion(string $question, array $answers, string $correctAnswer): self
+    {
+        $this->questions[] = [
+            'question'   => $question,
+            'answers'    => $answers,
+            'correct'    => $correctAnswer,
+            'userAnswer' => null // Initially null, to be updated when the user answers
+        ];
+        return $this;
+    }
+
+    // Set the user's answer for a specific question
+    public function setUserAnswer(int $questionIndex, string $userAnswer): self
+    {
+        if (isset($this->questions[$questionIndex])) {
+            $this->questions[$questionIndex]['userAnswer'] = $userAnswer;
+        }
+        return $this;
+    }
+
+    // Calculate the user's score
+    public function calculateScore(): self
+    {
+        $this->score = 0;
+        foreach ($this->questions as $question) {
+            if ($question['userAnswer'] === $question['correct']) {
+                $this->score++;  // Increment score if the answer is correct
+            }
+        }
+        return $this;
+    }
+
+    public function getCorrectAnswers(): array
+    {
+        return array_map(fn($question) => $question['correct'], $this->questions);
     }
 }

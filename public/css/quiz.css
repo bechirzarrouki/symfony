@@ -1,0 +1,110 @@
+/* Add margin to prevent overlap */
+.app-container {
+    margin-top: 80px; /* Adjust based on your navbar height */
+    padding: 20px;
+    margin-left:250px;
+}
+
+.sidebar {
+    width: 250px; /* Adjust width based on your sidebar */
+    flex-shrink: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 200px;
+    margin-top:50px; /* Matches sidebar width */
+}
+.main {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 250px; /* Décalage pour la sidebar */
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
+form {
+    margin-top: 100px; /* Adjust based on navbar height */
+}
+.h1 {
+    font-size: 50px;
+    font-weight: bold;
+    color: #53348D;
+    margin-bottom: 20px;
+    margin-left:60px;
+}
+.submit
+{
+    width: 300px;
+    padding: 10px;
+    background-color: #53348D;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+.submit:hover {
+    background-color: #412a6d;
+}
+
+/*sucess*/
+/* Style for the popup modal */
+#successModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to stay in place when scrolling */
+    top: 50%; /* Position it at the center vertically */
+    left: 50%; /* Position it at the center horizontally */
+    transform: translate(-50%, -50%); /* Shift it back by half its width/height to truly center it */
+    background-color: rgba(0, 0, 0, 0.7); /* A semi-transparent black background */
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 9999; /* Ensure it appears on top of everything else */
+}
+
+#successModal .modal-content {
+    background-color: white; /* Set the background of the modal */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#successModal h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#successModal p {
+    font-size: 18px;
+}
+#failureModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position to stay in place when scrolling */
+    top: 50%; /* Position it at the center vertically */
+    left: 50%; /* Position it at the center horizontally */
+    transform: translate(-50%, -50%); /* Shift it back by half its width/height to truly center it */
+    background-color: rgba(0, 0, 0, 0.7); /* A semi-transparent black background */
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 9999; /* Ensure it appears on top of everything else */
+}
+
+#failureModal .modal-content {
+    background-color: white; /* Set the background of the modal */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#failureModal h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#failureModal p {
+    font-size: 18px;
+}
+

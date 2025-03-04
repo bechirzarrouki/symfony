@@ -31,6 +31,13 @@ class Post
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'post_likes')]
     private Collection $likes;
+    #[ORM\OneToMany(mappedBy: "post", targetEntity: Favorite::class, cascade: ["remove"])]
+    private Collection $favorites;
+public function getFavoriteCount(): int
+{
+    return count($this->favorites);
+}
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -82,6 +89,15 @@ class Post
             $comment->setPost($this);
         }
         return $this;
+    }
+    public function isFavoritedByUser(User $user): bool
+    {
+        foreach ($this->favorites as $favorite) {
+            if ($favorite->getUser() === $user) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function removeComment(Comment $comment): self

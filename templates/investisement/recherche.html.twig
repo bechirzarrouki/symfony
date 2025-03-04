@@ -93,7 +93,7 @@ function closeMessageModal(id) {
 				{% for user in users %}
 					<div class="user-item">
 						{% if user.getProfileImage() %}
-							<img src="{{ asset(user.getProfileImage()) }}" alt="Profile" class="suggested-user-img">
+							<img src="{{ asset('uploads/profile_images/' ~ user.getProfileImage()) }}" alt="Profile" class="suggested-user-img">
 						{% else %}
 							<img src="{{ asset('images/default-avatar.jpg') }}" alt="Default Profile" class="suggested-user-img">
 						{% endif %}
