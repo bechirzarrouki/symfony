@@ -10,7 +10,8 @@
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 50px; /* Matches sidebar width */
+    margin-left: 200px;
+    margin-top:50px; /* Matches sidebar width */
 }
 .main {
     flex-grow: 1;
@@ -83,11 +84,13 @@
 /* Courses Section */
 .courses {
     padding: 40px 20px;
+    margin-left: 200px;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    
 }
 
 .courses-grid {
@@ -290,6 +293,33 @@
 .modal {
     display: none;
 }
+.custom-file-input {
+    display: none; /* Hide default input */
+}
+
+.custom-file-label {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.custom-file-label:hover {
+    background-color: #0056b3;
+}
+
+.file-name {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
 
  /*CERTIF*/
  /* Ensure the table inside .app-container is targeted */
@@ -341,14 +371,138 @@
 
 /*PDF COURS*/
 /* Pour afficher le contenu PDF sur toute la largeur et ajuster la hauteur */
-.pdf-content {
-    width: 100%; /* Prend toute la largeur disponible */
-    margin-top: 20px;
-    overflow: hidden;
+
+.cours-details-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
 }
 
-.pdf-content iframe {
-    width: 100%; /* Prend toute la largeur du parent */
-    height: 80vh; /* Utilise 80% de la hauteur de la fenêtre du navigateur */
-    border: none;
+.cours-details {
+    flex: 1;
+}
+
+.cours-image img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.cours-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+
+.learning-box, .course-structure, .pdf-section {
+    background: transparent;
+    border: 1px solid black;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    max-width: 600px; 
+    width:100%;
+}
+
+.learning-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.learning-box li {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.pdf-section a, .course-structure a {
+    color: #53348D;
+    text-decoration: underline;
+    font-weight: bold;
+
+}
+
+.pdf-section a:hover, .course-structure a:hover {
+    text-decoration: underline;
+}
+.main-contenu {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 250px;
+    margin-top:100px; /* Matches sidebar width */
+}
+/*PDF MODAL*/
+.pdf-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+}
+
+.pdf-modal-content {
+    position: relative;
+    margin: 5% auto;
+    padding: 20px;
+    background: white;
+    width: 80%;
+    max-width: 900px;
+    height: 80%;
+}
+
+.pdf-modal iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 30px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+/*MODAL QUIZ*/
+
+.modal-contenu {
+    background-color: white; /* Ensuring no transparency */
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: auto; /* Automatically adjust width based on content */
+    min-width: 400px; /* Set a minimum width */
+    max-width: 90%; /* Prevent it from becoming too wide */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    overflow: visible; /* Allow content to extend beyond container if needed */
+    height: auto; /* Let the height adjust with content */
+}
+
+/* Container for questions inside modal (flexbox to stack horizontally) */
+#questionsContainer {
+    display: flex;             /* Arrange questions horizontally */
+    flex-wrap: nowrap;         /* Prevent wrapping */
+    width: auto;               /* Allow container to expand horizontally */
+}
+
+/* Each question block style */
+.question {
+    min-width: 300px;          /* Minimum width for each question */
+    margin-right: 20px;        /* Space between questions */
+    box-sizing: border-box;
+    flex-shrink: 0;            /* Prevent shrinking */
+}
+#quizModal, #editQuizModal {
+    display: none;
+}
+.close-btn-quiz {
+    display: block;  /* Assurez-vous que le bouton est visible */
 }

@@ -7,11 +7,16 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
 use App\Entity\Investment;
+use App\Entity\InvestmentFavorite;
 use App\Entity\User;
+use App\Repository\FavoriteRepository;
+use App\Repository\InvestmentFavoriteRepository;
 use App\Repository\InvestmentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -21,11 +26,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/investment')]
 class InvestmentController extends AbstractController
-{
+{    private LoggerInterface $logger;
+
     
-    public function __construct(GmailOAuth2TokenProvider $tokenProvider)
+    public function __construct(GmailOAuth2TokenProvider $tokenProvider,LoggerInterface $logger)
     {
         $this->tokenProvider = $tokenProvider;
+        $this->logger = $logger;
     }
     public function sendMail(String $data,String $email): Response
     {
@@ -80,7 +87,7 @@ class InvestmentController extends AbstractController
             'investments' => $investmentRepository->findAll(),
         ]);
     }
-    #[Route('/search/{id}', name: 'search', methods: ['GET'])]
+    #[Route('/search/{id}', name: 'searchi', methods: ['GET'])]
 public function search(int $id, InvestmentRepository $investmentRepository,UserRepository $userRepository): Response
 {
     $investments = $investmentRepository->findByUserId($id);
@@ -96,10 +103,12 @@ public function search(int $id, InvestmentRepository $investmentRepository,UserR
 }
 
     #[Route('/investisementafficher', name: 'investment_index_afficher', methods: ['GET'])]
-    public function indexaffichage(InvestmentRepository $investmentRepository): Response
+    public function indexaffichage(InvestmentRepository $investmentRepository,UserRepository $userRepository): Response
     {
+        $users = $userRepository->findAll();
         return $this->render('investisement/investisement.html.twig', [
             'investments' => $investmentRepository->findAll(),
+            'users'=>$users,
         ]);
     }
 
@@ -265,5 +274,43 @@ public function like(int $id, EntityManagerInterface $entityManager, InvestmentR
 
     return $this->redirectToRoute('investment_index_afficher');
 }
+#[Route('/toggle/{userId}/{postId}', name: 'favorite_toggle', methods: ['POST'])]
+    public function toggleFavorite(int $userId, int $postId, UserRepository $userRepository, InvestmentFavoriteRepository $favoriteRepository, EntityManagerInterface $em): JsonResponse
+    {
+        // Fetch the user by ID
+        $user = $userRepository->find($userId);
+        $this->logger->info('User attempted to toggle favorite', ['user_id' => $userId, 'post_id' => $postId]);
 
+        if (!$user) {
+            $this->logger->error('User not found', ['user_id' => $userId]);
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        // Fetch the post by ID
+        $post = $em->getRepository(Investment::class)->find($postId);
+        if (!$post) {
+            $this->logger->error('Post not found', ['post_id' => $postId]);
+            return new JsonResponse(['error' => 'Post not found'], 404);
+        }
+
+        // Check if the favorite already exists
+        $existingFavorite = $favoriteRepository->findOneBy(['user' => $user, 'post' => $post]);
+        if ($existingFavorite) {
+            $this->logger->info('Removing favorite', ['user_email' => $user->getEmail(), 'post_id' => $post->getId()]);
+            $em->remove($existingFavorite);
+            $em->flush();
+            return new JsonResponse(['status' => 'removed']);
+        }
+
+        // Add new favorite
+        $favorite = new InvestmentFavorite();
+        $favorite->setUser($user);
+        $favorite->setPost($post);
+        $this->logger->info('Adding favorite', ['user_email' => $user->getEmail(), 'post_id' => $post->getId()]);
+
+        $em->persist($favorite);
+        $em->flush();
+
+        return new JsonResponse(['status' => 'added']);
+    }
 }

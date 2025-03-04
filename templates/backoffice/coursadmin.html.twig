@@ -17,7 +17,6 @@
 
 {% block body %}
 	<div class="app-container">
-
 		<main
 			class="main-content">
 			<!-- Hero Section -->
@@ -45,11 +44,11 @@
 						{% for a in tabcours %}
 							<div class="course">
 								<div class="course-content">
-									<a href="#" class="course-image">
-										<img src="{{ asset('images/course01.jpg') }}" alt="Course 1">
+									<a href="{{ path('app_cours_adminview', { id: a.id }) }}" class="course-image">
+										<img src="{{ a.image ? asset('coursimg/' ~ a.image) : asset('images/course01.jpg') }}" alt="{{ a.nomCours }}">
 									</a>
 									<div class="course-details">
-										<a href="{{ path('app_cours_view', { id: a.id }) }}">
+										<a href="{{ path('app_cours_adminview', { id: a.id }) }}">
 											{{ a.nomCours }}
 										</a>
 
@@ -57,6 +56,7 @@
 										<div class="course-info">
 											<span>{{ a.duree }}</span>
 											<span class="free">{{ a.type }}</span>
+
 										</div>
 										<!-- Delete and Modify Buttons -->
 										<div class="course-actions">
@@ -64,7 +64,7 @@
 												<i class="fas fa-trash"></i>
 											</a>
 
-											<a href="{{ path('app_editcours', {'id': a.id}) }}" class="btn-modify" data-id="{{ a.id }}" data-nomcours="{{ a.Nomcours }}" data-description="{{ a.description }}" data-duree="{{ a.duree }}" data-type="{{ a.type }}">
+											<a href="{{ path('app_editcours', {'id': a.id}) }}" class="btn-modify" data-id="{{ a.id }}" data-nomcours="{{ a.nomCours }}" data-description="{{ a.description }}" data-duree="{{ a.duree }}" data-type="{{ a.type }}" data-date="{{ a.date|date('Y-m-d') }}" data-objectifs="{{ a.objectifs }}" data-filename="{{ a.Filename }}" data-image="{{ a.image }}">
 												<i class="fas fa-edit"></i>
 											</a>
 										</div>
@@ -95,8 +95,24 @@
 
 				<input type="text" name="type" placeholder="Type (premium/free)" class="input-style" required>
 				<span class="error-message"></span>
-				<input type="file" name="Filename" accept="application/pdf">
+
+				<input type="date" name="date" class="input-style" required>
 				<span class="error-message"></span>
+
+				<!-- Objectifs Section -->
+				<label for="objectifs">Objectifs</label>
+				<textarea id="objectifs" name="objectifs" rows="4" placeholder="Écrivez ici les objectifs du cours..." class="input-style" required></textarea>
+				<span class="error-message"></span>
+
+				<label for="pdfUpload" class="custom-file-label">Choisir cours PDF</label>
+				<input id="pdfUpload" type="file" name="Filename" accept="application/pdf" class="custom-file-input">
+				<span id="pdf-file-name" class="file-name"></span>
+
+				<label for="imageUpload" class="custom-file-label">Choisir image</label>
+				<input id="imageUpload" type="file" name="image" accept="image/*" class="custom-file-input">
+				<span id="image-file-name" class="file-name"></span>
+
+
 				<button type="submit" class="submit-btn">Add Course</button>
 			</form>
 		</div>
@@ -119,8 +135,25 @@
 
 				<input type="text" name="type" placeholder="Type (premium/free)" class="input-style" required>
 				<span class="error-message"></span>
-				<input type="file" name="Filename" accept="application/pdf">
+
+				<input type="date" name="date" class="input-style" required>
 				<span class="error-message"></span>
+
+				<!-- Objectifs Section -->
+				<label for="objectifs">Objectifs</label>
+				<textarea id="objectifs" name="objectifs" rows="4" placeholder="Écrivez ici les objectifs du cours..." class="input-style" required></textarea>
+				<span class="error-message"></span>
+
+				<label for="pdfUpload" class="custom-file-label">Choisir cours PDF</label>
+				<input id="pdfUpload" type="file" name="Filename" accept="application/pdf" class="custom-file-input">
+				<span id="pdf-file-name" class="file-name"></span>
+
+				<label for="imageUpload" class="custom-file-label">Choisir image</label>
+				<input id="imageUpload" type="file" name="image" accept="image/*" class="custom-file-input">
+				<span id="image-file-name" class="file-name"></span>
+				<!-- Display Current PDF File -->
+
+
 				<button type="submit" class="submit-btn">Save Changes</button>
 			</form>
 		</div>

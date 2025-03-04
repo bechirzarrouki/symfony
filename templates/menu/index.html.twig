@@ -2,6 +2,7 @@
 
 {% block title %}Home - InoovMatch{% endblock %}
 {% set user_id = app.session.get('user_id') %}
+{% set user = app.session.get('user') %}
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
@@ -50,11 +51,67 @@
 				padding: 5px;
 				z-index: 1000;
 			}
+        .posts-count {
+        font-size: 18px;
+        font-weight: bold;
+        color: #3498db;  /* Blue color */
+        background-color: #f0f0f0;  /* Light gray background */
+        padding: 5px 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
     </style>
 {% endblock %}
 
 {% block body %}
-<script>document.addEventListener("DOMContentLoaded", function () {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".favorite-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const postId = this.dataset.postId;
+            const userId=this.dataset.userId;
+            const isFavorited = this.classList.contains("favorited");
+
+            // Instantly toggle the UI before the server responds
+            if (isFavorited) {
+                this.classList.remove("favorited");
+                this.textContent = "🤍 Add to Favorite";
+            } else {
+                this.classList.add("favorited");
+                this.textContent = "❤️ Remove Favorite";
+            }
+
+            // Send the AJAX request to update the backend
+            fetch(`/favorite/toggle/${userId}/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "added") {
+                    this.classList.add("favorited");
+                    this.textContent = "❤️ Remove Favorite";
+                } else if (data.status === "removed") {
+                    this.classList.remove("favorited");
+                    this.textContent = "🤍 Add to Favorite";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Rollback UI change if request fails
+                if (isFavorited) {
+                    this.classList.add("favorited");
+                    this.textContent = "❤️ Remove Favorite";
+                } else {
+                    this.classList.remove("favorited");
+                    this.textContent = "🤍 Add to Favorite";
+                }
+            });
+        });
+    });
     const uploadForm = document.getElementById("uploadForm");
     const fileInput = document.getElementById("fileInput");
     const resultImage = document.getElementById("resultImage");
@@ -126,6 +183,7 @@ uploadForm.addEventListener("submit", async function (event) {
     });
 });
 </script>
+
 <div class="app-container">
     {% include 'components/navbar.html.twig' %}
     {% include 'components/sidebar.html.twig' %}
@@ -158,6 +216,8 @@ uploadForm.addEventListener("submit", async function (event) {
 
         <!-- Posts Feed -->
         <div class="posts-feed">
+        <span class="posts-count">total number of posts  {{ posts|length }}</span>
+
             {% for post in posts %}
             <div class="post">
                 <div class="post-header">
@@ -168,6 +228,13 @@ uploadForm.addEventListener("submit", async function (event) {
                            <div class="date-time">{{post.getCreatedAt()|date('Y-m-d H:i:s')}}</div>
                         </div>
                     </div>
+                    <button class="favorite-btn" data-post-id="{{ post.id }}" data-user-id="{{user_id}}">
+                    {% if post.isFavoritedByUser(user) %}
+                        ❤️ Remove Favorite
+                    {% else %}
+                        🤍 Add to Favorite
+                    {% endif %}
+                </button>
                     {% if user_id == post.author.id %}
                     <div class="post-controls">
                         <a  onclick="editPost({{ post.id }})"> <i class="fas fa-edit"></i></a>
@@ -205,6 +272,7 @@ uploadForm.addEventListener("submit", async function (event) {
                     
                     <!-- Display Comments -->
 <div class="post-comments">
+ <span class="posts-count">number of comments in this post {{ post.comments|length }}</span>
     {% for comment in post.comments %}
     <div class="comment" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="comment-info">

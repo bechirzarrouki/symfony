@@ -1,21 +1,23 @@
 # config/services.yaml
 
 parameters:
-    profile_image_directory: '%kernel.project_dir%/public/uploads/profile_images'
-    cours_pdf_directory: "%kernel.project_dir%/public/courspdf"
+  profile_image_directory: "%kernel.project_dir%/public/uploads/profile_images"
+  cours_pdf_directory: "%kernel.project_dir%/public/courspdf"
+  cours_image_directory: "%kernel.project_dir%/public/coursimg"
+  certificate_directory: "%kernel.project_dir%/public/certif"
 
 services:
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+  App\:
+    resource: "../src/"
+    exclude:
+      - "../src/DependencyInjection/"
+      - "../src/Entity/"
+      - "../src/Kernel.php"
 
-    # Explicitly registering the PasswordMatchValidator (optional, for clarity)
-    App\Validator\PasswordMatchValidator:
-        arguments: []
+  # Explicitly registering the PasswordMatchValidator (optional, for clarity)
+  App\Validator\PasswordMatchValidator:
+    arguments: []

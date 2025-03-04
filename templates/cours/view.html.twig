@@ -3,7 +3,7 @@
 {% block title %}
 	{{ cours.nomCours }}
 {% endblock %}
-
+{% set user_id = app.session.get('user_id') %}
 {% block stylesheets %}
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('css/cours.css') }}">
@@ -13,44 +13,128 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script src="{{ asset('js/navbar.js') }}"></script>
+	<script src="{{ asset('js/takequiz.js') }}"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const viewPdfBtn = document.getElementById('view-pdf-btn');
+const pdfModal = document.getElementById('pdf-modal');
+const closeModal = document.getElementById('close-modal');
+const pdfIframe = document.getElementById('pdf-iframe');
+
+// When the "View Course PDF" button is clicked
+viewPdfBtn.addEventListener('click', function () { // Set the PDF URL to the iframe's src
+pdfIframe.src = '{{ asset('courspdf/' ~ cours.filename) }}';
+// Replace with your dynamic path if needed
+
+// Show the modal
+pdfModal.style.display = 'block';
+});
+
+// When the "X" is clicked to close the modal
+closeModal.addEventListener('click', function () { // Hide the modal
+pdfModal.style.display = 'none';
+// Stop the PDF from loading when closed
+pdfIframe.src = '';
+});
+
+// When clicked anywhere outside the modal, close it
+window.addEventListener('click', function (event) {
+if (event.target === pdfModal) {
+pdfModal.style.display = 'none';
+pdfIframe.src = ''; // Stop the PDF from loading
+}
+});
+});
+	</script>
 {% endblock %}
 
 {% block body %}
+	{% set fullScore = app.request.query.get('fullScore') == 'true' %}
+
 	<div class="app-container">
 		{% include 'components/navbar.html.twig' %}
 		{% include 'components/sidebar.html.twig' %}
 
 		<main
-			class="main-content">
-			<!-- Hero Section -->
-			<div class="hero">
-				<div class="hero-bg">
-					<div class="hero-content">
-						<div class="hero-text">
-							<h1>{{ cours.nomCours }}</h1>
-							<p>{{ cours.description }}</p>
-						</div>
-						<div class="hero-image">
-							<img src="{{ asset('images/img.png') }}" alt="Course Image">
-						</div>
-					</div>
+			class="main-contenu">
+			<!-- Course Details Section -->
+			<div
+				class="cours-details-container">
+				<!-- Left Section: Course Details -->
+				<div class="cours-details">
+					<h1>{{ cours.nomCours }}</h1>
+					<p>
+						<strong>Description:</strong>
+						{{ cours.description }}</p>
+					<p>
+						<strong>📅 Last Modified:</strong>
+						{{ cours.date|date('d-m-Y') }}</p>
+					<p>
+						<strong>⏳ Duration:</strong>
+						{{ cours.duree }}</p>
+
 				</div>
-				<div class="text-center">
-					<form action="#" method="post">
-						<input type="hidden" name="id_cours" value="{{ cours.id }}">
-						<button type="submit" class="btn-more">Take quiz</button>
-					</form>
 
-
+				<!-- Right Section: Course Image -->
+				<div class="cours-image">
+					<img src="{{ cours.image ? asset('coursimg/' ~ cours.image) : asset('images/course01.jpg') }}" alt="{{ cours.nomCours }}">
 				</div>
 			</div>
 
-			<!-- Course Content Section -->
-			<div class="pdf-content">
-				<h2>Contenu du Cours</h2>
-				<!-- Utilisation d'un iframe pour afficher le PDF -->
-				<iframe src="{{ asset('courspdf/' ~ cours.filename) }}" frameborder="0"></iframe>
+
+			<!-- What You Will Learn Section -->
+			<div class="learning-box">
+				<h2>📚 What You Will Learn</h2>
+				<ul>
+					{% for objective in cours.objectifs|split('.') %}
+						{% if objective|trim is not empty %}
+							<li>✅
+								{{ objective|trim }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+
+			</div>
+
+
+			<!-- Course PDF Section -->
+			<div class="pdf-section">
+				<h2>📜 course content
+				</h2>
+
+				<p>📄
+					<a href="#" id="view-pdf-btn" class="text-link">View Course PDF</a>
+				</p>
+
+				<div id="pdf-modal" class="pdf-modal">
+					<div class="pdf-modal-content">
+						<span id="close-modal" class="close-modal">&times;</span>
+						<iframe id="pdf-iframe" src="" frameborder="0"></iframe>
+					</div>
+				</div>
+
+			</div>
+			<!-- Quiz Section -->
+			<div class="quiz-section">
+				<h2>🎮 Quizzes for this Course</h2>
+				{% if quizzes is not empty %}
+					<ul>
+						{% for quiz in quizzes %}
+
+							<li>
+
+								<a href="{{ path('app_takequiz', { id: quiz.id,id_user:user_id }) }}">Take the Quiz:
+									{{ quiz.title }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% else %}
+					<p>No quizzes available for this course.</p>
+				{% endif %}
 			</div>
 		</main>
 	</div>
+
+
 {% endblock %}

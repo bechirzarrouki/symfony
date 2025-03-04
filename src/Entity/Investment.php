@@ -26,7 +26,10 @@ class Investment
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'investments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+    // In your Investment entity
 
+    #[ORM\OneToMany(mappedBy: "investment", targetEntity: InvestmentFavorite::class, cascade: ["remove"])]
+    private Collection $favorites;
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'investment_likes')]
     private Collection $likes;
@@ -34,7 +37,7 @@ class Investment
     public function __construct()
     {
         $this->likes = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable(); 
+        $this->createdAt = new \DateTimeImmutable();
     }
     public function getCreatedAt(): \DateTimeInterface
     {
@@ -104,5 +107,14 @@ class Investment
         }
         return $this->likes->contains($user);
     }
-    
+    public function isFavoritedByUser(User $user): bool
+    {
+        foreach ($this->favorites as $favorite) {
+            if ($favorite->getUser() === $user) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
