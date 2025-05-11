@@ -33,8 +33,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     public ?string $profileImage = null;
 
-    #[ORM\Column(type: "json")]
-    private array $roles = ['ROLE_USER']; // Always initialized with ROLE_USER
+    #[ORM\Column(length: 255)]
+    private ?string $roles = 'ROLE_USER'; // Default role
     #[ORM\Column(type: "boolean", options: ["default" => false])]
     private ?bool $banned = false;
 
@@ -127,7 +127,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return array_unique($this->roles);
+        // Convert single role to array format as required by UserInterface
+        return [$this->roles];
     }
     public function isBanned(): ?bool
     {
@@ -139,9 +140,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(?string $role): self
     {
-        $this->roles = array_values(array_unique($roles));
+        $this->roles = $role ?? 'ROLE_USER';
         return $this;
     }
 

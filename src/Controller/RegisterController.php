@@ -22,7 +22,7 @@ class RegisterController extends AbstractController
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $password = $request->request->get('password');
-            $roles = $request->request->all('roles') ?: ['ROLE_USER'];
+            $role = $request->request->get('role') ?: 'ROLE_USER';
             $username = $request->request->get('username');
             $phone = $request->request->get('phone'); // Get the phone number from the request
             // Validate required fields
@@ -40,7 +40,7 @@ class RegisterController extends AbstractController
             // Create and set user data
             $user = new User();
             $user->setEmail($email);
-            $user->setRoles($roles);
+            $user->setRoles($role);
             $user->setUsername($username);
             $user->setNumber($phone); // Set the phone number
 

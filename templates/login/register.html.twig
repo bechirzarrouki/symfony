@@ -187,18 +187,14 @@
                 </div>
             </div>
 
-            <div class="checkbox-group">
-                <label>
-                    <input type="checkbox" id="project-leader" name="roles[]" value="ROLE_PROJECT_LEADER">
-                    Project Leader
-                </label>
-                <label>
-                    <input type="checkbox" id="investor" name="roles[]" value="ROLE_INVESTOR">
-                    Investor
-                </label>
-                <label>
-                    <input type="checkbox" id="employee" name="roles[]" value="ROLE_EMPLOYEE">
-                    Employee
+            <div class="form-group">
+                <label for="role">Select Role *</label>
+                <select id="role" name="role" required>
+                    <option value="ROLE_USER">Regular User</option>
+                    <option value="ROLE_PROJECT_OWNER">Project Owner</option>
+                    <option value="ROLE_INVESTOR">Investor</option>
+                    <option value="ROLE_EMPLOYEE">Employee</option>
+                </select>
                 </label>
             </div>
 
