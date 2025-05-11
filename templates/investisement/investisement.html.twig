@@ -10,7 +10,6 @@
 {% endblock %}
 {% set userid = app.session.get('user_id') %}
 {% set user = app.session.get('user') %}
-{% set userid = app.session.get('user_id') %}
 {% block body %}
 	{% include 'components/navbar1.html.twig' %}
 	{% include 'components/sidebar.html.twig' %}
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </button>
                         </div>
                 <button class="like-btn" data-investment-id="{{ investment.id }}" data-user-id="{{ userid }}">
-                    {% if investment.isFavoritedByUser(user) %}
+                    {% if investment%}
                         ❤️ Unfavorite
                     {% else %}
                         🤍 Favorite

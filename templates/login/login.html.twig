@@ -4,17 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnovMatch - Login</title>
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .alert-danger {
-            color: #fff;
-            background-color: #dc3545;
-            border: 2px solid red;
-            padding: 10px;
-            margin-bottom: 15px;
+        :root {
+            --primary-color: #6a26cd;
+            --secondary-color: #f5f5f7;
+            --accent-color: #8e44ee;
+            --error-color: #ff3b5c;
+            --text-color: #333;
+            --light-text: #666;
+            --white: #fff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f0ff 0%, #e6e6ff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
             text-align: center;
-            font-weight: bold;
-            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+        
+        .alert-danger {
+            color: var(--white);
+            background-color: var(--error-color);
+            border: none;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .alert-danger::before {
+            content: "\f071";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+            outline: none;
+        }
+        
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(106, 38, 205, 0.2);
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            cursor: pointer;
+            color: var(--light-text);
+            user-select: none;
+            z-index: 10;
+        }
+        
+        .login-btn {
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 15px 0;
+        }
+        
+        .login-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        .g-recaptcha {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 20px;
+            width: 100%;
+            margin: 15px 0 25px;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .google-btn:hover {
+            background-color: #f8f8f8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .google-btn span {
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .links a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Custom Form Validation Styling */
+        .form-error {
+            color: #fff;
+            background-color: #ff3b5c;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            animation: shake 0.5s ease-in-out;
+            text-align: left;
+        }
+
+        .form-error::before {
+            content: "\f071";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        input:invalid:focus {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 2px rgba(255, 59, 92, 0.2);
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
@@ -29,20 +252,33 @@
             </div>
         {% endfor %}
 
-        <form action="{{ path('app_login') }}" method="POST">
+        <form action="{{ path('app_login') }}" method="POST" id="login-form" novalidate>
             <!-- Username Input -->
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
+                <div class="form-error" id="username-error" style="display:none;">Please fill out this field.</div>
             </div>
 
             <!-- Password Input -->
             <div class="input-group password-wrapper">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
-                <span class="toggle-password" onclick="togglePassword()">👁</span>
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="fa-solid fa-eye"></i>
+                </span>
+                <div class="form-error" id="password-error" style="display:none;">Please fill out this field.</div>
             </div>
 
+           
+            <div class="input-group">
+                <label for="captcha">Solve: </label>
+                <div class="captcha-image">
+                    <img id="captcha-img" src="" alt="Captcha" />
+                </div>
+                <input type="text" id="captcha" name="captcha" required>
+                <div class="form-error" id="captcha-error" style="display:none;">Incorrect answer.</div>
+            </div>
             <!-- Login Button -->
             <button type="submit" class="login-btn">Login</button>
 
@@ -54,11 +290,112 @@
         </form>
     </div>
 
+    <!-- Include Google reCAPTCHA API -->
+
+    <!-- Toggle Password Visibility -->
     <script>
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const captchaText = `${num1} + ${num2}`;
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 40;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#333';
+            ctx.font = '20px Arial';
+            ctx.fillText(captchaText, 20, 25);
+            
+            document.getElementById('captcha-img').src = canvas.toDataURL();
+            document.getElementById('captcha-img').dataset.answer = num1 + num2;
+        }
         function togglePassword() {
             var passwordField = document.getElementById("password");
-            passwordField.type = (passwordField.type === "password") ? "text" : "password";
+            var toggleIcon = document.querySelector(".toggle-password i");
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
         }
+
+        // Custom form validation
+        document.addEventListener('DOMContentLoaded', function() {
+             generateCaptcha();
+            const form = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('username-error');
+            const passwordError = document.getElementById('password-error');
+            const recaptchaError = document.getElementById('recaptcha-error');
+            
+            // Prevent default validation bubbles
+            usernameInput.addEventListener('invalid', function(event) {
+                event.preventDefault();
+                usernameError.style.display = 'flex';
+            });
+            
+            passwordInput.addEventListener('invalid', function(event) {
+                event.preventDefault();
+                passwordError.style.display = 'flex';
+            });
+            
+            // Hide errors when user starts typing
+            usernameInput.addEventListener('input', function() {
+                usernameError.style.display = 'none';
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                passwordError.style.display = 'none';
+            });
+            
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                // Validate username
+                if (!usernameInput.value.trim()) {
+                    usernameError.style.display = 'flex';
+                    isValid = false;
+                }
+                
+                // Validate password
+                if (!passwordInput.value) {
+                    passwordError.style.display = 'flex';
+                    isValid = false;
+                }
+                
+                // Check if reCAPTCHA is filled (if it exists on the page)
+                if (document.querySelector('.g-recaptcha')) {
+                    const recaptchaResponse = grecaptcha.getResponse();
+                    if (!recaptchaResponse) {
+                        recaptchaError.style.display = 'flex';
+                        isValid = false;
+                    } else {
+                        recaptchaError.style.display = 'none';
+                    }
+                }
+                 const captchaInput = document.getElementById('captcha').value;
+                const captchaAnswer = document.getElementById('captcha-img').dataset.answer;
+                if (parseInt(captchaInput) !== parseInt(captchaAnswer)) {
+                    document.getElementById('captcha-error').style.display = 'flex';
+                    isValid = false;
+                }
+                // Prevent form submission if validation fails
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>

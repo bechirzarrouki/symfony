@@ -1,0 +1,563 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Returns for Investment #{{ investment.id }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-purple: #673AB7;
+            --light-purple: #D1C4E9;
+            --dark-purple: #4A148C;
+            --accent-purple: #9575CD;
+            --hover-purple: #7E57C2;
+            --text-on-dark: #FFFFFF;
+            --text-primary: #212121;
+            --background-light: #F5F3FA;
+            --border-color: #DADCE0;
+        }
+
+        body {
+            background-color: var(--background-light);
+            color: var(--text-primary);
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Layout structure */
+        .main-w {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            width: 100%;
+            position: relative;
+            padding-left:400px;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            height: 100%;
+            position: sticky;
+            top: 60px; /* Adjust based on your navbar height */
+        }
+
+        .post-container {
+            flex: 1;
+            padding: 25px 40px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            margin: 20px;
+            position: relative;
+            max-width: 1200px; /* Prevent excessive width on large screens */
+        }
+
+        h2 {
+            color: var(--dark-purple);
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-purple);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: var(--primary-purple);
+            font-size: 20px;
+            margin: 25px 0 15px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background-color: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            color: #2E7D32;
+        }
+
+        .alert-danger {
+            background-color: #FFEBEE;
+            border-left: 4px solid #F44336;
+            color: #C62828;
+        }
+
+        .returns-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .return-item {
+            background-color: var(--background-light);
+            border-left: 4px solid var(--accent-purple);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .return-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .return-item strong {
+            color: var(--dark-purple);
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(103, 58, 183, 0), rgba(103, 58, 183, 0.5), rgba(103, 58, 183, 0));
+            margin: 30px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;  /* Ensure form groups take full width */
+        }
+
+        .input-style, select.input-style {
+            display: block;
+            width: 100%;
+            box-sizing: border-box; /* Critical for proper width calculation */
+            padding: 12px 15px;
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: #FFFFFF;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-style:focus, select.input-style:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(149, 117, 205, 0.25);
+        }
+
+        .input-style::placeholder {
+            color: #9E9E9E;
+        }
+
+        .btn {
+            background-color: var(--primary-purple);
+            color: var(--text-on-dark);
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-purple);
+        }
+
+        .btn-secondary {
+            background-color: #757575;
+        }
+
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--dark-purple);
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 7% auto;
+            padding: 30px;
+            width: 95%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--light-purple);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            color: var(--dark-purple);
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #757575;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--dark-purple);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        /* Animation for button click */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn:active {
+            animation: pulse 0.3s;
+        }
+
+        /* Media query for responsive layout */
+        @media (max-width: 992px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                position: relative;
+                top: 0;
+                margin-bottom: 20px;
+            }
+            
+            .post-container {
+                width: calc(100% - 40px);
+                margin: 0 20px 20px 20px;
+            }
+        }
+        .options-menu {
+                    position: relative;
+                }
+
+                .options-dropdown {
+                    display: none;
+                    position: absolute;
+                    right: 0;
+                    background: white;
+                    border: 1px solid #ccc;
+                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+                    border-radius: 5px;
+                    z-index: 10;
+                    width: 120px;
+                }
+
+                .options-dropdown.show {
+                    display: block;
+                }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% include 'components/navbar1.html.twig' %}
+    <div class="main-w">
+        {% include 'components/sidebar.html.twig' %}
+        
+        <div class="post-container">
+            <h2>Returns for investment by {{ investment.user.username }}</h2>
+            
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+            
+            <div class="action-buttons">
+                <button id="openModalBtn" class="btn">+ Add New Return</button>
+            </div>
+            
+            {% if returns is not empty %}
+                <ul class="returns-list">
+                   {% for return in returns %}
+    <li class="return-item">
+        <strong>{{ return.typeReturn }}</strong>: {{ return.description }}<br>
+        Return Rate: {{ return.taxRendement }}%<br>
+        Deadline: {{ return.dateDeadline|date('Y-m-d') }}<br>
+        Status: {{ return.status }}
+        <div class="options-menu">
+            <i class="fas fa-ellipsis-v" ></i>
+            <div class="options-dropdown">
+                <button onclick="openDeleteReturn({{ return.id }})">Delete</button>
+                <button onclick="openEditReturnModal({{ return.id }})">Edit</button>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteReturn{{ return.id }}" class="modal">
+            <div class="modal-content">
+                <h3>Do you really want to delete this return?</h3>
+                <form action="{{ path('return_delete', { id: return.id }) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ return.id) }}">
+                    <button type="submit" class="submit-btn">Delete</button>
+                </form>
+                <button class="submit-btn" onclick="closeDeleteReturn({{ return.id }})">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div id="editReturnModal{{ return.id }}" class="modal">
+            <form action="{{ path('return_edit', { id: return.id }) }}" method="POST">
+                <div class="modal-content">
+                    <span class="close-btn" onclick="closeEditReturnModal({{ return.id }})">&times;</span>
+                    <h3>Edit Return</h3>
+                    <input type="text" name="description" class="input-style" value="{{ return.description }}" required>
+                    <input type="text" name="typeReturn" class="input-style" value="{{ return.typeReturn }}" required>
+                    <input type="number" name="taxRendement" class="input-style" value="{{ return.taxRendement }}" required step="0.01">
+                    <input type="date" name="dateDeadline" class="input-style" value="{{ return.dateDeadline|date('Y-m-d') }}" required>
+                    <input type="text" name="status" class="input-style" value="{{ return.status }}" required>
+                    <button type="submit" class="submit-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </li>
+
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No returns found for this investment.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Add Return Modal -->
+    <div id="addReturnModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Return</h3>
+                <button type="button" class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            
+            <form id="returnForm" method="POST" action="{{ path('return_create', { 'investmentId': investment.id }) }}" onsubmit="return validateReturnForm()">
+                <div class="form-group">
+                    <input id="description" name="description" placeholder="Description" class="input-style" type="text" required>
+                </div>
+                <div class="form-group">
+                    <input id="typeReturn" name="typeReturn" placeholder="Return Type" class="input-style" type="text" required>
+                </div>
+                <div class="form-group">
+                    <input id="taxRendement" name="taxRendement" placeholder="Rate of Return (%)" class="input-style" type="number" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <input id="dateDeadline" name="dateDeadline" placeholder="Deadline" class="input-style" type="date" required>
+                </div>
+                <div class="form-group">
+                    <select id="status" name="status" class="input-style" required>
+                        <option value="">-- Select Status --</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                
+                <div id="errorMessage" class="alert alert-danger" style="display: none;">Please fill out all fields correctly.</div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn">Add Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('addReturnModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        
+        openModalBtn.addEventListener('click', function() {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+        });
+        
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                document.body.style.overflow = ''; // Restore scrolling
+            }, 300);
+        }
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        
+        // Close modal if clicking outside content
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Form validation
+        function validateReturnForm() {
+            const description = document.getElementById("description").value.trim();
+            const typeReturn = document.getElementById("typeReturn").value.trim();
+            const taxRendement = document.getElementById("taxRendement").value.trim();
+            const dateDeadline = document.getElementById("dateDeadline").value.trim();
+            const status = document.getElementById("status").value.trim();
+            const errorMessage = document.getElementById("errorMessage");
+            
+            if (!description || !typeReturn || !taxRendement || !dateDeadline || !status) {
+                errorMessage.textContent = "Please fill out all fields correctly.";
+                errorMessage.style.display = "block";
+                return false;
+            }
+            
+            // Validate that taxRendement is a valid number
+            if (isNaN(parseFloat(taxRendement))) {
+                errorMessage.textContent = "Rate of Return must be a valid number.";
+                errorMessage.style.display = "block";
+                return false;
+            }
+            
+            errorMessage.style.display = "none";
+            return true;
+        }
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle dropdown on icon click
+    document.querySelectorAll('.options-menu i').forEach(icon => {
+        icon.addEventListener('click', function (event) {
+            event.stopPropagation();
+            closeAllDropdowns();
+            const dropdown = this.nextElementSibling;
+            dropdown.classList.add('show');
+        });
+    });
+
+    // Close dropdowns when clicking elsewhere
+    document.addEventListener('click', function () {
+        closeAllDropdowns();
+    });
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.options-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+
+    // Prevent dropdown from closing if clicked inside
+    document.querySelectorAll('.options-dropdown').forEach(dropdown => {
+        dropdown.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+});
+
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.options-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+
+    // Open and close Delete modals
+    function openDeleteReturn(id) {
+        const modal = document.getElementById(`deleteReturn${id}`);
+        if (modal) modal.style.display = 'block';
+    }
+
+    function closeDeleteReturn(id) {
+        const modal = document.getElementById(`deleteReturn${id}`);
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Open and close Edit modals
+    function openEditReturnModal(id) {
+        const modal = document.getElementById(`editReturnModal${id}`);
+        if (modal) modal.style.display = 'block';
+    }
+
+    function closeEditReturnModal(id) {
+        const modal = document.getElementById(`editReturnModal${id}`);
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Optional: Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    });
+    </script>
+{% endblock %}

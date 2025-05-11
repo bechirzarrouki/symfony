@@ -217,6 +217,9 @@ public function search(Request $request, UserRepository $userRepository): Respon
                 $session->set('username', $user->getUsername());
                 $session->set('Roles',$user->getRoles());
                 $this->addFlash('success', 'Login successful!');
+                if($user->isBanned()){
+                    return $this->redirectToRoute('app_login');
+                }
                 if (in_array("ROLE_admin", $user->getRoles()))
                     return $this->redirectToRoute('app_userlist');
                 else

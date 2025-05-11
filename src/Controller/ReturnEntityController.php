@@ -53,7 +53,7 @@ class ReturnEntityController extends AbstractController
         
         if (!$investmentData) {
             $this->addFlash('error', 'No investment data found in session.');
-            return $this->redirectToRoute('investment_new');
+            return $this->redirectToRoute('investment_new',);
         }
     
         // Create a new ReturnEntity instance
@@ -77,33 +77,28 @@ class ReturnEntityController extends AbstractController
         $this->addFlash('success', 'Return has been created successfully.');
     
         // Redirect to a page where the user can see the investment details or all returns
-        return $this->redirectToRoute('investment_index');
+        return $this->redirectToRoute('investment_returns', ['investmentId' => $investmentId]);
     }
-    #[Route('/api/investment/{investmentId}/returns', name: 'api_get_returns', methods: ['GET'])]
-    public function getReturns(int $investmentId, ReturnEntityRepository $returnRepository, InvestmentRepository $investmentRepository): JsonResponse
-    {
+    #[Route('/investment/{investmentId}/returns', name: 'investment_returns', methods: ['GET'])]
+    public function showReturns(
+        int $investmentId,
+        ReturnEntityRepository $returnRepository,
+        InvestmentRepository $investmentRepository
+    ): Response {
         $investment = $investmentRepository->find($investmentId);
-        
+
         if (!$investment) {
-            return new JsonResponse(['error' => 'Investment not found'], 404);
+            throw $this->createNotFoundException('Investment not found');
         }
 
         $returns = $returnRepository->findBy(['investment' => $investment]);
 
-        $data = [];
-        foreach ($returns as $return) {
-            $data[] = [
-                'id' => $return->getId(),
-                'description' => $return->getDescription(),
-                'typeReturn' => $return->getTypeReturn(),
-                'taxRendement' => $return->getTaxRendement(),
-                'dateDeadline' => $return->getDateDeadline()->format('Y-m-d'),
-                'status' => $return->getStatus(),
-            ];
-        }
-
-        return new JsonResponse($data);
+        return $this->render('investisement/return.html.twig', [
+            'returns' => $returns,
+            'investment' => $investment,
+        ]);
     }
+
 
     #[Route('/return/{id}/delete', name: 'return_delete', methods: ['POST'])]
     public function deleteReturn(Request $request, ReturnEntityRepository $returnEntityRepository, EntityManagerInterface $em, $id): Response

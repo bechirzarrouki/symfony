@@ -107,14 +107,9 @@ class Investment
         }
         return $this->likes->contains($user);
     }
-    public function isFavoritedByUser(User $user): bool
+    public function isFavoritedByUser(?User $user): bool
     {
-        foreach ($this->favorites as $favorite) {
-            if ($favorite->getUser() === $user) {
-                return true;
-            }
-        }
-        return false;
+        return $this->favorites->contains($user);
     }
 
 }

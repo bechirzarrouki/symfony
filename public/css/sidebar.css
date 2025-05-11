@@ -1,11 +1,10 @@
 .sidebar {
   width: 200px;
   height: 100vh;
-  
   position: fixed;
   left: 0;
   top: 0;
-  padding-top: 80px;
+  padding-top: 110px;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #000000;
