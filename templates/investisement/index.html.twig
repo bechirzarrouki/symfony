@@ -57,7 +57,7 @@
                     {% for investment in investments %}
     <div class="investment-box clickable-card" onclick="window.location.href='{{ path('investment_returns', { investmentId: investment.id }) }}'">
         <div class="profile-section">
-            <img src="{{ asset('uploads/profile_images/' ~ investment.user.getProfileImage()) }}" alt="Profile" class="profile-img">
+            <img src="{{ investment.user.getProfileImage() ? asset('uploads/profile_images/' ~ investment.user.getProfileImage()) : asset('uploads/profile_images/default.png') }}" alt="Profile" class="profile-img">
             <div class="profile-info">
                 <h4>{{ investment.user.username }}</h4>
             </div>

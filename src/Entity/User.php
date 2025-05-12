@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public ?string $profileImage = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $roles = 'ROLE_USER'; // Default role
+    private ?string $roles = 'ROLE_EMPLOYEE'; // Default role
     #[ORM\Column(type: "boolean", options: ["default" => false])]
     private ?bool $banned = false;
 
@@ -142,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setRoles(?string $role): self
     {
-        $this->roles = $role ?? 'ROLE_USER';
+        $this->roles = $role ?? 'ROLE_EMPLOYEE';
         return $this;
     }
 
